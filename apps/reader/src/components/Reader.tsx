@@ -1,7 +1,6 @@
 import { useEventListener } from '@literal-ui/hooks'
 import clsx from 'clsx'
 import React, {
-  ComponentProps,
   useCallback,
   useEffect,
   useRef,
@@ -58,7 +57,7 @@ interface NaviagtionButtonProps {
 
 export function NavigationButton(props: NaviagtionButtonProps) {
   const { direction, onClick } = props
-  
+
   return (
     <div
       onClick={onClick}
@@ -287,57 +286,7 @@ function BookPane({ tab }: BookPaneProps) {
           )}
         />
       </div>
-      <ReaderPaneFooter tab={tab} />
     </div>
   )
 }
 
-interface FooterProps {
-  tab: BookTab
-}
-const ReaderPaneFooter: React.FC<FooterProps> = ({ tab }) => {
-  const { locationToReturn, location, book } = useSnapshot(tab)
-
-  return (
-    <Bar>
-      {locationToReturn ? (
-        <>
-          <button
-            className={clsx(locationToReturn || 'invisible')}
-            onClick={() => {
-              tab.hidePrevLocation()
-              tab.display(locationToReturn.end.cfi, false)
-            }}
-          >
-            Return to {locationToReturn.end.cfi}
-          </button>
-          <button
-            onClick={() => {
-              tab.hidePrevLocation()
-            }}
-          >
-            Stay
-          </button>
-        </>
-      ) : (
-        <>
-          <div>{location?.start.href}</div>
-          <div>{((book.percentage ?? 0) * 100).toFixed()}%</div>
-        </>
-      )}
-    </Bar>
-  )
-}
-
-interface LineProps extends ComponentProps<'div'> {}
-const Bar: React.FC<LineProps> = ({ className, ...props }) => {
-  return (
-    <div
-      className={clsx(
-        'typescale-body-small text-outline flex h-6 items-center justify-between gap-2 px-[4vw] sm:px-2',
-        className,
-      )}
-      {...props}
-    ></div>
-  )
-}
