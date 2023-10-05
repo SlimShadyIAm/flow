@@ -7,8 +7,6 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { MdChevronRight, MdWebAsset } from 'react-icons/md'
-import { RiBookLine } from 'react-icons/ri'
 import { PhotoSlider } from 'react-photo-view'
 import { useSetRecoilState } from 'recoil'
 import useTilg from 'tilg'
@@ -26,7 +24,6 @@ import {
   useDisablePinchZooming,
   useMobile,
   useSync,
-  useTranslation,
   useTypography,
 } from '../hooks'
 import { BookTab, reader, useReaderSnapshot } from '../models'
@@ -38,7 +35,6 @@ import {
   setClickedAnnotation,
   Annotations,
 } from './Annotation'
-import { Tab } from './Tab'
 import { TextSelectionMenu } from './TextSelectionMenu'
 import { DropZone, SplitView, useSplitViewItem } from './base'
 import * as pages from './pages'
@@ -84,9 +80,7 @@ interface ReaderGroupProps {
 }
 function ReaderGroup({ index }: ReaderGroupProps) {
   const group = reader.groups[index]!
-  const { focusedIndex } = useReaderSnapshot()
-  const { tabs, selectedIndex } = useSnapshot(group)
-  const t = useTranslation()
+  const { selectedIndex } = useSnapshot(group)
 
   const { size } = useSplitViewItem(`${ReaderGroup.name}.${index}`, {
     // to disable sash resize
@@ -103,31 +97,6 @@ function ReaderGroup({ index }: ReaderGroupProps) {
       onMouseDown={handleMouseDown}
       style={{ width: size }}
     >
-      <Tab.List
-        className="hidden sm:flex"
-        onDelete={() => reader.removeGroup(index)}
-      >
-        {tabs.map((tab, i) => {
-          const selected = i === selectedIndex
-          const focused = index === focusedIndex && selected
-          return (
-            <Tab
-              key={tab.id}
-              selected={selected}
-              focused={focused}
-              onClick={() => group.selectTab(i)}
-              onDelete={() => reader.removeTab(i, index)}
-              Icon={tab instanceof BookTab ? RiBookLine : MdWebAsset}
-              onDragStart={(e) => {
-                e.dataTransfer.setData('text/plain', `${index},${i}`)
-              }}
-            >
-              {tab.isBook ? tab.title : t(`${tab.title}.title`)}
-            </Tab>
-          )
-        })}
-      </Tab.List>
-
       <DropZone
         className={clsx('flex-1', isTouchScreen || 'h-0')}
         split
@@ -382,7 +351,6 @@ function BookPane({ tab, onMouseDown }: BookPaneProps) {
         maskOpacity={0.6}
         bannerVisible={false}
       />
-      <ReaderPaneHeader tab={tab} />
       <div
         ref={ref}
         className={clsx('relative flex-1', isTouchScreen || 'h-0')}
@@ -403,39 +371,6 @@ function BookPane({ tab, onMouseDown }: BookPaneProps) {
       </div>
       <ReaderPaneFooter tab={tab} />
     </div>
-  )
-}
-
-interface ReaderPaneHeaderProps {
-  tab: BookTab
-}
-const ReaderPaneHeader: React.FC<ReaderPaneHeaderProps> = ({ tab }) => {
-  const { location } = useSnapshot(tab)
-  const navPath = tab.getNavPath()
-
-  useEffect(() => {
-    navPath.forEach((i) => (i.expanded = true))
-  }, [navPath])
-
-  return (
-    <Bar>
-      <div className="scroll-h flex">
-        {navPath.map((item, i) => (
-          <button
-            key={i}
-            className="hover:text-on-surface flex shrink-0 items-center"
-          >
-            {item.label}
-            {i !== navPath.length - 1 && <MdChevronRight size={20} />}
-          </button>
-        ))}
-      </div>
-      {location && (
-        <div className="shrink-0">
-          {location.start.displayed.page} / {location.start.displayed.total}
-        </div>
-      )}
-    </Bar>
   )
 }
 
