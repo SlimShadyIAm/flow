@@ -8,17 +8,14 @@ import React, {
   useState,
 } from 'react'
 import { PhotoSlider } from 'react-photo-view'
-import { useSetRecoilState } from 'recoil'
 import useTilg from 'tilg'
 import { useSnapshot } from 'valtio'
 
 import { RenditionSpread } from '@flow/epubjs/types/rendition'
-import { navbarState } from '@flow/reader/state'
 
 import { db } from '../db'
 import { handleFiles } from '../file'
 import {
-  hasSelection,
   useBackground,
   useColorScheme,
   useDisablePinchZooming,
@@ -30,12 +27,6 @@ import { BookTab, reader, useReaderSnapshot } from '../models'
 import { isTouchScreen } from '../platform'
 import { updateCustomStyle } from '../styles'
 
-import {
-  getClickedAnnotation,
-  setClickedAnnotation,
-  Annotations,
-} from './Annotation'
-import { TextSelectionMenu } from './TextSelectionMenu'
 import { DropZone, SplitView, useSplitViewItem } from './base'
 import * as pages from './pages'
 
@@ -172,14 +163,14 @@ interface BookPaneProps {
   onMouseDown: () => void
 }
 
-function BookPane({ tab, onMouseDown }: BookPaneProps) {
+function BookPane({ tab }: BookPaneProps) {
   const ref = useRef<HTMLDivElement>(null)
   const prevSize = useRef(0)
   const typography = useTypography(tab)
   const { dark } = useColorScheme()
   const [background] = useBackground()
 
-  const { iframe, rendition, rendered, container } = useSnapshot(tab)
+  const { iframe, rendition, rendered } = useSnapshot(tab)
 
   useTilg()
 
@@ -205,7 +196,6 @@ function BookPane({ tab, onMouseDown }: BookPaneProps) {
 
   useSync(tab)
 
-  const setNavbar = useSetRecoilState(navbarState)
   const mobile = useMobile()
 
   const applyCustomStyle = useCallback(() => {
@@ -247,98 +237,7 @@ function BookPane({ tab, onMouseDown }: BookPaneProps) {
     }
   }, [src])
 
-  useEventListener(iframe, 'mousedown', onMouseDown)
-
-  useEventListener(iframe, 'click', (e) => {
-    // https://developer.chrome.com/blog/tap-to-search
-    e.preventDefault()
-
-    for (const el of e.composedPath() as any) {
-      // `instanceof` may not work in iframe
-      if (el.tagName === 'A' && el.href) {
-        tab.showPrevLocation()
-        return
-      }
-      if (mobile === false && el.tagName === 'IMG') {
-        setSrc(el.src)
-        return
-      }
-    }
-
-    if (isTouchScreen && container) {
-      if (getClickedAnnotation()) {
-        setClickedAnnotation(false)
-        return
-      }
-
-      const w = container.clientWidth
-      const x = e.clientX % w
-      const threshold = 0.3
-      const side = w * threshold
-
-      if (x < side) {
-        tab.prev()
-      } else if (w - x < side) {
-        tab.next()
-      } else if (mobile) {
-        setNavbar((a) => !a)
-      }
-    }
-  })
-
-  useEventListener(iframe, 'wheel', (e) => {
-    if (e.deltaY < 0) {
-      tab.prev()
-    } else {
-      tab.next()
-    }
-  })
-
   useEventListener(iframe, 'keydown', handleKeyDown(tab))
-
-  useEventListener(iframe, 'touchstart', (e) => {
-    const x0 = e.targetTouches[0]?.clientX ?? 0
-    const y0 = e.targetTouches[0]?.clientY ?? 0
-    const t0 = Date.now()
-
-    if (!iframe) return
-
-    // When selecting text with long tap, `touchend` is not fired,
-    // so instead of use `addEventlistener`, we should use `on*`
-    // to remove the previous listener.
-    iframe.ontouchend = function handleTouchEnd(e: TouchEvent) {
-      iframe.ontouchend = undefined
-      const selection = iframe.getSelection()
-      if (hasSelection(selection)) return
-
-      const x1 = e.changedTouches[0]?.clientX ?? 0
-      const y1 = e.changedTouches[0]?.clientY ?? 0
-      const t1 = Date.now()
-
-      const deltaX = x1 - x0
-      const deltaY = y1 - y0
-      const deltaT = t1 - t0
-
-      const absX = Math.abs(deltaX)
-      const absY = Math.abs(deltaY)
-
-      if (absX < 10) return
-
-      if (absY / absX > 2) {
-        if (deltaT > 100 || absX < 30) {
-          return
-        }
-      }
-
-      if (deltaX > 0) {
-        tab.prev()
-      }
-
-      if (deltaX < 0) {
-        tab.next()
-      }
-    }
-  })
 
   useDisablePinchZooming(iframe)
 
@@ -366,8 +265,6 @@ function BookPane({ tab, onMouseDown }: BookPaneProps) {
             background,
           )}
         />
-        <TextSelectionMenu tab={tab} />
-        <Annotations tab={tab} />
       </div>
       <ReaderPaneFooter tab={tab} />
     </div>
