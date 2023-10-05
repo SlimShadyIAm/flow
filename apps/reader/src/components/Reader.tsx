@@ -40,7 +40,7 @@ import {
 } from './Annotation'
 import { Tab } from './Tab'
 import { TextSelectionMenu } from './TextSelectionMenu'
-import { DropZone, SplitView, useDndContext, useSplitViewItem } from './base'
+import { DropZone, SplitView, useSplitViewItem } from './base'
 import * as pages from './pages'
 
 function handleKeyDown(tab?: BookTab) {
@@ -118,7 +118,6 @@ function ReaderGroup({ index }: ReaderGroupProps) {
               onClick={() => group.selectTab(i)}
               onDelete={() => reader.removeTab(i, index)}
               Icon={tab instanceof BookTab ? RiBookLine : MdWebAsset}
-              draggable
               onDragStart={(e) => {
                 e.dataTransfer.setData('text/plain', `${index},${i}`)
               }}
@@ -278,14 +277,6 @@ function BookPane({ tab, onMouseDown }: BookPaneProps) {
         document.activeElement?.blur()
     }
   }, [src])
-
-  const { setDragEvent } = useDndContext()
-
-  // `dragenter` not fired in iframe when the count of times is even, so use `dragover`
-  useEventListener(iframe, 'dragover', (e: any) => {
-    console.log('drag enter in iframe')
-    setDragEvent(e)
-  })
 
   useEventListener(iframe, 'mousedown', onMouseDown)
 

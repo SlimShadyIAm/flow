@@ -45,7 +45,9 @@ interface ThemeConfiguration {
   background?: number
 }
 
-export const defaultSettings: Settings = {}
+export const defaultSettings: Settings = {
+  spread: RenditionSpread.None
+}
 
 const settingsState = atom<Settings>({
   key: 'settings',

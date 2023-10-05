@@ -54,6 +54,40 @@ export const ThemeView: React.FC<PaneViewProps> = (props) => {
             />
           </div>
         </div>
+        <div>
+          <ColorPicker
+            name={t('source_color')}
+            defaultValue={sourceColor}
+            onChange={(e) => {
+              setSourceColor(e.target.value)
+            }}
+          />
+        </div>
+        <div>
+          <Label name={t('background_color')}></Label>
+          <div className="flex gap-2">
+            {range(7)
+              .filter((i) => !(i % 2))
+              .map((i) => i - 1)
+              .map((i) => (
+                <Background
+                  key={i}
+                  className={i > 0 ? `bg-surface${i}` : 'bg-white'}
+                  onClick={() => {
+                    setScheme('light')
+                    setBackground(i)
+                  }}
+                />
+              ))}
+            <Background
+              className="bg-black"
+              onClick={() => {
+                setScheme('dark')
+              }}
+            />
+          </div>
+        </div>
+      
       </Pane>
     </PaneView>
   )

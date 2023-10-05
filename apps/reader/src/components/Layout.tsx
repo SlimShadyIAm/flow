@@ -3,17 +3,11 @@ import clsx from 'clsx'
 import { ComponentProps, useEffect, useState } from 'react'
 import { useMemo } from 'react'
 import { IconType } from 'react-icons'
-import {
-  MdFormatUnderlined,
-  MdOutlineImage,
-  MdOutlineLightMode,
-} from 'react-icons/md'
-import { RiFontSize, RiHome6Line, RiSettings5Line } from 'react-icons/ri'
+import { RiHome6Line, RiSettings5Line } from 'react-icons/ri'
 import { useRecoilState } from 'recoil'
 
 import {
   Env,
-  Action,
   useAction,
   useBackground,
   useColorScheme,
@@ -27,7 +21,6 @@ import { activeClass } from '../styles'
 
 import { SplitView, useSplitViewItem } from './base'
 import { Settings } from './pages'
-import { ThemeView } from './viewlets/ThemeView'
 import { TypographyView } from './viewlets/TypographyView'
 
 export const Layout: React.FC = ({ children }) => {
@@ -46,8 +39,10 @@ export const Layout: React.FC = ({ children }) => {
   return (
     <div id="layout" className="select-none">
       <SplitView>
+        {/*
         {mobile === false && <ActivityBar />}
         {mobile === true && <NavigationBar />}
+        */}
         {ready && <SideBar />}
         {ready && <Reader>{children}</Reader>}
       </SplitView>
@@ -61,27 +56,6 @@ interface IAction {
   Icon: IconType
   env: number
 }
-interface IViewAction extends IAction {
-  name: Action
-  View: React.FC<any>
-}
-
-const viewActions: IViewAction[] = [
-  {
-    name: 'typography',
-    title: 'typography',
-    Icon: RiFontSize,
-    View: TypographyView,
-    env: Env.Desktop | Env.Mobile,
-  },
-  {
-    name: 'theme',
-    title: 'theme',
-    Icon: MdOutlineLightMode,
-    View: ThemeView,
-    env: Env.Desktop | Env.Mobile,
-  },
-]
 
 const ActivityBar: React.FC = () => {
   useSplitViewItem(ActivityBar, {
@@ -91,7 +65,6 @@ const ActivityBar: React.FC = () => {
   })
   return (
     <div className="ActivityBar flex flex-col justify-between">
-      <ViewActionBar env={Env.Desktop} />
       <PageActionBar env={Env.Desktop} />
     </div>
   )
@@ -99,34 +72,6 @@ const ActivityBar: React.FC = () => {
 
 interface EnvActionBarProps extends ComponentProps<'div'> {
   env: Env
-}
-
-function ViewActionBar({ className, env }: EnvActionBarProps) {
-  const [action, setAction] = useAction()
-  const t = useTranslation()
-
-  useEffect(() => {
-    setAction('typography')
-  }, [setAction])
-
-  return (
-    <ActionBar className={className}>
-      {viewActions
-        .filter((a) => a.env & env)
-        .map(({ name, title, Icon }) => {
-          const active = action === name
-          return (
-            <Action
-              title={t(`${title}.title`)}
-              Icon={Icon}
-              active={active}
-              onClick={() => setAction(active ? undefined : name)}
-              key={name}
-            />
-          )
-        })}
-    </ActionBar>
-  )
 }
 
 function PageActionBar({ env }: EnvActionBarProps) {
@@ -180,8 +125,6 @@ function PageActionBar({ env }: EnvActionBarProps) {
 }
 
 function NavigationBar() {
-  const r = useReaderSnapshot()
-  const readMode = r.focusedTab?.isBook
   const [visible, setVisible] = useRecoilState(navbarState)
 
   return (
@@ -193,14 +136,7 @@ function NavigationBar() {
         />
       )}
       <div className="NavigationBar bg-surface border-surface-variant fixed inset-x-0 bottom-0 z-10 border-t">
-        {readMode ? (
-          <ViewActionBar
-            env={Env.Mobile}
-            className={clsx(visible || 'hidden')}
-          />
-        ) : (
-          <PageActionBar env={Env.Mobile} />
-        )}
+        <PageActionBar env={Env.Mobile} />
       </div>
     </>
   )
@@ -246,9 +182,8 @@ const Action: React.FC<ActionProps> = ({
 }
 
 const SideBar: React.FC = () => {
-  const [action, setAction] = useAction()
+  const [action] = useAction()
   const mobile = useMobile()
-  const t = useTranslation()
 
   const { size } = useSplitViewItem(SideBar, {
     preferredSize: 240,
@@ -258,7 +193,6 @@ const SideBar: React.FC = () => {
 
   return (
     <>
-      {action && mobile && <Overlay onClick={() => setAction(undefined)} />}
       <div
         className={clsx(
           'SideBar bg-surface flex flex-col',
@@ -267,14 +201,7 @@ const SideBar: React.FC = () => {
         )}
         style={{ width: mobile ? '75%' : size }}
       >
-        {viewActions.map(({ name, title, View }) => (
-          <View
-            key={name}
-            name={t(`${name}.title`)}
-            title={t(`${title}.title`)}
-            className={clsx(name !== action && '!hidden')}
-          />
-        ))}
+        <TypographyView name="asdf" title="asdf" />
       </div>
     </>
   )

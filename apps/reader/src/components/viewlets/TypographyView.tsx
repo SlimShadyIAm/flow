@@ -1,9 +1,14 @@
 import clsx from 'clsx'
-import { useCallback, useRef, useState } from 'react'
+import { ComponentProps, useCallback, useRef, useState } from 'react'
 import { MdAdd, MdRemove } from 'react-icons/md'
 
-import { RenditionSpread } from '@flow/epubjs/types/rendition'
-import { useTranslation } from '@flow/reader/hooks'
+import { range } from '@flow/internal'
+import {
+  useBackground,
+  useColorScheme,
+  useSourceColor,
+  useTranslation,
+} from '@flow/reader/hooks'
 import { reader, useReaderSnapshot } from '@flow/reader/models'
 import {
   defaultSettings,
@@ -12,142 +17,112 @@ import {
 } from '@flow/reader/state'
 import { keys } from '@flow/reader/utils'
 
-import { Select, TextField, TextFieldProps } from '../Form'
-import { PaneViewProps, PaneView, Pane } from '../base'
+import { ColorPicker, Label, Select, TextField, TextFieldProps } from '../Form'
+import { PaneViewProps, PaneView } from '../base'
 
 enum TypographyScope {
   Book,
   Global,
 }
 
-const typefaces = ['default', 'sans-serif', 'serif']
+const typefaces = ['default', 'sans-serif', 'serif', 'Georgia']
 
 export const TypographyView: React.FC<PaneViewProps> = (props) => {
   const { focusedBookTab } = useReaderSnapshot()
-  const [settings, setSettings] = useSettings()
-  const [scope, setScope] = useState(TypographyScope.Book)
-  const t = useTranslation('typography')
+  const { setScheme } = useColorScheme()
+  const [, setBackground] = useBackground()
+  const t_theme = useTranslation('theme')
+  const t_typography = useTranslation('typography')
 
-  const { fontFamily, fontSize, fontWeight, lineHeight, zoom, spread } =
-    scope === TypographyScope.Book
-      ? focusedBookTab?.book.configuration?.typography ?? defaultSettings
-      : settings
+  const { fontFamily, fontSize, fontWeight, lineHeight } =
+    focusedBookTab?.book.configuration?.typography ?? defaultSettings
 
   const setTypography = useCallback(
     <K extends keyof TypographyConfiguration>(
       k: K,
       v: TypographyConfiguration[K],
     ) => {
-      if (scope === TypographyScope.Book) {
-        reader.focusedBookTab?.updateBook({
-          configuration: {
-            ...reader.focusedBookTab.book.configuration,
-            typography: {
-              ...reader.focusedBookTab.book.configuration?.typography,
-              [k]: v,
-            },
+      reader.focusedBookTab?.updateBook({
+        configuration: {
+          ...reader.focusedBookTab.book.configuration,
+          typography: {
+            ...reader.focusedBookTab.book.configuration?.typography,
+            [k]: v,
           },
-        })
-      } else {
-        setSettings((prev) => ({
-          ...prev,
-          [k]: v,
-        }))
-      }
+        },
+      })
     },
-    [scope, setSettings],
+    [],
   )
 
   return (
-    <PaneView {...props}>
-      <div className="typescale-body-medium flex gap-2 px-5 pb-2 !text-[13px]">
-        {keys(TypographyScope)
-          .filter((k) => isNaN(Number(k)))
-          .map((scopeName) => (
-            <button
-              key={scopeName}
-              className={clsx(
-                TypographyScope[scopeName] === scope
-                  ? 'text-on-surface-variant'
-                  : 'text-outline/60',
-              )}
-              onClick={() => setScope(TypographyScope[scopeName])}
-            >
-              {t(`scope.${scopeName.toLowerCase()}`)}
-            </button>
-          ))}
-      </div>
-      <Pane
-        headline={t('title')}
-        className="space-y-3 px-5 pt-2 pb-4"
-        key={`${scope}${focusedBookTab?.id}`}
+    <div className="flex flex-col gap-2 p-4">
+      <Select
+        name={t_typography('font_family')}
+        value={fontFamily}
+        onChange={(e) => {
+          setTypography('fontFamily', e.target.value)
+        }}
       >
-        <Select
-          name={t('page_view')}
-          value={spread ?? RenditionSpread.Auto}
-          onChange={(e) => {
-            setTypography('spread', e.target.value as RenditionSpread)
-          }}
-        >
-          <option value={RenditionSpread.None}>
-            {t('page_view.single_page')}
+        {typefaces.map((t) => (
+          <option key={t} value={t} style={{ fontFamily: t }}>
+            {t}
           </option>
-          <option value={RenditionSpread.Auto}>
-            {t('page_view.double_page')}
-          </option>
-        </Select>
-        <Select
-          name={t('font_family')}
-          value={fontFamily}
-          onChange={(e) => {
-            setTypography('fontFamily', e.target.value)
-          }}
-        >
-          {typefaces.map((t) => (
-            <option key={t} value={t} style={{ fontFamily: t }}>
-              {t}
-            </option>
-          ))}
-        </Select>
-        <NumberField
-          name={t('font_size')}
-          min={14}
-          max={28}
-          defaultValue={fontSize && parseInt(fontSize)}
-          onChange={(v) => {
-            setTypography('fontSize', v ? v + 'px' : undefined)
-          }}
-        />
-        <NumberField
-          name={t('font_weight')}
-          min={100}
-          max={900}
-          step={100}
-          defaultValue={fontWeight}
-          onChange={(v) => {
-            setTypography('fontWeight', v || undefined)
-          }}
-        />
-        <NumberField
-          name={t('line_height')}
-          min={1}
-          step={0.1}
-          defaultValue={lineHeight}
-          onChange={(v) => {
-            setTypography('lineHeight', v || undefined)
-          }}
-        />
-        <NumberField
-          name={t('zoom')}
-          min={1}
-          step={0.1}
-          defaultValue={zoom}
-          onChange={(v) => {
-            setTypography('zoom', v || undefined)
-          }}
-        />
-      </Pane>
-    </PaneView>
+        ))}
+      </Select>
+      <NumberField
+        name={t_typography('font_size')}
+        min={14}
+        max={28}
+        defaultValue={fontSize && parseInt(fontSize)}
+        onChange={(v) => {
+          setTypography('fontSize', v ? v + 'px' : undefined)
+        }}
+      />
+      <NumberField
+        name={t_typography('font_weight')}
+        min={100}
+        max={900}
+        step={100}
+        defaultValue={fontWeight}
+        onChange={(v) => {
+          setTypography('fontWeight', v || undefined)
+        }}
+      />
+      <NumberField
+        name={t_typography('line_height')}
+        min={1}
+        step={0.1}
+        defaultValue={lineHeight}
+        onChange={(v) => {
+          setTypography('lineHeight', v || undefined)
+        }}
+      />
+      <div>
+        <Label name={t_theme('background_color')}></Label>
+        <div className="flex gap-2">
+          {range(7)
+            .filter((i) => !(i % 2))
+            .map((i) => i - 1)
+            .map((i) => (
+              <Background
+                key={i}
+                className={i > 0 ? `bg-surface${i}` : 'bg-white'}
+                onClick={() => {
+                  setScheme('light')
+                  setBackground(i)
+                }}
+              />
+            ))}
+          <Background
+            className="bg-black"
+            onClick={() => {
+              setScheme('dark')
+            }}
+          />
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -194,5 +169,15 @@ const NumberField: React.FC<NumberFieldProps> = ({ onChange, ...props }) => {
       }}
       {...props}
     />
+  )
+}
+
+interface BackgroundProps extends ComponentProps<'div'> {}
+const Background: React.FC<BackgroundProps> = ({ className, ...props }) => {
+  return (
+    <div
+      className={clsx('border-outline-variant light h-6 w-6 border', className)}
+      {...props}
+    ></div>
   )
 }
