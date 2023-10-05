@@ -6,9 +6,6 @@ import { IconType } from 'react-icons'
 import {
   MdFormatUnderlined,
   MdOutlineImage,
-  MdSearch,
-  MdToc,
-  MdTimeline,
   MdOutlineLightMode,
 } from 'react-icons/md'
 import { RiFontSize, RiHome6Line, RiSettings5Line } from 'react-icons/ri'
@@ -30,12 +27,7 @@ import { activeClass } from '../styles'
 
 import { SplitView, useSplitViewItem } from './base'
 import { Settings } from './pages'
-import { AnnotationView } from './viewlets/AnnotationView'
-import { ImageView } from './viewlets/ImageView'
-import { SearchView } from './viewlets/SearchView'
 import { ThemeView } from './viewlets/ThemeView'
-import { TimelineView } from './viewlets/TimelineView'
-import { TocView } from './viewlets/TocView'
 import { TypographyView } from './viewlets/TypographyView'
 
 export const Layout: React.FC = ({ children }) => {
@@ -76,41 +68,6 @@ interface IViewAction extends IAction {
 
 const viewActions: IViewAction[] = [
   {
-    name: 'toc',
-    title: 'toc',
-    Icon: MdToc,
-    View: TocView,
-    env: Env.Desktop | Env.Mobile,
-  },
-  {
-    name: 'search',
-    title: 'search',
-    Icon: MdSearch,
-    View: SearchView,
-    env: Env.Desktop | Env.Mobile,
-  },
-  {
-    name: 'annotation',
-    title: 'annotation',
-    Icon: MdFormatUnderlined,
-    View: AnnotationView,
-    env: Env.Desktop | Env.Mobile,
-  },
-  {
-    name: 'image',
-    title: 'image',
-    Icon: MdOutlineImage,
-    View: ImageView,
-    env: Env.Desktop,
-  },
-  {
-    name: 'timeline',
-    title: 'timeline',
-    Icon: MdTimeline,
-    View: TimelineView,
-    env: Env.Desktop,
-  },
-  {
     name: 'typography',
     title: 'typography',
     Icon: RiFontSize,
@@ -147,6 +104,10 @@ interface EnvActionBarProps extends ComponentProps<'div'> {
 function ViewActionBar({ className, env }: EnvActionBarProps) {
   const [action, setAction] = useAction()
   const t = useTranslation()
+
+  useEffect(() => {
+    setAction('typography')
+  }, [setAction])
 
   return (
     <ActionBar className={className}>
