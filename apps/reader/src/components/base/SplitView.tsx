@@ -117,7 +117,9 @@ export const SplitView = ({
           {childList.reduce((a, c, i) => (
             <>
               {a}
-              <Sash vertical={vertical} views={[views[i - 1], views[i]]} />
+              {/* 
+                <Sash vertical={vertical} views={[views[i - 1], views[i]]} />
+              */}
               {c}
             </>
           ))}

@@ -19,7 +19,7 @@ import { reader, useReaderSnapshot } from '../models'
 import { navbarState } from '../state'
 import { activeClass } from '../styles'
 
-import { SplitView, useSplitViewItem } from './base'
+import { useSplitViewItem } from './base'
 import { Settings } from './pages'
 import { TypographyView } from './viewlets/TypographyView'
 
@@ -37,15 +37,13 @@ export const Layout: React.FC = ({ children }) => {
   }, [mobile, setAction])
 
   return (
-    <div id="layout" className="select-none">
-      <SplitView>
-        {/*
+    <div id="layout" className="flex select-none flex-row">
+      {/*
         {mobile === false && <ActivityBar />}
         {mobile === true && <NavigationBar />}
         */}
-        {ready && <SideBar />}
-        {ready && <Reader>{children}</Reader>}
-      </SplitView>
+      {ready && <SideBar />}
+      {ready && <Reader>{children}</Reader>}
     </div>
   )
 }
@@ -124,24 +122,6 @@ function PageActionBar({ env }: EnvActionBarProps) {
   )
 }
 
-function NavigationBar() {
-  const [visible, setVisible] = useRecoilState(navbarState)
-
-  return (
-    <>
-      {visible && (
-        <Overlay
-          className="!bg-transparent"
-          onClick={() => setVisible(false)}
-        />
-      )}
-      <div className="NavigationBar bg-surface border-surface-variant fixed inset-x-0 bottom-0 z-10 border-t">
-        <PageActionBar env={Env.Mobile} />
-      </div>
-    </>
-  )
-}
-
 interface ActionBarProps extends ComponentProps<'ul'> {}
 function ActionBar({ className, ...props }: ActionBarProps) {
   return (
@@ -186,8 +166,8 @@ const SideBar: React.FC = () => {
   const mobile = useMobile()
 
   const { size } = useSplitViewItem(SideBar, {
-    preferredSize: 240,
-    minSize: 160,
+    preferredSize: 400,
+    minSize: 400,
     visible: !!action,
   })
 
