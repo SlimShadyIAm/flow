@@ -46,7 +46,8 @@ interface ThemeConfiguration {
 }
 
 export const defaultSettings: Settings = {
-  spread: RenditionSpread.None
+  spread: RenditionSpread.None,
+  fontFamily: 'Garamond',
 }
 
 const settingsState = atom<Settings>({

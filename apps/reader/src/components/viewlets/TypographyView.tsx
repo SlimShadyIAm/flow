@@ -1,40 +1,27 @@
 import clsx from 'clsx'
-import { ComponentProps, useCallback, useRef, useState } from 'react'
+import { ComponentProps, useCallback, useRef } from 'react'
 import { MdAdd, MdRemove } from 'react-icons/md'
 
 import { range } from '@flow/internal'
 import {
   useBackground,
   useColorScheme,
-  useSourceColor,
   useTranslation,
 } from '@flow/reader/hooks'
 import { reader, useReaderSnapshot } from '@flow/reader/models'
-import {
-  defaultSettings,
-  TypographyConfiguration,
-  useSettings,
-} from '@flow/reader/state'
-import { keys } from '@flow/reader/utils'
+import { defaultSettings, TypographyConfiguration } from '@flow/reader/state'
 
-import { ColorPicker, Label, Select, TextField, TextFieldProps } from '../Form'
-import { PaneViewProps, PaneView } from '../base'
+import { Label, TextField, TextFieldProps } from '../Form'
+import { PaneViewProps } from '../base'
 
-enum TypographyScope {
-  Book,
-  Global,
-}
-
-const typefaces = ['default', 'sans-serif', 'serif', 'Georgia']
-
-export const TypographyView: React.FC<PaneViewProps> = (props) => {
+export const TypographyView: React.FC<PaneViewProps> = () => {
   const { focusedBookTab } = useReaderSnapshot()
   const { setScheme } = useColorScheme()
   const [, setBackground] = useBackground()
   const t_theme = useTranslation('theme')
   const t_typography = useTranslation('typography')
 
-  const { fontFamily, fontSize, fontWeight, lineHeight } =
+  const { fontSize, fontWeight } =
     focusedBookTab?.book.configuration?.typography ?? defaultSettings
 
   const setTypography = useCallback(
@@ -57,23 +44,11 @@ export const TypographyView: React.FC<PaneViewProps> = (props) => {
 
   return (
     <div className="flex flex-col gap-2 p-4">
-      <Select
-        name={t_typography('font_family')}
-        value={fontFamily}
-        onChange={(e) => {
-          setTypography('fontFamily', e.target.value)
-        }}
-      >
-        {typefaces.map((t) => (
-          <option key={t} value={t} style={{ fontFamily: t }}>
-            {t}
-          </option>
-        ))}
-      </Select>
       <NumberField
         name={t_typography('font_size')}
         min={14}
         max={28}
+        step={4}
         defaultValue={fontSize && parseInt(fontSize)}
         onChange={(v) => {
           setTypography('fontSize', v ? v + 'px' : undefined)
@@ -81,21 +56,12 @@ export const TypographyView: React.FC<PaneViewProps> = (props) => {
       />
       <NumberField
         name={t_typography('font_weight')}
-        min={100}
-        max={900}
-        step={100}
+        min={400}
+        max={700}
+        step={300}
         defaultValue={fontWeight}
         onChange={(v) => {
           setTypography('fontWeight', v || undefined)
-        }}
-      />
-      <NumberField
-        name={t_typography('line_height')}
-        min={1}
-        step={0.1}
-        defaultValue={lineHeight}
-        onChange={(v) => {
-          setTypography('lineHeight', v || undefined)
         }}
       />
       <div>
