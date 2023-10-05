@@ -44,6 +44,8 @@ export const TypographyView: React.FC<PaneViewProps> = () => {
 
   return (
     <div className="flex flex-col gap-2 p-4">
+      <button onClick={() => setTypography('marginSize', 'small')}>small</button>
+      <button onClick={() => setTypography('marginSize', 'large')}>large</button>
       <NumberField
         name={t_typography('font_size')}
         min={14}

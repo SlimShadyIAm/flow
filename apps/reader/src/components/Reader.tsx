@@ -1,11 +1,6 @@
 import { useEventListener } from '@literal-ui/hooks'
 import clsx from 'clsx'
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { PhotoSlider } from 'react-photo-view'
 import useTilg from 'tilg'
 import { useSnapshot } from 'valtio'
@@ -28,6 +23,7 @@ import { updateCustomStyle } from '../styles'
 
 import { DropZone, SplitView } from './base'
 import * as pages from './pages'
+import { defaultSettings } from '../state'
 
 function handleKeyDown(tab?: BookTab) {
   return (e: KeyboardEvent) => {
@@ -57,11 +53,16 @@ interface NaviagtionButtonProps {
 
 export function NavigationButton(props: NaviagtionButtonProps) {
   const { direction, onClick } = props
+  const { focusedBookTab } = useReaderSnapshot()
+  const { marginSize } =
+    focusedBookTab?.book.configuration?.typography ?? defaultSettings
 
   return (
     <div
       onClick={onClick}
-      className="flex h-full w-24 items-center justify-center bg-black"
+      className={`flex h-full ${
+        marginSize === 'small' ? 'w-48' : 'w-96'
+      } items-center justify-center bg-black`}
       role="button"
     >
       {direction === 'next' ? 'Next' : 'Previous'}
@@ -289,4 +290,3 @@ function BookPane({ tab }: BookPaneProps) {
     </div>
   )
 }
-
