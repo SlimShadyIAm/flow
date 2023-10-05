@@ -27,7 +27,7 @@ import { BookTab, reader, useReaderSnapshot } from '../models'
 import { isTouchScreen } from '../platform'
 import { updateCustomStyle } from '../styles'
 
-import { DropZone, SplitView, useSplitViewItem } from './base'
+import { DropZone, SplitView } from './base'
 import * as pages from './pages'
 
 function handleKeyDown(tab?: BookTab) {
@@ -51,6 +51,25 @@ function handleKeyDown(tab?: BookTab) {
   }
 }
 
+interface NaviagtionButtonProps {
+  direction: 'next' | 'prev'
+  onClick: () => void
+}
+
+export function NavigationButton(props: NaviagtionButtonProps) {
+  const { direction, onClick } = props
+  
+  return (
+    <div
+      onClick={onClick}
+      className="flex h-full w-24 items-center justify-center bg-black"
+      role="button"
+    >
+      {direction === 'next' ? 'Next' : 'Previous'}
+    </div>
+  )
+}
+
 export function ReaderGridView() {
   const { groups } = useReaderSnapshot()
 
@@ -59,9 +78,17 @@ export function ReaderGridView() {
   if (!groups.length) return null
   return (
     <SplitView className={clsx('ReaderGridView')}>
+      <NavigationButton
+        direction="prev"
+        onClick={() => reader.focusedBookTab?.prev()}
+      />
       {groups.map(({ id }, i) => (
         <ReaderGroup key={id} index={i} />
       ))}
+      <NavigationButton
+        direction="next"
+        onClick={() => reader.focusedBookTab?.next()}
+      />
     </SplitView>
   )
 }
@@ -73,11 +100,6 @@ function ReaderGroup({ index }: ReaderGroupProps) {
   const group = reader.groups[index]!
   const { selectedIndex } = useSnapshot(group)
 
-  const { size } = useSplitViewItem(`${ReaderGroup.name}.${index}`, {
-    // to disable sash resize
-    visible: false,
-  })
-
   const handleMouseDown = useCallback(() => {
     reader.selectGroup(index)
   }, [index])
@@ -86,7 +108,6 @@ function ReaderGroup({ index }: ReaderGroupProps) {
     <div
       className="ReaderGroup flex flex-1 flex-col overflow-hidden focus:outline-none"
       onMouseDown={handleMouseDown}
-      style={{ width: size }}
     >
       <DropZone
         className={clsx('flex-1', isTouchScreen || 'h-0')}
