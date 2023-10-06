@@ -7,8 +7,6 @@ import { RiHome6Line, RiSettings5Line } from 'react-icons/ri'
 import {
   Env,
   useAction,
-  useBackground,
-  useColorScheme,
   useMobile,
   useSetAction,
   useTranslation,
@@ -19,6 +17,7 @@ import { activeClass } from '../styles'
 import { useSplitViewItem } from './base'
 import { Settings } from './pages'
 import { TypographyView } from './viewlets/TypographyView'
+import { useColorSchemeColors, bgColors, textColors, } from '../color'
 
 export const Layout: React.FC = ({ children }) => {
   const [ready, setReady] = useState(false)
@@ -47,16 +46,21 @@ export default function TitleBar() {
   const readMode = r.focusedTab?.isBook
   const bookTitle = r.focusedBookTab?.book.metadata.title
   const bookAuthor = r.focusedBookTab?.book.metadata.creator
-  const { scheme } = useColorScheme()
+
+  const bgBorder = useColorSchemeColors({
+    sepia: 'border-b-black',
+    dark: 'border-b-slate-200',
+    light: 'border-b-black',
+  });
 
   if (!readMode) return null
   return (
     <div
       className={clsx(
         'border-b-[1px] p-3 text-center',
-        scheme === 'dark' && 'bg-foregroundDark border-b-slate-200 text-white',
-        scheme === 'sepia' && 'border-b-black bg-amber-100 text-black',
-        scheme === 'light' && 'border-b-black bg-neutral-50 text-black',
+        bgBorder,
+        bgColors,
+        textColors,
       )}
     >
       {bookTitle} - {bookAuthor}
@@ -138,7 +142,7 @@ function PageActionBar({ env }: EnvActionBarProps) {
   )
 }
 
-interface ActionBarProps extends ComponentProps<'ul'> {}
+interface ActionBarProps extends ComponentProps<'ul'> { }
 function ActionBar({ className, ...props }: ActionBarProps) {
   return (
     <ul className={clsx('ActionBar flex sm:flex-col', className)} {...props} />
@@ -180,7 +184,6 @@ const Action: React.FC<ActionProps> = ({
 const SideBar: React.FC = () => {
   const [action] = useAction()
   const mobile = useMobile()
-  const { scheme } = useColorScheme()
 
   const { size } = useSplitViewItem(SideBar, {
     preferredSize: 320,
@@ -195,9 +198,7 @@ const SideBar: React.FC = () => {
           'SideBar face flex flex-col',
           !action && '!hidden',
           mobile ? 'absolute inset-y-0 right-0 z-10' : '',
-          scheme === 'light' && 'bg-neutral-50',
-          scheme === 'sepia' && 'bg-amber-100',
-          scheme === 'dark' && 'bg-backgroundDark',
+          bgColors
         )}
         style={{ width: mobile ? '75%' : size }}
       >
@@ -207,11 +208,9 @@ const SideBar: React.FC = () => {
   )
 }
 
-interface ReaderProps extends ComponentProps<'div'> {}
+interface ReaderProps extends ComponentProps<'div'> { }
 const Reader: React.FC = ({ className, ...props }: ReaderProps) => {
   useSplitViewItem(Reader)
-  const [bg] = useBackground()
-  const { scheme } = useColorScheme()
 
   const r = useReaderSnapshot()
   const readMode = r.focusedTab?.isBook
@@ -221,9 +220,6 @@ const Reader: React.FC = ({ className, ...props }: ReaderProps) => {
       className={clsx(
         'Reader flex-1 overflow-hidden',
         readMode || 'mb-12 px-4 sm:mb-0',
-        scheme === 'sepia' && bg,
-        scheme === 'dark' && (readMode ? 'bg-backgroundDark' : 'bg-zinc-900'),
-        scheme === 'light' && bg,
       )}
       {...props}
     />

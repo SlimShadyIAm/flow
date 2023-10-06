@@ -29,7 +29,7 @@ export function compositeColors(color1: number, color2: number, p: number) {
   )
 }
 
-export const useColorschemeColors = ({
+export const useColorSchemeColors = ({
   sepia,
   dark,
   light,
@@ -38,6 +38,20 @@ export const useColorschemeColors = ({
   dark: string
   light: string
 }) => {
-  const { scheme } = useColorScheme()
+  const { scheme } = useColorScheme();
   return scheme === 'dark' ? dark : scheme === 'sepia' ? sepia : light
 }
+
+const textC = useColorSchemeColors({
+  sepia: 'text-text-sepia',
+  dark: 'text-text-dark',
+  light: 'text-text-light',
+});
+
+const bgColors = useColorSchemeColors({
+  sepia: 'bg-background-sepia',
+  dark: 'bg-background-dark',
+  light: 'bg-background-light',
+});
+
+export const textColors = textC;
