@@ -3,7 +3,12 @@ module.exports = {
   darkMode: 'class',
   content: ['./src/**/*.{tsx,ts}', './node_modules/@literal-ui/core/**/*.js'],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        foregroundDark: "#020204",
+        "backgroundDark": "#030711"
+      }
+    },
     container: {
       center: true,
       padding: '1rem',

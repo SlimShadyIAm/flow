@@ -33,7 +33,7 @@ function camelToSnake(s: string) {
 }
 
 function generateCss(theme: Theme) {
-  const tones = range(4).map((i) => (i + 5) * 10)
+  const tones = range(2).map((i) => (i + 5) * 10)
   const generateRef = () => {
     return Object.entries(theme.palettes)
       .flatMap(([k, palette]) =>

@@ -67,6 +67,7 @@ function GoogleTagManagerNoScript() {
 
 const background = {
   light: 'white',
+  sepia: '#fbf8ef',
   dark: '#24292e',
 }
 
@@ -90,6 +91,9 @@ function PreventFlash() {
       <style>{`
         .bg-default, .hover\\:bg-default:hover {
           background: ${background.light};
+        }
+        .sepia.bg-default, .sepia .bg-default, .sepia .hover\\:bg-default:hover {
+          background: ${background.dark};
         }
         .dark.bg-default, .dark .bg-default, .dark .hover\\:bg-default:hover {
           background: ${background.dark};

@@ -381,7 +381,7 @@ const Book: React.FC<BookProps> = ({
   const Icon = selected ? MdCheckBox : MdCheckBoxOutlineBlank
 
   return (
-    <div className="relative flex flex-col">
+    <div className="relative flex flex-col px-2">
       <div
         role="button"
         className="border-inverse-on-surface relative border"

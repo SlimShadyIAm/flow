@@ -18,7 +18,6 @@ export const TypographyView: React.FC<PaneViewProps> = () => {
   const { focusedBookTab } = useReaderSnapshot()
   const { setScheme } = useColorScheme()
   const [, setBackground] = useBackground()
-  const t_theme = useTranslation('theme')
   const t_typography = useTranslation('typography')
 
   const { fontSize, fontWeight } =
@@ -43,9 +42,13 @@ export const TypographyView: React.FC<PaneViewProps> = () => {
   )
 
   return (
-    <div className="flex flex-col gap-2 p-4">
-      <button onClick={() => setTypography('marginSize', 'small')}>small</button>
-      <button onClick={() => setTypography('marginSize', 'large')}>large</button>
+    <div className="flex flex-col gap-4 p-4">
+      <button onClick={() => setTypography('marginSize', 'small')}>
+        small
+      </button>
+      <button onClick={() => setTypography('marginSize', 'large')}>
+        large
+      </button>
       <NumberField
         name={t_typography('font_size')}
         min={14}
@@ -67,21 +70,20 @@ export const TypographyView: React.FC<PaneViewProps> = () => {
         }}
       />
       <div>
-        <Label name={t_theme('background_color')}></Label>
+        <Label name="Theme"></Label>
         <div className="flex gap-2">
-          {range(7)
-            .filter((i) => !(i % 2))
-            .map((i) => i - 1)
-            .map((i) => (
-              <Background
-                key={i}
-                className={i > 0 ? `bg-surface${i}` : 'bg-white'}
-                onClick={() => {
-                  setScheme('light')
-                  setBackground(i)
-                }}
-              />
-            ))}
+          <Background
+            className={'bg-white'}
+            onClick={() => {
+              setScheme('light')
+            }}
+          />
+          <Background
+            className="bg-yellow-100"
+            onClick={() => {
+              setScheme('sepia')
+            }}
+          />
           <Background
             className="bg-black"
             onClick={() => {

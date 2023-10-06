@@ -2,7 +2,7 @@ import { useMediaQuery } from '@literal-ui/hooks'
 import { useEffect } from 'react'
 import useLocalStorageState from 'use-local-storage-state'
 
-export type ColorScheme = 'light' | 'dark' | 'system'
+export type ColorScheme = 'light' | 'dark' | 'system' | 'sepia'
 
 export function useColorScheme() {
   const [scheme, setScheme] = useLocalStorageState<ColorScheme>(

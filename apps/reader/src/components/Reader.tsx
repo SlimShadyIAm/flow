@@ -57,13 +57,16 @@ export function NavigationButton(props: NaviagtionButtonProps) {
   const { focusedBookTab } = useReaderSnapshot()
   const { marginSize } =
     focusedBookTab?.book.configuration?.typography ?? defaultSettings
+  const { scheme } = useColorScheme()
 
   return (
     <div
       onClick={onClick}
-      className={`flex h-full ${
-        marginSize === 'small' ? 'w-48' : 'w-72'
-      } items-center justify-center bg-black`}
+      className={clsx(
+        'flex h-full items-center justify-center',
+        marginSize === 'small' ? 'w-32' : 'w-52',
+        scheme === 'dark' ? 'bg-zinc-700' : 'bg-zinc-200',
+      )}
       role="button"
     >
       {direction === 'next' ? <RightArrow /> : <LeftArrow />}
@@ -73,7 +76,6 @@ export function NavigationButton(props: NaviagtionButtonProps) {
 
 export function ReaderGridView() {
   const { groups } = useReaderSnapshot()
-
   useEventListener('keydown', handleKeyDown(reader.focusedBookTab))
 
   if (!groups.length) return null
@@ -100,6 +102,8 @@ interface ReaderGroupProps {
 function ReaderGroup({ index }: ReaderGroupProps) {
   const group = reader.groups[index]!
   const { selectedIndex } = useSnapshot(group)
+  const [bg] = useBackground()
+  const { scheme } = useColorScheme()
 
   const handleMouseDown = useCallback(() => {
     reader.selectGroup(index)
@@ -107,7 +111,12 @@ function ReaderGroup({ index }: ReaderGroupProps) {
 
   return (
     <div
-      className="ReaderGroup flex flex-1 flex-col overflow-hidden focus:outline-none"
+      className={clsx(
+        'ReaderGroup flex flex-1 flex-col overflow-hidden focus:outline-none',
+        scheme === 'sepia' && 'bg-yellow-100',
+        scheme === 'dark' && 'bg-backgroundDark',
+        scheme === 'light' && bg,
+      )}
       onMouseDown={handleMouseDown}
     >
       <DropZone
