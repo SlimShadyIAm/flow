@@ -25,6 +25,7 @@ import { updateCustomStyle } from '../styles'
 import { LeftArrow, RightArrow } from './Icons'
 import { DropZone, SplitView } from './base'
 import * as pages from './pages'
+import { useColorschemeColors } from '../color'
 
 function handleKeyDown(tab?: BookTab) {
   return (e: KeyboardEvent) => {
@@ -57,26 +58,33 @@ export function NavigationButton(props: NaviagtionButtonProps) {
   const { focusedBookTab } = useReaderSnapshot()
   const { marginSize } =
     focusedBookTab?.book.configuration?.typography ?? defaultSettings
-  const { scheme } = useColorScheme()
+
+  const pageTurnClasses = useColorschemeColors({
+    sepia: 'bg-pageTurning-sepia',
+    dark: 'bg-pageTurning-dark',
+    light: 'bg-pageTurning-light',
+  })
+
+  const arrowColors = useColorschemeColors({
+    sepia: 'fill-border-sepia',
+    dark: 'fill-border-dark',
+    light: 'fill-border-light',
+  })
 
   return (
     <div
       onClick={onClick}
       className={clsx(
-        'flex h-full items-center justify-center',
+        'flex h-full items-center justify-center transition-all',
         marginSize === 'small' ? 'w-32' : 'w-52',
-        scheme === 'dark' && 'bg-zinc-700', scheme === 'sepia' && 'bg-amber-200', scheme === 'light' && 'bg-gray-300'
+        pageTurnClasses,
       )}
       role="button"
     >
       {direction === 'next' ? (
-        <RightArrow
-          className={clsx(scheme === 'dark' && 'fill-highlighterYellow', scheme === 'sepia' && 'fill-blue-700', scheme === 'light' && 'fill-purple-700')}
-        />
+        <RightArrow className={arrowColors} />
       ) : (
-        <LeftArrow
-          className={clsx(scheme === 'dark' && 'fill-highlighterYellow', scheme === 'sepia' && 'fill-blue-700', scheme === 'light' && 'fill-purple-700')}
-        />
+        <LeftArrow className={arrowColors} />
       )}
     </div>
   )
