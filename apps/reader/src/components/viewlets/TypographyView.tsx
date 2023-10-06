@@ -2,22 +2,15 @@ import clsx from 'clsx'
 import { ComponentProps, useCallback, useRef } from 'react'
 import { MdAdd, MdRemove } from 'react-icons/md'
 
-import { range } from '@flow/internal'
-import {
-  useBackground,
-  useColorScheme,
-  useTranslation,
-} from '@flow/reader/hooks'
+import { useColorScheme, useTranslation } from '@flow/reader/hooks'
 import { reader, useReaderSnapshot } from '@flow/reader/models'
 import { defaultSettings, TypographyConfiguration } from '@flow/reader/state'
 
 import { Label, TextField, TextFieldProps } from '../Form'
-import { PaneViewProps } from '../base'
 
-export const TypographyView: React.FC<PaneViewProps> = () => {
+export const TypographyView = () => {
   const { focusedBookTab } = useReaderSnapshot()
   const { setScheme } = useColorScheme()
-  const [, setBackground] = useBackground()
   const t_typography = useTranslation('typography')
 
   const { fontSize, fontWeight } =

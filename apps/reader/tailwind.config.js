@@ -6,7 +6,8 @@ module.exports = {
     extend: {
       colors: {
         foregroundDark: "#020204",
-        "backgroundDark": "#030711"
+        backgroundDark: "#030711",
+        highlighterYellow: "#FFC700",
       }
     },
     container: {

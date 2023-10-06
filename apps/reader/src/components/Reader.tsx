@@ -19,12 +19,12 @@ import {
 } from '../hooks'
 import { BookTab, reader, useReaderSnapshot } from '../models'
 import { isTouchScreen } from '../platform'
+import { defaultSettings } from '../state'
 import { updateCustomStyle } from '../styles'
 
+import { LeftArrow, RightArrow } from './Icons'
 import { DropZone, SplitView } from './base'
 import * as pages from './pages'
-import { defaultSettings } from '../state'
-import { LeftArrow, RightArrow } from './Icons'
 
 function handleKeyDown(tab?: BookTab) {
   return (e: KeyboardEvent) => {
@@ -65,11 +65,19 @@ export function NavigationButton(props: NaviagtionButtonProps) {
       className={clsx(
         'flex h-full items-center justify-center',
         marginSize === 'small' ? 'w-32' : 'w-52',
-        scheme === 'dark' ? 'bg-zinc-700' : 'bg-zinc-200',
+        scheme === 'dark' && 'bg-zinc-700', scheme === 'sepia' && 'bg-amber-200', scheme === 'light' && 'bg-gray-300'
       )}
       role="button"
     >
-      {direction === 'next' ? <RightArrow /> : <LeftArrow />}
+      {direction === 'next' ? (
+        <RightArrow
+          className={clsx(scheme === 'dark' && 'fill-highlighterYellow', scheme === 'sepia' && 'fill-blue-700', scheme === 'light' && 'fill-purple-700')}
+        />
+      ) : (
+        <LeftArrow
+          className={clsx(scheme === 'dark' && 'fill-highlighterYellow', scheme === 'sepia' && 'fill-blue-700', scheme === 'light' && 'fill-purple-700')}
+        />
+      )}
     </div>
   )
 }
