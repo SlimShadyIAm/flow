@@ -3,7 +3,6 @@ import Dexie, { Table } from 'dexie'
 
 import { PackagingMetadataObject } from '@flow/epubjs/types/packaging'
 
-import { Annotation } from './annotation'
 import { fileToEpub } from './file'
 import { TypographyConfiguration } from './state'
 
@@ -28,7 +27,6 @@ export interface BookRecord {
   cfi?: string
   percentage?: number
   definitions: string[]
-  annotations: Annotation[]
   configuration?: {
     typography?: TypographyConfiguration
   }

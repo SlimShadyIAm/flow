@@ -1,4 +1,3 @@
-export * from './Annotation'
 export * from './base'
 export * from './Button'
 export * from './ErrorBoundary'

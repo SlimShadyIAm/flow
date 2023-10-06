@@ -37,13 +37,30 @@ export const Layout: React.FC = ({ children }) => {
   }, [mobile, setAction])
 
   return (
-    <div id="layout" className="flex select-none flex-row">
-      {/*
+    <div className="flex h-full flex-col">
+      <TitleBar />
+      <div id="layout" className="flex select-none flex-row">
+        {/*
         {mobile === false && <ActivityBar />}
         {mobile === true && <NavigationBar />}
         */}
-      {ready && <SideBar />}
-      {ready && <Reader>{children}</Reader>}
+        {ready && <SideBar />}
+        {ready && <Reader>{children}</Reader>}
+      </div>
+    </div>
+  )
+}
+
+export default function TitleBar() {
+  const r = useReaderSnapshot()
+  const readMode = r.focusedTab?.isBook
+  const bookTitle = r.focusedBookTab?.book.metadata.title
+  const bookAuthor = r.focusedBookTab?.book.metadata.creator
+
+  if (!readMode) return null
+  return (
+    <div className="p-3 text-center">
+      {bookTitle} - {bookAuthor}
     </div>
   )
 }
@@ -166,8 +183,8 @@ const SideBar: React.FC = () => {
   const mobile = useMobile()
 
   const { size } = useSplitViewItem(SideBar, {
-    preferredSize: 400,
-    minSize: 400,
+    preferredSize: 320,
+    minSize: 320,
     visible: !!action,
   })
 

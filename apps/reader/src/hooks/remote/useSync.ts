@@ -1,7 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { useSnapshot } from 'valtio'
 
-import { Annotation } from '@flow/reader/annotation'
 import { BookRecord } from '@flow/reader/db'
 import { BookTab } from '@flow/reader/models'
 import { uploadData } from '@flow/reader/sync'
@@ -52,11 +51,6 @@ export function useSync(tab: BookTab) {
     })
   }, [book.definitions, sync])
 
-  useEffect(() => {
-    sync({
-      annotations: book.annotations as Annotation[],
-    })
-  }, [book.annotations, sync])
 
   useEffect(() => {
     sync({

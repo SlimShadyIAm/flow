@@ -24,6 +24,7 @@ import { updateCustomStyle } from '../styles'
 import { DropZone, SplitView } from './base'
 import * as pages from './pages'
 import { defaultSettings } from '../state'
+import { LeftArrow, RightArrow } from './Icons'
 
 function handleKeyDown(tab?: BookTab) {
   return (e: KeyboardEvent) => {
@@ -61,11 +62,11 @@ export function NavigationButton(props: NaviagtionButtonProps) {
     <div
       onClick={onClick}
       className={`flex h-full ${
-        marginSize === 'small' ? 'w-48' : 'w-96'
+        marginSize === 'small' ? 'w-48' : 'w-72'
       } items-center justify-center bg-black`}
       role="button"
     >
-      {direction === 'next' ? 'Next' : 'Previous'}
+      {direction === 'next' ? <RightArrow /> : <LeftArrow />}
     </div>
   )
 }

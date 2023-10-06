@@ -1,6 +1,5 @@
 import EventEmitter from 'event-emitter'
 
-import Annotations from './annotations'
 import Contents from './contents'
 import EpubCFI from './epubcfi'
 import Layout from './layout'
@@ -104,12 +103,6 @@ class Rendition {
      * @memberof Rendition
      */
     this.themes = new Themes(this)
-
-    /**
-     * @member {Annotations} annotations
-     * @memberof Rendition
-     */
-    this.annotations = new Annotations(this)
 
     this.epubcfi = new EpubCFI()
 
