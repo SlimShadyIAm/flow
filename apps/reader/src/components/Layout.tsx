@@ -57,7 +57,7 @@ export default function TitleBar() {
     <div
       className={clsx(
         'p-3 text-center',
-        scheme === 'dark' ? 'bg-foregroundDark text-white border-b-slate-200 border-b-[0.5px]' : 'bg-gray-100 text-black',
+        scheme === 'dark' ? 'bg-foregroundDark text-white border-b-[1px] border-b-slate-200': 'bg-gray-100 text-black',
       )}
     >
       {bookTitle} - {bookAuthor}
@@ -197,6 +197,7 @@ const SideBar: React.FC = () => {
           !action && '!hidden',
           mobile ? 'absolute inset-y-0 right-0 z-10' : '',
           scheme === 'sepia' && 'bg-neutral-50',
+          scheme === 'dark' && 'bg-backgroundDark'
         )}
         style={{ width: mobile ? '75%' : size }}
       >
@@ -221,7 +222,7 @@ const Reader: React.FC = ({ className, ...props }: ReaderProps) => {
         'Reader flex-1 overflow-hidden',
         readMode || 'mb-12 sm:mb-0 px-4',
         scheme === 'sepia' && bg,
-        scheme === 'dark' && 'bg-backgroundDark',
+        scheme === 'dark' && (readMode ? 'bg-backgroundDark' : 'bg-zinc-900'),
         scheme === 'light' && bg,
       )}
       {...props}
