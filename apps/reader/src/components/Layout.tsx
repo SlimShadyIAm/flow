@@ -190,6 +190,7 @@ const Action: React.FC<ActionProps> = ({
 const SideBar: React.FC = () => {
   const [action] = useAction()
   const mobile = useMobile()
+  const bgColors = useBgColors()
 
   const { size } = useSplitViewItem(SideBar, {
     preferredSize: 320,
@@ -204,7 +205,7 @@ const SideBar: React.FC = () => {
           'SideBar face flex flex-col transition',
           !action && '!hidden',
           mobile ? 'absolute inset-y-0 right-0 z-10' : '',
-          useBgColors,
+          bgColors,
         )}
         style={{ width: mobile ? '75%' : size }}
       >
