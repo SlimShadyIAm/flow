@@ -2,16 +2,15 @@ import { useMediaQuery } from '@literal-ui/hooks'
 import { useEffect } from 'react'
 import useLocalStorageState from 'use-local-storage-state'
 
-export type ColorScheme = 'light' | 'dark' | 'system' | 'sepia'
+export type ColorScheme = 'light' | 'dark' | 'sepia'
 
 export function useColorScheme() {
   const [scheme, setScheme] = useLocalStorageState<ColorScheme>(
     'literal-color-scheme',
-    { defaultValue: 'system' },
+    { defaultValue: 'dark' },
   )
 
-  const prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
-  const dark = scheme === 'dark' || (scheme === 'system' && prefersDark)
+  const dark = scheme === 'dark' 
 
   useEffect(() => {
     if (dark !== undefined) {
