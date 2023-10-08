@@ -29,7 +29,7 @@ export const useBgColors = () => {
   })
 }
 
-export const useArrowColors = () => {
+export const useIconColors = () => {
   return useColorSchemeColors({
     sepia: 'fill-border-sepia',
     dark: 'fill-border-dark',

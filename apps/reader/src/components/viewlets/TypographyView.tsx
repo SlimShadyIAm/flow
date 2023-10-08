@@ -1,21 +1,16 @@
 import clsx from 'clsx'
-import {
-  ComponentProps,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
 
 import { ColorScheme, useColorScheme, useTranslation } from '@flow/reader/hooks'
 import { reader, useReaderSnapshot } from '@flow/reader/models'
 import { defaultSettings, TypographyConfiguration } from '@flow/reader/state'
 
-import { useHighlightTextColors } from '../../hooks/useColors'
-import { Label } from '../Form'
+import { useHighlightTextColors, useIconColors } from '../../hooks/useColors'
+import { FontSizeIncrease } from '../Icons'
 
 export const TypographyView = () => {
   const t_typography = useTranslation('typography')
+  const iconColors = useIconColors()
 
   const setTypography = useCallback(
     <K extends keyof TypographyConfiguration>(
@@ -41,7 +36,7 @@ export const TypographyView = () => {
         property="fontSize"
         name={t_typography('font_size')}
         iconDown={<div>down</div>}
-        iconUp={<div>up</div>}
+        iconUp={<FontSizeIncrease className={iconColors} />}
         min={14}
         max={28}
         step={4}
@@ -121,7 +116,7 @@ const SettingsFieldNumber = ({
   const [value, setValue] = useState<number>(
     parseInt(
       (focusedBookTab?.book.configuration?.typography ?? defaultSettings)[
-        property
+      property
       ] as string,
     ),
   )
@@ -198,7 +193,7 @@ const SettingsFieldSelection = ({
   const { focusedBookTab } = useReaderSnapshot()
   const [value, setValue] = useState<string>(
     (focusedBookTab?.book.configuration?.typography ?? defaultSettings)[
-      property
+    property
     ] as string,
   )
 
@@ -232,10 +227,13 @@ interface SettingsButtonProps {
 }
 
 const SettingsButton = ({ icon, onClick, disabled }: SettingsButtonProps) => {
+  const { scheme } = useColorScheme()
   return (
     <button
       className={clsx(
-        'ring-border-dark flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
+        'ring-border-' +
+        scheme +
+        ' flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
         !disabled && 'hover:bg-border-dark/20',
         disabled && 'ring-border-dark/30',
       )}
@@ -258,12 +256,16 @@ const SettingsButtonToggle = ({
   onClick,
   selected,
 }: SettingsButtonToggleProps) => {
+  const { scheme } = useColorScheme();
   return (
     <button
       className={clsx(
-        'ring-border-dark flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
+        'ring-border-' + scheme + ' flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
         // !disabled && 'hover:bg-border-dark/20',
-        selected && 'bg-border-dark/30',
+        // selected && 'bg-border-dark/30',
+        selected && scheme === 'dark' && 'bg-border-dark/30',
+        selected && scheme === 'light' && 'bg-border-light/30',
+        selected && scheme === 'sepia' && 'bg-border-sepia/30'
       )}
       onClick={onClick}
     >
@@ -284,7 +286,15 @@ const ThemeButtons = () => {
       <div className="flex flex-[0.60] flex-row justify-end gap-8">
         {['light', 'sepia', 'dark'].map((value) => (
           <button
-            className={"ring-border-" + value + " bg-background-" + value + " text-text-" + value + " h-[56px] w-[56px] ring-4 rounded-sm text-2xl"}
+            className={
+              'ring-border-' +
+              value +
+              ' bg-background-' +
+              value +
+              ' text-text-' +
+              value +
+              ' h-[56px] w-[56px] rounded-sm text-[28px] ring-4'
+            }
             onClick={() => setScheme(value as ColorScheme)}
           >
             A
