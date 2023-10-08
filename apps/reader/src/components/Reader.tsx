@@ -17,6 +17,7 @@ import {
   useSync,
   useTypography,
 } from '../hooks'
+import { useColorSchemeColors } from '../hooks/useColors'
 import { BookTab, reader, useReaderSnapshot } from '../models'
 import { isTouchScreen } from '../platform'
 import { defaultSettings } from '../state'
@@ -25,7 +26,6 @@ import { updateCustomStyle } from '../styles'
 import { LeftArrow, RightArrow } from './Icons'
 import { DropZone, SplitView } from './base'
 import * as pages from './pages'
-import { useColorSchemeColors } from '../color'
 
 function handleKeyDown(tab?: BookTab) {
   return (e: KeyboardEvent) => {
