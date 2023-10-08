@@ -6,7 +6,14 @@ import { reader, useReaderSnapshot } from '@flow/reader/models'
 import { defaultSettings, TypographyConfiguration } from '@flow/reader/state'
 
 import { useHighlightTextColors, useIconColors } from '../../hooks/useColors'
-import { FontSizeIncrease } from '../Icons'
+import {
+  FontSizeDecrease,
+  FontSizeIncrease,
+  FontWeightDecrease,
+  FontWeightIncrease,
+  MarginDecrease,
+  MarginIncrease,
+} from '../Icons'
 
 export const TypographyView = () => {
   const t_typography = useTranslation('typography')
@@ -35,7 +42,7 @@ export const TypographyView = () => {
       <SettingsFieldNumber
         property="fontSize"
         name={t_typography('font_size')}
-        iconDown={<div>down</div>}
+        iconDown={<FontSizeDecrease className={iconColors} />}
         iconUp={<FontSizeIncrease className={iconColors} />}
         min={14}
         max={28}
@@ -47,8 +54,8 @@ export const TypographyView = () => {
       <SettingsFieldNumber
         property="fontWeight"
         name={t_typography('font_weight')}
-        iconDown={<div>hey</div>}
-        iconUp={<div>up</div>}
+        iconDown={<FontWeightDecrease className={iconColors} />}
+        iconUp={<FontWeightIncrease className={iconColors} />}
         min={400}
         max={700}
         step={300}
@@ -61,13 +68,13 @@ export const TypographyView = () => {
         property="marginSize"
         options={[
           {
-            icon: <div>small</div>,
+            icon: <MarginDecrease />,
             onClick: () => setTypography('marginSize', 'small'),
             value: 'small',
             property: 'marginSize',
           },
           {
-            icon: <div>large</div>,
+            icon: <MarginIncrease />,
             onClick: () => setTypography('marginSize', 'large'),
             value: 'large',
             property: 'marginSize',
@@ -116,7 +123,7 @@ const SettingsFieldNumber = ({
   const [value, setValue] = useState<number>(
     parseInt(
       (focusedBookTab?.book.configuration?.typography ?? defaultSettings)[
-      property
+        property
       ] as string,
     ),
   )
@@ -193,7 +200,7 @@ const SettingsFieldSelection = ({
   const { focusedBookTab } = useReaderSnapshot()
   const [value, setValue] = useState<string>(
     (focusedBookTab?.book.configuration?.typography ?? defaultSettings)[
-    property
+      property
     ] as string,
   )
 
@@ -232,8 +239,8 @@ const SettingsButton = ({ icon, onClick, disabled }: SettingsButtonProps) => {
     <button
       className={clsx(
         'ring-border-' +
-        scheme +
-        ' flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
+          scheme +
+          ' flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
         !disabled && 'hover:bg-border-dark/20',
         disabled && 'ring-border-dark/30',
       )}
@@ -256,16 +263,18 @@ const SettingsButtonToggle = ({
   onClick,
   selected,
 }: SettingsButtonToggleProps) => {
-  const { scheme } = useColorScheme();
+  const { scheme } = useColorScheme()
   return (
     <button
       className={clsx(
-        'ring-border-' + scheme + ' flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
+        'ring-border-' +
+          scheme +
+          ' flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
         // !disabled && 'hover:bg-border-dark/20',
         // selected && 'bg-border-dark/30',
         selected && scheme === 'dark' && 'bg-border-dark/30',
         selected && scheme === 'light' && 'bg-border-light/30',
-        selected && scheme === 'sepia' && 'bg-border-sepia/30'
+        selected && scheme === 'sepia' && 'bg-border-sepia/30',
       )}
       onClick={onClick}
     >
