@@ -32,7 +32,7 @@ export const Layout: React.FC = ({ children }) => {
   }, [mobile, setAction])
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col transition-colors">
       <TitleBar />
       <div id="layout" className="flex select-none flex-row">
         {ready && <SideBar />}
@@ -192,7 +192,7 @@ const SideBar: React.FC = () => {
     <>
       <div
         className={clsx(
-          'SideBar face flex flex-col',
+          'SideBar face flex flex-col transition',
           !action && '!hidden',
           mobile ? 'absolute inset-y-0 right-0 z-10' : '',
           scheme === 'light' && 'bg-neutral-50',
