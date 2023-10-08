@@ -1,21 +1,22 @@
 import clsx from 'clsx'
-import { ComponentProps, useCallback, useRef } from 'react'
-import { MdAdd, MdRemove } from 'react-icons/md'
+import {
+  ComponentProps,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 
 import { useColorScheme, useTranslation } from '@flow/reader/hooks'
 import { reader, useReaderSnapshot } from '@flow/reader/models'
 import { defaultSettings, TypographyConfiguration } from '@flow/reader/state'
 
 import { useHighlightTextColors } from '../../hooks/useColors'
-import { Label, TextField, TextFieldProps } from '../Form'
+import { Label } from '../Form'
 
 export const TypographyView = () => {
-  const { focusedBookTab } = useReaderSnapshot()
   const { setScheme } = useColorScheme()
   const t_typography = useTranslation('typography')
-
-  const { fontSize, fontWeight } =
-    focusedBookTab?.book.configuration?.typography ?? defaultSettings
 
   const setTypography = useCallback(
     <K extends keyof TypographyConfiguration>(
@@ -37,149 +38,222 @@ export const TypographyView = () => {
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <button onClick={() => setTypography('marginSize', 'small')}>
-        small
-      </button>
-      <button onClick={() => setTypography('marginSize', 'large')}>
-        large
-      </button>
-      <NumberField
+      <SettingsFieldNumber
+        property="fontSize"
         name={t_typography('font_size')}
+        iconDown={<div>hey</div>}
+        iconUp={<div>up</div>}
         min={14}
         max={28}
         step={4}
-        defaultValue={fontSize && parseInt(fontSize)}
         onChange={(v) => {
           setTypography('fontSize', v ? v + 'px' : undefined)
         }}
       />
-      <NumberField
+      <SettingsFieldNumber
+        property="fontWeight"
         name={t_typography('font_weight')}
+        iconDown={<div>hey</div>}
+        iconUp={<div>up</div>}
         min={400}
         max={700}
         step={300}
-        defaultValue={fontWeight}
         onChange={(v) => {
           setTypography('fontWeight', v || undefined)
         }}
       />
+      <SettingsFieldSelection
+        name={t_typography('margin_size')}
+        property="marginSize"
+        options={[
+          {
+            icon: <div>small</div>,
+            onClick: () => setTypography('marginSize', 'small'),
+            value: 'small',
+            property: 'marginSize',
+          },
+          {
+            icon: <div>large</div>,
+            onClick: () => setTypography('marginSize', 'large'),
+            value: 'large',
+            property: 'marginSize',
+          },
+        ]}
+      />
       <div>
         <Label name="Theme"></Label>
         <div className="flex gap-2">
+          {/*
           <Background
             className={'bg-white'}
             onClick={() => {
               setScheme('light')
             }}
           />
-          <Background
-            className="bg-yellow-100"
-            onClick={() => {
-              setScheme('sepia')
-            }}
-          />
-          <Background
-            className="bg-black"
-            onClick={() => {
-              setScheme('dark')
-            }}
-          />
+          */}
         </div>
       </div>
     </div>
   )
 }
 
-interface NumberFieldProps extends Omit<TextFieldProps<'input'>, 'onChange'> {
+interface SettingsFieldNumberProps {
+  property: keyof TypographyConfiguration
+  name: string
+  iconDown: ReactNode
+  iconUp: ReactNode
+  min: number
+  max: number
+  step: number
   onChange: (v?: number) => void
 }
-const NumberField: React.FC<NumberFieldProps> = ({ onChange, ...props }) => {
-  const ref = useRef<HTMLInputElement>(null)
-  const t = useTranslation('action')
-  const highlightColor = useHighlightTextColors()
 
-  const stepDown = () => {
-    if (!ref.current) return
-    ref.current.stepDown()
-    onChange(Number(ref.current.value))
-  }
+const SettingsFieldNumber = ({
+  property,
+  name,
+  step,
+  min,
+  max,
+  iconDown: IconDown,
+  iconUp: IconUp,
+  onChange,
+}: SettingsFieldNumberProps) => {
+  const highlightColor = useHighlightTextColors()
+  const { focusedBookTab } = useReaderSnapshot()
+  const [value, setValue] = useState<number>(
+    parseInt(
+      (focusedBookTab?.book.configuration?.typography ?? defaultSettings)[
+        property
+      ] as string,
+    ),
+  )
+  const minDisabled = value - step < min
+  const maxDisabled = value + step > max
 
   const stepUp = () => {
-    if (!ref.current) return
-    ref.current.stepUp()
-    onChange(Number(ref.current.value))
+    if (!maxDisabled) {
+      setValue((value) => value + step)
+    }
   }
+
+  const stepDown = () => {
+    if (!minDisabled) {
+      setValue((value) => value - step)
+    }
+  }
+
+  useEffect(() => {
+    onChange(value)
+  }, [value])
 
   return (
     <div className="flex">
       <div className="flex-[0.40]">
-        <h2 className="text-lg font-semibold">{props.name}</h2>
+        <h2 className="text-lg font-semibold">{name}</h2>
         <h3 className={clsx('text-md font-semibold ', highlightColor)}>
-          {props.defaultValue}
+          {value}
         </h3>
       </div>
       <div className="flex flex-[0.60] flex-row justify-end gap-8">
-        <div
-          className="ring-border-dark hover:bg-border-dark/20 flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors"
-          role="button"
+        <SettingsButton
+          disabled={minDisabled}
+          icon={IconDown}
           onClick={stepDown}
-        >
-          hey
-        </div>
-        <div
-          className="ring-border-dark hover:bg-border-dark/20 flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors"
-          role="button"
-          onClick={stepUp}
-        >
-          hey
-        </div>
-        <TextField
-          className='hidden'
-          as="input"
-          type="number"
-          placeholder="default"
-          actions={[
-            {
-              title: t('step_down'),
-              Icon: MdRemove,
-              onClick: () => {
-                if (!ref.current) return
-                ref.current.stepDown()
-                onChange(Number(ref.current.value))
-              },
-            },
-            {
-              title: t('step_up'),
-              Icon: MdAdd,
-              onClick: () => {
-                if (!ref.current) return
-                ref.current.stepUp()
-                onChange(Number(ref.current.value))
-              },
-            },
-          ]}
-          mRef={ref}
-          // lazy render
-          onBlur={(e) => {
-            onChange(Number(e.target.value))
-          }}
-          onClear={() => {
-            if (ref.current) ref.current.value = ''
-            onChange(undefined)
-          }}
-          {...props}
         />
+        <SettingsButton disabled={maxDisabled} icon={IconUp} onClick={stepUp} />
       </div>
     </div>
   )
 }
 
-interface BackgroundProps extends ComponentProps<'div'> {}
-const Background: React.FC<BackgroundProps> = ({ className, ...props }) => {
+interface SettingsFieldSelectionProps {
+  name: string
+  options: {
+    icon: ReactNode
+    onClick: () => void
+    value: string
+    property: string
+  }[]
+  property: keyof TypographyConfiguration
+}
+
+const SettingsFieldSelection = ({
+  name,
+  options,
+  property,
+}: SettingsFieldSelectionProps) => {
+  const { focusedBookTab } = useReaderSnapshot()
+  const [value, setValue] = useState<string>(
+    (focusedBookTab?.book.configuration?.typography ?? defaultSettings)[
+      property
+    ] as string,
+  )
+
   return (
-    <div
-      className={clsx('border-outline-variant light h-6 w-6 border', className)}
-      {...props}
-    ></div>
+    <div className="flex">
+      <div className="flex-[0.40]">
+        <h2 className="text-lg font-semibold">{name}</h2>
+      </div>
+      <div className="flex flex-[0.60] flex-row justify-end gap-8">
+        {options.map((option) => (
+          <SettingsButtonToggle
+            key={option.property}
+            icon={option.icon}
+            onClick={() => {
+              setValue(option.value)
+              option.onClick()
+            }}
+            selected={value === option.value}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+interface SettingsButtonProps {
+  icon: ReactNode
+  onClick: () => void
+  disabled: boolean
+}
+
+const SettingsButton = ({ icon, onClick, disabled }: SettingsButtonProps) => {
+  return (
+    <button
+      className={clsx(
+        'ring-border-dark flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
+        !disabled && 'hover:bg-border-dark/20',
+        disabled && 'ring-border-dark/30',
+      )}
+      disabled={disabled}
+      onClick={onClick}
+    >
+      {icon}
+    </button>
+  )
+}
+
+interface SettingsButtonToggleProps {
+  icon: ReactNode
+  onClick: () => void
+  selected: boolean
+}
+
+const SettingsButtonToggle = ({
+  icon,
+  onClick,
+  selected,
+}: SettingsButtonToggleProps) => {
+  return (
+    <button
+      className={clsx(
+        'ring-border-dark flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
+        // !disabled && 'hover:bg-border-dark/20',
+        selected && 'bg-border-dark/30',
+      )}
+      onClick={onClick}
+    >
+      {icon}
+    </button>
   )
 }

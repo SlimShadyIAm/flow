@@ -35,6 +35,7 @@ export default {
   'typography.font_family': 'Font Family',
   'typography.font_size': 'Font Size',
   'typography.font_weight': 'Boldness',
+  'typography.margin_size': 'Margin Size',
   'typography.line_height': 'Line Height',
   'typography.zoom': 'Zoom',
 
