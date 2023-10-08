@@ -37,6 +37,14 @@ export const useArrowColors = () => {
   })
 }
 
+export const useHighlightTextColors = () => {
+  return useColorSchemeColors({
+    sepia: 'text-border-sepia',
+    dark: 'text-border-dark',
+    light: 'text-border-light',
+  })
+}
+
 export const usePageTurnColors = () => {
   return useColorSchemeColors({
     sepia: 'bg-pageTurning-sepia',

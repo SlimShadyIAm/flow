@@ -34,7 +34,7 @@ export default {
   'typography.page_view.double_page': 'Double Page',
   'typography.font_family': 'Font Family',
   'typography.font_size': 'Font Size',
-  'typography.font_weight': 'Font Weight',
+  'typography.font_weight': 'Boldness',
   'typography.line_height': 'Line Height',
   'typography.zoom': 'Zoom',
 

@@ -6,6 +6,7 @@ import { useColorScheme, useTranslation } from '@flow/reader/hooks'
 import { reader, useReaderSnapshot } from '@flow/reader/models'
 import { defaultSettings, TypographyConfiguration } from '@flow/reader/state'
 
+import { useHighlightTextColors } from '../../hooks/useColors'
 import { Label, TextField, TextFieldProps } from '../Form'
 
 export const TypographyView = () => {
@@ -95,43 +96,81 @@ interface NumberFieldProps extends Omit<TextFieldProps<'input'>, 'onChange'> {
 const NumberField: React.FC<NumberFieldProps> = ({ onChange, ...props }) => {
   const ref = useRef<HTMLInputElement>(null)
   const t = useTranslation('action')
+  const highlightColor = useHighlightTextColors()
+
+  const stepDown = () => {
+    if (!ref.current) return
+    ref.current.stepDown()
+    onChange(Number(ref.current.value))
+  }
+
+  const stepUp = () => {
+    if (!ref.current) return
+    ref.current.stepUp()
+    onChange(Number(ref.current.value))
+  }
 
   return (
-    <TextField
-      as="input"
-      type="number"
-      placeholder="default"
-      actions={[
-        {
-          title: t('step_down'),
-          Icon: MdRemove,
-          onClick: () => {
-            if (!ref.current) return
-            ref.current.stepDown()
-            onChange(Number(ref.current.value))
-          },
-        },
-        {
-          title: t('step_up'),
-          Icon: MdAdd,
-          onClick: () => {
-            if (!ref.current) return
-            ref.current.stepUp()
-            onChange(Number(ref.current.value))
-          },
-        },
-      ]}
-      mRef={ref}
-      // lazy render
-      onBlur={(e) => {
-        onChange(Number(e.target.value))
-      }}
-      onClear={() => {
-        if (ref.current) ref.current.value = ''
-        onChange(undefined)
-      }}
-      {...props}
-    />
+    <div className="flex">
+      <div className="flex-[0.40]">
+        <h2 className="text-lg font-semibold">{props.name}</h2>
+        <h3 className={clsx('text-md font-semibold ', highlightColor)}>
+          {props.defaultValue}
+        </h3>
+      </div>
+      <div className="flex flex-[0.60] flex-row justify-end gap-8">
+        <div
+          className="ring-border-dark hover:bg-border-dark/20 flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors"
+          role="button"
+          onClick={stepDown}
+        >
+          hey
+        </div>
+        <div
+          className="ring-border-dark hover:bg-border-dark/20 flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors"
+          role="button"
+          onClick={stepUp}
+        >
+          hey
+        </div>
+        <TextField
+          className='hidden'
+          as="input"
+          type="number"
+          placeholder="default"
+          actions={[
+            {
+              title: t('step_down'),
+              Icon: MdRemove,
+              onClick: () => {
+                if (!ref.current) return
+                ref.current.stepDown()
+                onChange(Number(ref.current.value))
+              },
+            },
+            {
+              title: t('step_up'),
+              Icon: MdAdd,
+              onClick: () => {
+                if (!ref.current) return
+                ref.current.stepUp()
+                onChange(Number(ref.current.value))
+              },
+            },
+          ]}
+          mRef={ref}
+          // lazy render
+          onBlur={(e) => {
+            onChange(Number(e.target.value))
+          }}
+          onClear={() => {
+            if (ref.current) ref.current.value = ''
+            onChange(undefined)
+          }}
+          {...props}
+        />
+      </div>
+    </div>
   )
 }
 
