@@ -17,6 +17,7 @@ import {
   useSync,
   useTypography,
 } from '../hooks'
+import { useColorSchemeColors } from '../hooks/useColors'
 import { BookTab, reader, useReaderSnapshot } from '../models'
 import { isTouchScreen } from '../platform'
 import { defaultSettings } from '../state'
@@ -25,7 +26,6 @@ import { updateCustomStyle } from '../styles'
 import { LeftArrow, RightArrow } from './Icons'
 import { DropZone, SplitView } from './base'
 import * as pages from './pages'
-import { useColorschemeColors } from '../color'
 
 function handleKeyDown(tab?: BookTab) {
   return (e: KeyboardEvent) => {
@@ -59,13 +59,13 @@ export function NavigationButton(props: NaviagtionButtonProps) {
   const { marginSize } =
     focusedBookTab?.book.configuration?.typography ?? defaultSettings
 
-  const pageTurnClasses = useColorschemeColors({
+  const pageTurnClasses = useColorSchemeColors({
     sepia: 'bg-pageTurning-sepia',
     dark: 'bg-pageTurning-dark',
     light: 'bg-pageTurning-light',
   })
 
-  const arrowColors = useColorschemeColors({
+  const arrowColors = useColorSchemeColors({
     sepia: 'fill-border-sepia',
     dark: 'fill-border-dark',
     light: 'fill-border-light',
@@ -118,20 +118,22 @@ interface ReaderGroupProps {
 function ReaderGroup({ index }: ReaderGroupProps) {
   const group = reader.groups[index]!
   const { selectedIndex } = useSnapshot(group)
-  const [bg] = useBackground()
-  const { scheme } = useColorScheme()
 
   const handleMouseDown = useCallback(() => {
     reader.selectGroup(index)
   }, [index])
 
+  const bgClasses = useColorSchemeColors({
+    sepia: 'bg-background-sepia',
+    dark: 'bg-background-dark',
+    light: 'bg-background-light',
+  })
+
   return (
     <div
       className={clsx(
         'ReaderGroup flex flex-1 flex-col overflow-hidden focus:outline-none',
-        scheme === 'sepia' && 'bg-yellow-100',
-        scheme === 'dark' && 'bg-backgroundDark',
-        scheme === 'light' && bg,
+        bgClasses,
       )}
       onMouseDown={handleMouseDown}
     >
@@ -272,7 +274,7 @@ function BookPane({ tab }: BookPaneProps) {
   useEffect(() => {
     if (dark === undefined) return
     // set `!important` when in dark mode
-    rendition?.themes.override('color', dark ? '#bfc8ca' : '#3f484a', dark)
+    rendition?.themes.override('color', dark ? '#FFFFFF' : '#000000', dark)
   }, [rendition, dark])
 
   const [src, setSrc] = useState<string>()

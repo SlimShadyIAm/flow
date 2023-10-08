@@ -7,9 +7,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        foregroundDark: '#020204',
-        backgroundDark: '#030711',
-        highlighterYellow: '#FFC700',
+        background: {
+          dark: '#030711',
+          light: colors.zinc[50],
+          sepia: colors.yellow[100],
+        },
+        text: {
+          dark: '#FFFFFF',
+          light: colors.zinc[800],
+          sepia: '#01010A',
+        },
         pageTurning: {
           dark: colors.zinc[700],
           light: colors.gray[300],
