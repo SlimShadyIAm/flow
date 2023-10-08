@@ -37,11 +37,11 @@ export const TypographyView = () => {
   )
 
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <div className="flex flex-col gap-8 p-4">
       <SettingsFieldNumber
         property="fontSize"
         name={t_typography('font_size')}
-        iconDown={<div>hey</div>}
+        iconDown={<div>down</div>}
         iconUp={<div>up</div>}
         min={14}
         max={28}
@@ -118,7 +118,6 @@ const SettingsFieldNumber = ({
   iconUp: IconUp,
   onChange,
 }: SettingsFieldNumberProps) => {
-  const highlightColor = useHighlightTextColors()
   const { focusedBookTab } = useReaderSnapshot()
   const [value, setValue] = useState<number>(
     parseInt(
@@ -149,10 +148,7 @@ const SettingsFieldNumber = ({
   return (
     <div className="flex">
       <div className="flex-[0.40]">
-        <h2 className="text-lg font-semibold">{name}</h2>
-        <h3 className={clsx('text-md font-semibold ', highlightColor)}>
-          {value}
-        </h3>
+        <SettingsFieldInfo name={name} value={value} />
       </div>
       <div className="flex flex-[0.60] flex-row justify-end gap-8">
         <SettingsButton
@@ -163,6 +159,24 @@ const SettingsFieldNumber = ({
         <SettingsButton disabled={maxDisabled} icon={IconUp} onClick={stepUp} />
       </div>
     </div>
+  )
+}
+
+const SettingsFieldInfo = ({
+  name,
+  value,
+}: {
+  value: string | number
+  name: string
+}) => {
+  const highlightColor = useHighlightTextColors()
+  return (
+    <>
+      <h2 className="text-lg font-semibold">{name}</h2>
+      <h3 className={clsx('text-md font-semibold ', highlightColor)}>
+        {value}
+      </h3>
+    </>
   )
 }
 
@@ -192,7 +206,8 @@ const SettingsFieldSelection = ({
   return (
     <div className="flex">
       <div className="flex-[0.40]">
-        <h2 className="text-lg font-semibold">{name}</h2>
+        {/* // TODO: fix capitalization */}
+        <SettingsFieldInfo name={name} value={value} />
       </div>
       <div className="flex flex-[0.60] flex-row justify-end gap-8">
         {options.map((option) => (
