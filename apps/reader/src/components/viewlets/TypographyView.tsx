@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react'
 
-import { useColorScheme, useTranslation } from '@flow/reader/hooks'
+import { ColorScheme, useColorScheme, useTranslation } from '@flow/reader/hooks'
 import { reader, useReaderSnapshot } from '@flow/reader/models'
 import { defaultSettings, TypographyConfiguration } from '@flow/reader/state'
 
@@ -15,7 +15,6 @@ import { useHighlightTextColors } from '../../hooks/useColors'
 import { Label } from '../Form'
 
 export const TypographyView = () => {
-  const { setScheme } = useColorScheme()
   const t_typography = useTranslation('typography')
 
   const setTypography = useCallback(
@@ -81,8 +80,8 @@ export const TypographyView = () => {
         ]}
       />
       <div>
-        <Label name="Theme"></Label>
         <div className="flex gap-2">
+          <ThemeButtons />
           {/*
           <Background
             className={'bg-white'}
@@ -270,5 +269,28 @@ const SettingsButtonToggle = ({
     >
       {icon}
     </button>
+  )
+}
+
+const ThemeButtons = () => {
+  const { setScheme, scheme } = useColorScheme()
+
+  return (
+    <>
+      <div className="flex-[0.40]">
+        {/* // TODO: fix capitalization */}
+        <SettingsFieldInfo name="Theme" value={scheme} />
+      </div>
+      <div className="flex flex-[0.60] flex-row justify-end gap-8">
+        {['light', 'sepia', 'dark'].map((value) => (
+          <button
+            className={"ring-border-" + value + " bg-background-" + value + " text-text-" + value + " h-[56px] w-[56px] ring-4 rounded-sm text-2xl"}
+            onClick={() => setScheme(value as ColorScheme)}
+          >
+            A
+          </button>
+        ))}
+      </div>
+    </>
   )
 }

@@ -193,8 +193,8 @@ const SideBar: React.FC = () => {
   const bgColors = useBgColors()
 
   const { size } = useSplitViewItem(SideBar, {
-    preferredSize: 320,
-    minSize: 320,
+    preferredSize: 380,
+    minSize: 380,
     visible: !!action,
   })
 
