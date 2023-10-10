@@ -49,9 +49,7 @@ export const TypographyView = () => {
         name={t_typography('font_size')}
         iconDown={<FontSizeDecrease className={iconColors} />}
         iconUp={<FontSizeIncrease className={iconColors} />}
-        min={14}
-        max={28}
-        step={4}
+        options={[12, 14, 18]}
         onChange={(v) => {
           setTypography('fontSize', v ? v + 'px' : undefined)
         }}
@@ -61,9 +59,7 @@ export const TypographyView = () => {
         name={t_typography('font_weight')}
         iconDown={<FontWeightDecrease className={iconColors} />}
         iconUp={<FontWeightIncrease className={iconColors} />}
-        min={400}
-        max={700}
-        step={300}
+        options={[400, 600, 700]}
         onChange={(v) => {
           setTypography('fontWeight', v || undefined)
         }}
@@ -100,18 +96,14 @@ interface SettingsFieldNumberProps {
   name: string
   iconDown: ReactNode
   iconUp: ReactNode
-  min: number
-  max: number
-  step: number
+  options: number[]
   onChange: (v?: number) => void
 }
 
 const SettingsFieldNumber = ({
   property,
   name,
-  step,
-  min,
-  max,
+  options,
   iconDown: IconDown,
   iconUp: IconUp,
   onChange,
@@ -120,22 +112,25 @@ const SettingsFieldNumber = ({
   const [value, setValue] = useState<number>(
     parseInt(
       (focusedBookTab?.book.configuration?.typography ?? defaultSettings)[
-        property
+      property
       ] as string,
     ),
   )
-  const minDisabled = value - step < min
-  const maxDisabled = value + step > max
+  // disable if value is the first item in options array
+  const minDisabled = options.indexOf(value) === 0
+  const maxDisabled = options.indexOf(value) === options.length - 1
 
   const stepUp = () => {
-    if (!maxDisabled) {
-      setValue((value) => value + step)
+    const nextValue = options[options.indexOf(value) + 1]
+    if (!maxDisabled && nextValue) {
+      setValue(nextValue)
     }
   }
 
   const stepDown = () => {
-    if (!minDisabled) {
-      setValue((value) => value - step)
+    const prevValue = options[options.indexOf(value) - 1]
+    if (!minDisabled && prevValue) {
+      setValue(prevValue)
     }
   }
 
@@ -197,7 +192,7 @@ const SettingsFieldSelection = ({
   const { focusedBookTab } = useReaderSnapshot()
   const [value, setValue] = useState<string>(
     (focusedBookTab?.book.configuration?.typography ?? defaultSettings)[
-      property
+    property
     ] as string,
   )
 
@@ -265,8 +260,8 @@ const SettingsButtonToggle = ({
     <button
       className={clsx(
         'ring-border-' +
-          scheme +
-          ' flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
+        scheme +
+        ' flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
         // !disabled && 'hover:bg-border-dark/20',
         // selected && 'bg-border-dark/30',
         selected && scheme === 'dark' && 'bg-border-dark/30',
