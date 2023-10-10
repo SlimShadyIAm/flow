@@ -112,7 +112,7 @@ const SettingsFieldNumber = ({
   const [value, setValue] = useState<number>(
     parseInt(
       (focusedBookTab?.book.configuration?.typography ?? defaultSettings)[
-      property
+        property
       ] as string,
     ),
   )
@@ -163,11 +163,13 @@ const SettingsFieldInfo = ({
   name: string
 }) => {
   const highlightColor = useHighlightTextColors()
+  const string = value.toString();
+
   return (
     <>
       <h2 className="text-lg font-semibold">{name}</h2>
       <h3 className={clsx('text-md font-semibold ', highlightColor)}>
-        {value}
+        {string.charAt(0).toUpperCase() + string.slice(1)}
       </h3>
     </>
   )
@@ -192,7 +194,7 @@ const SettingsFieldSelection = ({
   const { focusedBookTab } = useReaderSnapshot()
   const [value, setValue] = useState<string>(
     (focusedBookTab?.book.configuration?.typography ?? defaultSettings)[
-    property
+      property
     ] as string,
   )
 
@@ -260,8 +262,8 @@ const SettingsButtonToggle = ({
     <button
       className={clsx(
         'ring-border-' +
-        scheme +
-        ' flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
+          scheme +
+          ' flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
         // !disabled && 'hover:bg-border-dark/20',
         // selected && 'bg-border-dark/30',
         selected && scheme === 'dark' && 'bg-border-dark/30',
@@ -287,15 +289,17 @@ const ThemeButtons = () => {
       <div className="flex flex-[0.60] flex-row justify-end gap-8">
         {['light', 'sepia', 'dark'].map((value) => (
           <button
-            className={
+            key={value}
+            className={clsx(
               'ring-border-' +
-              value +
-              ' bg-background-' +
-              value +
-              ' text-text-' +
-              value +
-              ' h-[56px] w-[56px] rounded-sm text-[28px] ring-4'
-            }
+                value +
+                ' bg-background-' +
+                value +
+                ' text-text-' +
+                value +
+                ' h-[56px] w-[56px] rounded-sm text-[28px] ring-4',
+              scheme === value && 'bg-border-' + value + '/30',
+            )}
             onClick={() => setScheme(value as ColorScheme)}
           >
             A
