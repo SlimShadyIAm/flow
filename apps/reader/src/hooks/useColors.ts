@@ -68,3 +68,12 @@ export const useSettingsButtonDisabledColors = () => {
     light: 'ring-border-light/30 hover:bg-transparent',
   })
 }
+
+export const useTextPresentationHighlightRing = () => {
+  return useColorSchemeColors({
+    sepia: 'ring-border-sepia',
+    dark: 'ring-border-dark',
+    light: 'ring-border-light',
+  })
+}
+

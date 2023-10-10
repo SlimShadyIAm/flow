@@ -29,6 +29,7 @@ import { updateCustomStyle } from '../styles'
 import { LeftArrow, RightArrow } from './Icons'
 import { DropZone, SplitView } from './base'
 import * as pages from './pages'
+import Modal from './Modal'
 
 function handleKeyDown(tab?: BookTab) {
   return (e: KeyboardEvent) => {
