@@ -26,7 +26,7 @@ import { updateCustomStyle } from '../styles'
 import { LeftArrow, RightArrow } from './Icons'
 import { DropZone, SplitView } from './base'
 import * as pages from './pages'
-import { useArrowColors } from '../hooks/useColors'
+import { useIconColors } from '../hooks/useColors'
 import { usePageTurnColors } from '../hooks/useColors'
 
 function handleKeyDown(tab?: BookTab) {
@@ -62,7 +62,7 @@ export function NavigationButton(props: NaviagtionButtonProps) {
     focusedBookTab?.book.configuration?.typography ?? defaultSettings
 
   const pageTurnClasses = usePageTurnColors()
-  const arrowColors = useArrowColors()
+  const arrowColors = useIconColors()
   return (
     <div
       onClick={onClick}

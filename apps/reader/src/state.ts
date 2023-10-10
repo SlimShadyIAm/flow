@@ -38,7 +38,7 @@ export interface TypographyConfiguration {
   lineHeight?: number
   spread?: RenditionSpread
   zoom?: number
-  marginSize: 'small'| 'large' 
+  marginSize: 'small' | 'large'
 }
 
 interface ThemeConfiguration {
@@ -50,6 +50,8 @@ export const defaultSettings: Settings = {
   spread: RenditionSpread.None,
   fontFamily: 'Garamond',
   marginSize: 'small',
+  fontSize: '14',
+  fontWeight: 400,
 }
 
 const settingsState = atom<Settings>({

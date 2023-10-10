@@ -29,11 +29,19 @@ export const useBgColors = () => {
   })
 }
 
-export const useArrowColors = () => {
+export const useIconColors = () => {
   return useColorSchemeColors({
     sepia: 'fill-border-sepia',
     dark: 'fill-border-dark',
     light: 'fill-border-light',
+  })
+}
+
+export const useHighlightTextColors = () => {
+  return useColorSchemeColors({
+    sepia: 'text-border-sepia',
+    dark: 'text-border-dark',
+    light: 'text-border-light',
   })
 }
 
