@@ -5,7 +5,12 @@ import { ColorScheme, useColorScheme, useTranslation } from '@flow/reader/hooks'
 import { reader, useReaderSnapshot } from '@flow/reader/models'
 import { defaultSettings, TypographyConfiguration } from '@flow/reader/state'
 
-import { useHighlightTextColors, useIconColors } from '../../hooks/useColors'
+import {
+  useHighlightTextColors,
+  useIconColors,
+  useSettingsButtonColors,
+  useSettingsButtonDisabledColors,
+} from '../../hooks/useColors'
 import {
   FontSizeDecrease,
   FontSizeIncrease,
@@ -84,14 +89,6 @@ export const TypographyView = () => {
       <div>
         <div className="flex gap-2">
           <ThemeButtons />
-          {/*
-          <Background
-            className={'bg-white'}
-            onClick={() => {
-              setScheme('light')
-            }}
-          />
-          */}
         </div>
       </div>
     </div>
@@ -234,15 +231,15 @@ interface SettingsButtonProps {
 }
 
 const SettingsButton = ({ icon, onClick, disabled }: SettingsButtonProps) => {
-  const { scheme } = useColorScheme()
+  const settingsButtonColors = useSettingsButtonColors()
+  const settingsButtonDisabledColors = useSettingsButtonDisabledColors()
+
   return (
     <button
       className={clsx(
-        'ring-border-' +
-          scheme +
-          ' flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
-        !disabled && 'hover:bg-border-dark/20',
-        disabled && 'ring-border-dark/30',
+        'flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
+        !disabled && settingsButtonColors,
+        disabled && settingsButtonDisabledColors,
       )}
       disabled={disabled}
       onClick={onClick}

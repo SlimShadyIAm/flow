@@ -127,9 +127,9 @@ export function MarginDecrease() {
         strokeLinejoin="round"
       />
       <rect
-        x="12.5"
+        x="7.5"
         y="8.5"
-        width="17"
+        width="27"
         height="33"
         fill="#D9D9D9"
         stroke="#808080"
@@ -159,9 +159,9 @@ export function MarginIncrease() {
         strokeLinejoin="round"
       />
       <rect
-        x="7.5"
+        x="12.5"
         y="8.5"
-        width="27"
+        width="17"
         height="33"
         fill="#D9D9D9"
         stroke="#808080"
