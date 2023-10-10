@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 
 import { ColorScheme, useColorScheme, useTranslation } from '@flow/reader/hooks'
+import { useLogger } from '@flow/reader/hooks/useLogger'
 import { reader, useReaderSnapshot } from '@flow/reader/models'
 import { defaultSettings, TypographyConfiguration } from '@flow/reader/state'
 
@@ -109,10 +110,11 @@ const SettingsFieldNumber = ({
   onChange,
 }: SettingsFieldNumberProps) => {
   const { focusedBookTab } = useReaderSnapshot()
+  const { addUserLog } = useLogger()
   const [value, setValue] = useState<number>(
     parseInt(
       (focusedBookTab?.book.configuration?.typography ?? defaultSettings)[
-        property
+      property
       ] as string,
     ),
   )
@@ -120,9 +122,19 @@ const SettingsFieldNumber = ({
   const minDisabled = options.indexOf(value) === 0
   const maxDisabled = options.indexOf(value) === options.length - 1
 
+  const handleLog = (newValue: number) => {
+    addUserLog({
+      event: 'SET_TYPOGRAPHY_' + property.toUpperCase(),
+      oldValue: value.toString(),
+      newValue: newValue.toString(),
+      participantId: 1,
+    })
+  }
+
   const stepUp = () => {
     const nextValue = options[options.indexOf(value) + 1]
     if (!maxDisabled && nextValue) {
+      handleLog(nextValue)
       setValue(nextValue)
     }
   }
@@ -130,6 +142,7 @@ const SettingsFieldNumber = ({
   const stepDown = () => {
     const prevValue = options[options.indexOf(value) - 1]
     if (!minDisabled && prevValue) {
+      handleLog(prevValue)
       setValue(prevValue)
     }
   }
@@ -163,7 +176,7 @@ const SettingsFieldInfo = ({
   name: string
 }) => {
   const highlightColor = useHighlightTextColors()
-  const string = value.toString();
+  const string = value.toString()
 
   return (
     <>
@@ -192,11 +205,21 @@ const SettingsFieldSelection = ({
   property,
 }: SettingsFieldSelectionProps) => {
   const { focusedBookTab } = useReaderSnapshot()
+  const { addUserLog } = useLogger()
   const [value, setValue] = useState<string>(
     (focusedBookTab?.book.configuration?.typography ?? defaultSettings)[
-      property
+    property
     ] as string,
   )
+
+  const handleLog = (newValue: string) => {
+    addUserLog({
+      event: 'SET_TYPOGRAPHY_' + property.toUpperCase(),
+      oldValue: value,
+      newValue: newValue,
+      participantId: 1,
+    })
+  }
 
   return (
     <div className="flex">
@@ -210,6 +233,7 @@ const SettingsFieldSelection = ({
             key={option.property}
             icon={option.icon}
             onClick={() => {
+              handleLog(option.value)
               setValue(option.value)
               option.onClick()
             }}
@@ -262,8 +286,8 @@ const SettingsButtonToggle = ({
     <button
       className={clsx(
         'ring-border-' +
-          scheme +
-          ' flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
+        scheme +
+        ' flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
         // !disabled && 'hover:bg-border-dark/20',
         // selected && 'bg-border-dark/30',
         selected && scheme === 'dark' && 'bg-border-dark/30',
@@ -278,7 +302,17 @@ const SettingsButtonToggle = ({
 }
 
 const ThemeButtons = () => {
+  const { addUserLog } = useLogger()
   const { setScheme, scheme } = useColorScheme()
+
+  const handleLog = (newValue: ColorScheme) => {
+    addUserLog({
+      event: 'SET_THEME',
+      oldValue: scheme,
+      newValue: newValue,
+      participantId: 1,
+    })
+  }
 
   return (
     <>
@@ -292,15 +326,18 @@ const ThemeButtons = () => {
             key={value}
             className={clsx(
               'ring-border-' +
-                value +
-                ' bg-background-' +
-                value +
-                ' text-text-' +
-                value +
-                ' h-[56px] w-[56px] rounded-sm text-[28px] ring-4',
+              value +
+              ' bg-background-' +
+              value +
+              ' text-text-' +
+              value +
+              ' h-[56px] w-[56px] rounded-sm text-[28px] ring-4',
               scheme === value && 'bg-border-' + value + '/30',
             )}
-            onClick={() => setScheme(value as ColorScheme)}
+            onClick={() => {
+              handleLog(value as ColorScheme)
+              setScheme(value as ColorScheme)
+            }}
           >
             A
           </button>
