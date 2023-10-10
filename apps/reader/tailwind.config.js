@@ -13,7 +13,7 @@ module.exports = {
           sepia: colors.yellow[100],
         },
         text: {
-          dark: '#FFFFFF',
+          dark: '#E6E6E6',
           light: colors.zinc[800],
           sepia: '#01010A',
         },

@@ -262,12 +262,21 @@ function BookPane({ tab }: BookPaneProps) {
   }, [typography.spread, rendition])
 
   useEffect(() => applyCustomStyle(), [applyCustomStyle])
+  const { scheme } = useColorScheme();
 
   useEffect(() => {
     if (dark === undefined) return
+    let color;
+    if (scheme === 'sepia') {
+      color = '#000'
+    } else if (scheme === 'dark') {
+      color = '#E6E6E6'
+    } else {
+      color = '#27272A'
+    }
     // set `!important` when in dark mode
-    rendition?.themes.override('color', dark ? '#FFFFFF' : '#000000', dark)
-  }, [rendition, dark])
+    rendition?.themes.override('color', color)
+  }, [rendition, dark, scheme])
 
   const [src, setSrc] = useState<string>()
 
