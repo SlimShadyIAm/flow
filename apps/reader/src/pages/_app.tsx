@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import { RecoilRoot } from 'recoil'
 
 import { Layout, Theme } from '../components'
+import LoggerProvider from '../hooks/useLogger'
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
@@ -19,9 +20,11 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       <LiteralProvider>
         <RecoilRoot>
           <Theme />
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+          <LoggerProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </LoggerProvider>
         </RecoilRoot>
       </LiteralProvider>
     </ErrorBoundary>

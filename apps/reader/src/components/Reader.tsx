@@ -18,6 +18,9 @@ import {
   useTypography,
 } from '../hooks'
 import { useColorSchemeColors } from '../hooks/useColors'
+import { useIconColors } from '../hooks/useColors'
+import { usePageTurnColors } from '../hooks/useColors'
+import { useLogger } from '../hooks/useLogger'
 import { BookTab, reader, useReaderSnapshot } from '../models'
 import { isTouchScreen } from '../platform'
 import { defaultSettings } from '../state'
@@ -26,8 +29,6 @@ import { updateCustomStyle } from '../styles'
 import { LeftArrow, RightArrow } from './Icons'
 import { DropZone, SplitView } from './base'
 import * as pages from './pages'
-import { useIconColors } from '../hooks/useColors'
-import { usePageTurnColors } from '../hooks/useColors'
 
 function handleKeyDown(tab?: BookTab) {
   return (e: KeyboardEvent) => {
@@ -84,22 +85,33 @@ export function NavigationButton(props: NaviagtionButtonProps) {
 
 export function ReaderGridView() {
   const { groups } = useReaderSnapshot()
+  const { addUserLog } = useLogger()
   useEventListener('keydown', handleKeyDown(reader.focusedBookTab))
+
+  const handleNextPage = () => {
+    addUserLog({
+      event: 'NEXT_PAGE',
+      participantId: 1,
+    })
+    reader.focusedBookTab?.next()
+  }
+
+  const handlePreviousPage = () => {
+    addUserLog({
+      event: 'PREVIOUS_PAGE',
+      participantId: 1,
+    })
+    reader.focusedBookTab?.prev()
+  }
 
   if (!groups.length) return null
   return (
     <SplitView className={clsx('ReaderGridView')}>
-      <NavigationButton
-        direction="prev"
-        onClick={() => reader.focusedBookTab?.prev()}
-      />
+      <NavigationButton direction="prev" onClick={handlePreviousPage} />
       {groups.map(({ id }, i) => (
         <ReaderGroup key={id} index={i} />
       ))}
-      <NavigationButton
-        direction="next"
-        onClick={() => reader.focusedBookTab?.next()}
-      />
+      <NavigationButton direction="next" onClick={handleNextPage} />
     </SplitView>
   )
 }
@@ -262,11 +274,11 @@ function BookPane({ tab }: BookPaneProps) {
   }, [typography.spread, rendition])
 
   useEffect(() => applyCustomStyle(), [applyCustomStyle])
-  const { scheme } = useColorScheme();
+  const { scheme } = useColorScheme()
 
   useEffect(() => {
     if (dark === undefined) return
-    let color;
+    let color
     if (scheme === 'sepia') {
       color = '#000'
     } else if (scheme === 'dark') {

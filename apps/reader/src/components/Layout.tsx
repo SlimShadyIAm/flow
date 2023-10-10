@@ -16,6 +16,7 @@ import {
   useBgColors,
   useTextColors,
 } from '../hooks/useColors'
+import { useLogger } from '../hooks/useLogger'
 import { reader, useReaderSnapshot } from '../models'
 import { activeClass } from '../styles'
 
@@ -197,6 +198,7 @@ const SideBar: React.FC = () => {
     minSize: 380,
     visible: !!action,
   })
+  const { convertToCSV } = useLogger()
 
   return (
     <>
@@ -209,6 +211,7 @@ const SideBar: React.FC = () => {
         )}
         style={{ width: mobile ? '75%' : size }}
       >
+        <button onClick={convertToCSV}>Download csv</button>
         <TypographyView />
       </div>
     </>
