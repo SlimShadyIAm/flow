@@ -8,7 +8,7 @@ import {
   useTextColors,
 } from '../hooks/useColors'
 import { useReaderSnapshot } from '../models'
-import { defaultSettings } from '../state'
+import { defaultSettings, TypographyConfiguration } from '../state'
 
 interface DialogContextType {
   isOpen: boolean
@@ -64,6 +64,19 @@ const Dialog: React.FC = () => {
     return null
   }
 
+  const adjustments: TextAdjustment[] = [
+    {
+      property: 'fontSize',
+      change: 'increase',
+      offset: 4,
+    },
+    {
+      property: 'fontWeight',
+      change: 'increase',
+      offset: 200,
+    },
+  ]
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className={clsx('w-[650px] rounded-lg p-8 shadow-xl', bgColors)}>
@@ -71,23 +84,46 @@ const Dialog: React.FC = () => {
         <p>It looks like you&apos;re having some difficulty reading.</p>
         <p>
           We think{' '}
-          <span className={clsx('font-semibold', highlightTextColors)}>
-            increasing the font size
-          </span>{' '}
+          {adjustments.map((adjustment, index) => {
+            let separator: string
+            if (index + 2 === adjustments.length) {
+              separator = ' and '
+            } else if (index + 1 < adjustments.length) {
+              separator = ', '
+            } else {
+              separator = ''
+            }
+
+            let property: string
+            switch (adjustment.property) {
+              case 'fontSize':
+                property = 'font size'
+                break
+              case 'fontWeight':
+                property = 'font weight'
+                break
+              default:
+                property = adjustment.property
+            }
+
+            return (
+              <>
+                <span
+                  key={index}
+                  className={clsx('font-bold', highlightTextColors)}
+                >
+                  {adjustment.change === 'increase'
+                    ? 'increasing'
+                    : 'decreasing'}{' '}
+                  the {property}
+                </span>
+                {separator}
+              </>
+            )
+          })}{' '}
           will improve the reading experience.
         </p>
-        <div className="mb-4 flex flex-row justify-between">
-          <div className="flex flex-col">
-            <p className="text-lg font-semibold text-slate-400">Before</p>
-            <TextPresentationPreview />
-          </div>
-          <div className="flex flex-col">
-            <p className={clsx(highlightTextColors, 'text-lg font-semibold')}>
-              After
-            </p>
-            <TextPresentationPreview after />
-          </div>
-        </div>
+        <PresentationChanges changes={adjustments} />
         <button
           className="rounded-lg bg-blue-500 px-4 py-2 text-white"
           onClick={closeDialog}
@@ -99,31 +135,69 @@ const Dialog: React.FC = () => {
   )
 }
 
-interface TextPresentationPreviewProps {
-  after?: boolean
+interface PresentationChangesProps {
+  changes: TextAdjustment[]
 }
 
-const TextPresentationPreview = ({ after }: TextPresentationPreviewProps) => {
-  const ringColor = useTextPresentationHighlightRing()
-  const textColors = useTextColors()
+const PresentationChanges = ({ changes }: PresentationChangesProps) => {
+  const highlightTextColors = useHighlightTextColors()
   const { focusedBookTab } = useReaderSnapshot()
   const settings =
     focusedBookTab?.book.configuration?.typography ?? defaultSettings
 
-  // export interface TypographyConfiguration {
-  //   fontSize?: string
-  //   fontWeight?: number
-  //   fontFamily?: string
-  //   lineHeight?: number
-  //   spread?: RenditionSpread
-  //   zoom?: number
-  //   marginSize: 'small' | 'large'
-  // }
-  const presentationStyle = {
+  const presentationStyleBefore = {
     fontSize: settings.fontSize + 'px',
     fontWeight: settings.fontWeight,
     fontFamily: settings.fontFamily,
   }
+
+  const presentationStyleAfter = { ...presentationStyleBefore }
+
+  for (const change of changes) {
+    const offset =
+      change.change === 'increase' ? change.offset : -1 * change.offset
+    if (change.property === 'fontSize') {
+      presentationStyleAfter.fontSize =
+        parseInt(settings.fontSize as string) + offset + 'px'
+    } else if (change.property === 'fontWeight') {
+      presentationStyleAfter.fontWeight =
+        (settings.fontWeight as number) + offset
+    }
+  }
+
+  return (
+    <div className="mb-4 flex flex-row justify-between">
+      <div className="flex flex-col">
+        <p className="text-lg font-semibold text-slate-400">Before</p>
+        <TextPresentationPreview className={presentationStyleBefore} />
+      </div>
+      <div className="flex flex-col">
+        <p className={clsx(highlightTextColors, 'text-lg font-semibold')}>
+          After
+        </p>
+        <TextPresentationPreview after className={presentationStyleAfter} />
+      </div>
+    </div>
+  )
+}
+
+interface TextAdjustment {
+  property: keyof TypographyConfiguration
+  change: 'increase' | 'decrease'
+  offset: number
+}
+
+interface TextPresentationPreviewProps {
+  after?: boolean
+  className: React.CSSProperties
+}
+
+const TextPresentationPreview = ({
+  after,
+  className,
+}: TextPresentationPreviewProps) => {
+  const ringColor = useTextPresentationHighlightRing()
+  const textColors = useTextColors()
 
   return (
     <div
@@ -133,7 +207,7 @@ const TextPresentationPreview = ({ after }: TextPresentationPreviewProps) => {
         after && ringColor,
         !after && 'ring-slate-400',
       )}
-      style={presentationStyle}
+      style={className}
     >
       The quick brown fox jumped over the lazy sleeping dog.
     </div>
