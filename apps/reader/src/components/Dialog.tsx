@@ -36,7 +36,7 @@ export const DialogProvider: React.FC = ({ children }) => {
   )
 }
 
-const useDialog = () => {
+export const useDialog = () => {
   const dialogContext = useContext(DialogContext)
 
   if (!dialogContext) {
@@ -154,9 +154,9 @@ const PresentationChanges = ({ changes }: PresentationChangesProps) => {
     focusedBookTab?.book.configuration?.typography ?? defaultSettings
 
   const presentationStyleBefore = {
-    fontSize: settings.fontSize + 'px',
+    fontSize: settings.fontSize,
     fontWeight: settings.fontWeight,
-    fontFamily: settings.fontFamily,
+    fontFamily: 'Garamond',
     paddingLeft: settings.marginSize === 'small' ? '16px' : '48px',
     paddingRight: settings.marginSize === 'small' ? '16px' : '48px'
   }
