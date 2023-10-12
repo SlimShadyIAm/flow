@@ -65,15 +65,20 @@ const Dialog: React.FC = () => {
   }
 
   const adjustments: TextAdjustment[] = [
-    {
-      property: 'fontSize',
-      change: 'increase',
-      offset: 4,
-    },
+    // {
+    //   property: 'fontSize',
+    //   change: 'increase',
+    //   offset: 4,
+    // },
     {
       property: 'fontWeight',
       change: 'increase',
       offset: 200,
+    },
+    {
+      property: 'marginSize',
+      change: 'increase',
+      offset: 0,
     },
   ]
 
@@ -100,7 +105,10 @@ const Dialog: React.FC = () => {
                 property = 'font size'
                 break
               case 'fontWeight':
-                property = 'font weight'
+                property = 'boldness'
+                break
+              case 'marginSize':
+                property = 'margin size'
                 break
               default:
                 property = adjustment.property
@@ -149,6 +157,8 @@ const PresentationChanges = ({ changes }: PresentationChangesProps) => {
     fontSize: settings.fontSize + 'px',
     fontWeight: settings.fontWeight,
     fontFamily: settings.fontFamily,
+    paddingLeft: settings.marginSize === 'small' ? '16px' : '48px',
+    paddingRight: settings.marginSize === 'small' ? '16px' : '48px'
   }
 
   const presentationStyleAfter = { ...presentationStyleBefore }
@@ -162,6 +172,9 @@ const PresentationChanges = ({ changes }: PresentationChangesProps) => {
     } else if (change.property === 'fontWeight') {
       presentationStyleAfter.fontWeight =
         (settings.fontWeight as number) + offset
+    } else if (change.property === 'marginSize') {
+      presentationStyleAfter.paddingLeft = change.change === 'decrease' ? '16px' : '48px'
+      presentationStyleAfter.paddingRight = change.change === 'decrease' ? '16px' : '48px'
     }
   }
 
