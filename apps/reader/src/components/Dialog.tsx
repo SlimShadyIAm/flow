@@ -19,7 +19,7 @@ interface DialogContextType {
 const DialogContext = createContext<DialogContextType | undefined>(undefined)
 
 export const DialogProvider: React.FC = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
 
   const openDialog = () => {
     setIsOpen(true)
