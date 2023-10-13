@@ -51,7 +51,6 @@ export async function addBook(file: File) {
     metadata,
     createdAt: Date.now(),
     definitions: [],
-    annotations: [],
   }
   db?.books.add(book)
   addFile(book.id, file, epub)

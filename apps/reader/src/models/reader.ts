@@ -8,7 +8,6 @@ import type { Rendition, Location, Book } from '@flow/epubjs'
 import Navigation, { NavItem } from '@flow/epubjs/types/navigation'
 import Section from '@flow/epubjs/types/section'
 
-import { AnnotationColor, AnnotationType } from '../annotation'
 import { BookRecord, db } from '../db'
 import { fileToEpub } from '../file'
 import { defaultStyle } from '../styles'
@@ -130,11 +129,6 @@ export class BookTab extends BaseTab {
     db?.books.update(this.book.id, changes)
   }
 
-  annotationRange?: Range
-  setAnnotationRange(cfi: string) {
-    const range = this.view?.contents.range(cfi)
-    if (range) this.annotationRange = ref(range)
-  }
 
   define(def: string[]) {
     this.updateBook({ definitions: [...this.book.definitions, ...def] })
@@ -153,62 +147,6 @@ export class BookTab extends BaseTab {
   rangeToCfi(range: Range) {
     return this.view.contents.cfiFromRange(range)
   }
-  putAnnotation(
-    type: AnnotationType,
-    cfi: string,
-    color: AnnotationColor,
-    text: string,
-    notes?: string,
-  ) {
-    const spine = this.section
-    if (!spine?.navitem) return
-
-    const i = this.book.annotations.findIndex((a) => a.cfi === cfi)
-    let annotation = this.book.annotations[i]
-
-    const now = Date.now()
-    if (!annotation) {
-      annotation = {
-        id: uuidv4(),
-        bookId: this.book.id,
-        cfi,
-        spine: {
-          index: spine.index,
-          title: spine.navitem.label,
-        },
-        createAt: now,
-        updatedAt: now,
-        type,
-        color,
-        notes,
-        text,
-      }
-
-      this.updateBook({
-        // DataCloneError: Failed to execute 'put' on 'IDBObjectStore': #<Object> could not be cloned.
-        annotations: [...snapshot(this.book.annotations), annotation],
-      })
-    } else {
-      annotation = {
-        ...this.book.annotations[i]!,
-        type,
-        updatedAt: now,
-        color,
-        notes,
-        text,
-      }
-      this.book.annotations.splice(i, 1, annotation)
-      this.updateBook({
-        annotations: [...snapshot(this.book.annotations)],
-      })
-    }
-  }
-  removeAnnotation(cfi: string) {
-    return this.updateBook({
-      annotations: snapshot(this.book.annotations).filter((a) => a.cfi !== cfi),
-    })
-  }
-
   keyword = ''
   setKeyword(keyword: string) {
     if (this.keyword === keyword) return

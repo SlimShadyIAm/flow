@@ -44,20 +44,17 @@ export class DB extends Dexie {
 
     this.version(5).stores({
       books:
-        'id, name, size, metadata, createdAt, updatedAt, cfi, percentage, definitions, annotations, configuration',
+        'id, name, size, metadata, createdAt, updatedAt, cfi, percentage, definitions, configuration',
     })
 
     this.version(4)
       .stores({
         books:
-          'id, name, size, metadata, createdAt, updatedAt, cfi, percentage, definitions, annotations',
+          'id, name, size, metadata, createdAt, updatedAt, cfi, percentage, definitions',
       })
       .upgrade(async (t) => {
         t.table('books')
           .toCollection()
-          .modify((r) => {
-            r.annotations = []
-          })
       })
 
     this.version(3)

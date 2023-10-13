@@ -38,7 +38,7 @@ export interface TypographyConfiguration {
   lineHeight?: number
   spread?: RenditionSpread
   zoom?: number
-  marginSize: 'small' | 'large'
+  marginSize?: 'small' | 'large'
 }
 
 interface ThemeConfiguration {
