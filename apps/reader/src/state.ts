@@ -50,7 +50,7 @@ export const defaultSettings: Settings = {
   spread: RenditionSpread.None,
   fontFamily: 'Garamond',
   marginSize: 'small',
-  fontSize: '14',
+  fontSize: '18',
   fontWeight: 400,
 }
 

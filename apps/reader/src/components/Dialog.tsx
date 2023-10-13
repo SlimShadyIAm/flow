@@ -155,12 +155,15 @@ const PresentationChanges = ({ changes }: PresentationChangesProps) => {
   const settings =
     focusedBookTab?.book.configuration?.typography ?? defaultSettings
 
+  const smallMargin = '16px'
+  const largeMargin = '48px'
+
   const presentationStyleBefore = {
     fontSize: settings.fontSize,
     fontWeight: settings.fontWeight,
     fontFamily: 'Garamond',
-    paddingLeft: settings.marginSize === 'small' ? '16px' : '48px',
-    paddingRight: settings.marginSize === 'small' ? '16px' : '48px',
+    paddingLeft: settings.marginSize === 'small' ? smallMargin : largeMargin,
+    paddingRight: settings.marginSize === 'small' ? smallMargin : largeMargin,
   }
 
   const presentationStyleAfter = { ...presentationStyleBefore }
@@ -176,9 +179,9 @@ const PresentationChanges = ({ changes }: PresentationChangesProps) => {
         (settings.fontWeight as number) + offset
     } else if (change.property === 'marginSize') {
       presentationStyleAfter.paddingLeft =
-        change.change === 'decrease' ? '16px' : '48px'
+        change.change === 'decrease' ? smallMargin : largeMargin
       presentationStyleAfter.paddingRight =
-        change.change === 'decrease' ? '16px' : '48px'
+        change.change === 'decrease' ? smallMargin : largeMargin
     }
   }
   const highlightTextMuted = useHighlightTextMuted()

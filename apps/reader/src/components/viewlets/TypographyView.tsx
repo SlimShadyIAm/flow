@@ -50,7 +50,7 @@ export const TypographyView = () => {
         name={t_typography('font_size')}
         iconDown={<FontSizeDecrease className={iconColors} />}
         iconUp={<FontSizeIncrease className={iconColors} />}
-        options={[12, 14, 18]}
+        options={[14, 18, 24]}
         onChange={(v) => {
           setTypography('fontSize', v ? v + 'px' : undefined)
         }}
@@ -172,11 +172,11 @@ const SettingsFieldInfo = ({
   name,
   value,
 }: {
-  value: string | number
+  value: string | number | undefined
   name: string
 }) => {
   const highlightColor = useHighlightTextColors()
-  const string = value.toString()
+  const string = value?.toString() ?? ''
 
   return (
     <>

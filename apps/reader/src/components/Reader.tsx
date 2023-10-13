@@ -70,7 +70,8 @@ export function NavigationButton(props: NaviagtionButtonProps) {
       onClick={onClick}
       className={clsx(
         'flex h-full items-center justify-center transition-all',
-        marginSize === 'large' ? 'w-52' : 'w-32',
+        // marginSize === 'large' ? 'w-[56rem]' : 'w-[52rem]', // for 1440p
+        marginSize === 'large' ? 'w-[32rem]' : 'w-[28rem]', // for 1080p
         pageTurnClasses,
       )}
       role="button"
