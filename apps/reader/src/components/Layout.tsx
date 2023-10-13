@@ -196,8 +196,8 @@ const SideBar: React.FC = () => {
   const bgColors = useBgColors()
 
   const { size } = useSplitViewItem(SideBar, {
-    preferredSize: 380,
-    minSize: 380,
+    preferredSize: 420,
+    minSize: 420,
     visible: !!action,
   })
   const { convertToCSV } = useLogger()
