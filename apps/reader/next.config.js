@@ -43,6 +43,9 @@ const config = {
     locales: ['en-US', 'zh-CN'],
     defaultLocale: 'en-US',
   },
+  eslint: {
+    ignoreDuringBuilds: true
+  },
   ...(IS_DOCKER && {
     output: 'standalone',
     experimental: {
@@ -59,10 +62,8 @@ const prod = withSentryConfig(
   base,
   // Make sure adding Sentry options is the last code to run before exporting, to
   // ensure that your source maps include changes from all other Webpack plugins
-  sentryWebpackPluginOptions,
-  eslint: {
-    ignoreDuringBuilds: true
-  }
+  sentryWebpackPluginOptions
+  
 )
 
 module.exports = IS_DEV ? dev : IS_DOCKER ? docker : prod
