@@ -28,6 +28,8 @@ export const Layout: React.FC = ({ children }) => {
   const [ready, setReady] = useState(false)
   const setAction = useSetAction()
   const mobile = useMobile()
+  const r = useReaderSnapshot()
+  const readMode = r.focusedTab?.isBook
 
   useEffect(() => {
     if (mobile === undefined) return
@@ -39,7 +41,7 @@ export const Layout: React.FC = ({ children }) => {
     <div className="flex h-full flex-col transition-colors">
       <TitleBar />
       <div id="layout" className="flex select-none flex-row">
-        {ready && <SideBar />}
+        {ready && readMode && <SideBar />}
         {ready && <Reader>{children}</Reader>}
       </div>
     </div>

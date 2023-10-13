@@ -114,3 +114,7 @@ p {
 .list-row:hover .action {
   display: block;
 }
+
+.dialog-open {
+  overflow: hidden;
+}
