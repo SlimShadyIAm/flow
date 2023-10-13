@@ -77,3 +77,11 @@ export const useTextPresentationHighlightRing = () => {
   })
 }
 
+export const useHighlightTextMuted = () => {
+  return useColorSchemeColors({
+    sepia: 'text-border-sepia/50',
+    dark: 'text-border-dark/50',
+    light: 'text-border-light/50',
+  })
+}
+

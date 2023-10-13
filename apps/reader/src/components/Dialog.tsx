@@ -6,6 +6,8 @@ import {
   useHighlightTextColors,
   useTextPresentationHighlightRing,
   useTextColors,
+  useSettingsButtonDisabledColors,
+  useHighlightTextMuted,
 } from '../hooks/useColors'
 import { useReaderSnapshot } from '../models'
 import { defaultSettings, TypographyConfiguration } from '../state'
@@ -158,7 +160,7 @@ const PresentationChanges = ({ changes }: PresentationChangesProps) => {
     fontWeight: settings.fontWeight,
     fontFamily: 'Garamond',
     paddingLeft: settings.marginSize === 'small' ? '16px' : '48px',
-    paddingRight: settings.marginSize === 'small' ? '16px' : '48px'
+    paddingRight: settings.marginSize === 'small' ? '16px' : '48px',
   }
 
   const presentationStyleAfter = { ...presentationStyleBefore }
@@ -173,15 +175,25 @@ const PresentationChanges = ({ changes }: PresentationChangesProps) => {
       presentationStyleAfter.fontWeight =
         (settings.fontWeight as number) + offset
     } else if (change.property === 'marginSize') {
-      presentationStyleAfter.paddingLeft = change.change === 'decrease' ? '16px' : '48px'
-      presentationStyleAfter.paddingRight = change.change === 'decrease' ? '16px' : '48px'
+      presentationStyleAfter.paddingLeft =
+        change.change === 'decrease' ? '16px' : '48px'
+      presentationStyleAfter.paddingRight =
+        change.change === 'decrease' ? '16px' : '48px'
     }
   }
+  const highlightTextMuted = useHighlightTextMuted()
 
   return (
     <div className="mb-4 flex flex-row justify-between">
       <div className="flex flex-col">
-        <p className="text-lg font-semibold text-slate-400">Before</p>
+        <p
+          className={clsx(
+            'text-lg font-semibold text-slate-400',
+            highlightTextMuted,
+          )}
+        >
+          Before
+        </p>
         <TextPresentationPreview className={presentationStyleBefore} />
       </div>
       <div className="flex flex-col">
@@ -209,7 +221,9 @@ const TextPresentationPreview = ({
   after,
   className,
 }: TextPresentationPreviewProps) => {
-  const ringColor = useTextPresentationHighlightRing()
+  const ringColorAfter = useTextPresentationHighlightRing()
+  const ringColorBefore = useSettingsButtonDisabledColors()
+
   const textColors = useTextColors()
 
   return (
@@ -217,8 +231,9 @@ const TextPresentationPreview = ({
       className={clsx(
         'h-48 w-64 rounded-sm p-3 ring-2',
         textColors,
-        after && ringColor,
+        after && ringColorAfter,
         !after && 'ring-slate-400',
+        !after && ringColorBefore,
       )}
       style={className}
     >
