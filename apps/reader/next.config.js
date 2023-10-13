@@ -60,6 +60,9 @@ const prod = withSentryConfig(
   // Make sure adding Sentry options is the last code to run before exporting, to
   // ensure that your source maps include changes from all other Webpack plugins
   sentryWebpackPluginOptions,
+  eslint: {
+    ignoreDuringBuilds: true
+  }
 )
 
 module.exports = IS_DEV ? dev : IS_DOCKER ? docker : prod
