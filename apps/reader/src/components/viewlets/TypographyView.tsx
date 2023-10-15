@@ -17,6 +17,8 @@ import {
   FontSizeIncrease,
   FontWeightDecrease,
   FontWeightIncrease,
+  GenericDecrease,
+  GenericIncrease,
   MarginDecrease,
   MarginIncrease,
 } from '../Icons'
@@ -65,6 +67,28 @@ export const TypographyView = () => {
           setTypography('fontWeight', v || undefined)
         }}
       />
+      {/*
+      <SettingsFieldNumber
+        property="letterSpacing"
+        name={t_typography("letter_spacing")}
+        iconDown={<GenericDecrease className={iconColors} />}
+        iconUp={<GenericIncrease className={iconColors} />}
+        options={[0, 1, 2, 3, 4]}
+        onChange={(v) => {
+          setTypography('letterSpacing', v ? v + 'px' : undefined)
+        }}
+      />
+      <SettingsFieldNumber
+        property="lineHeight"
+        name={t_typography("line_height")}
+        iconDown={<GenericDecrease className={iconColors} />}
+        iconUp={<GenericIncrease className={iconColors} />}
+        options={[1.2, 1.5, 1.8, 2.0]}
+        onChange={(v) => {
+          setTypography('lineHeight', v || undefined)
+        }}
+      />
+      */}
       <SettingsFieldSelection
         name={t_typography('margin_size')}
         property="marginSize"
@@ -141,7 +165,7 @@ const SettingsFieldNumber = ({
 
   const stepDown = () => {
     const prevValue = options[options.indexOf(value) - 1]
-    if (!minDisabled && prevValue) {
+    if (!minDisabled && prevValue !== undefined) {
       handleLog(prevValue)
       setValue(prevValue)
     }

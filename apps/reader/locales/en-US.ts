@@ -37,6 +37,7 @@ export default {
   'typography.font_weight': 'Boldness',
   'typography.margin_size': 'Margin Size',
   'typography.line_height': 'Line Height',
+  'typography.letter_spacing': 'Letter Spacing',
   'typography.zoom': 'Zoom',
 
   'theme.title': 'Theme',

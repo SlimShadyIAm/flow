@@ -32,13 +32,14 @@ export interface Settings extends TypographyConfiguration {
 }
 
 export interface TypographyConfiguration {
-  fontSize?: string
+  fontSize?: string // string because it needs the 'px' at the end
   fontWeight?: number
   fontFamily?: string
   lineHeight?: number
   spread?: RenditionSpread
   zoom?: number
   marginSize?: 'small' | 'large'
+  letterSpacing?: string // string because it needs the 'px' at the end
 }
 
 interface ThemeConfiguration {
@@ -52,6 +53,8 @@ export const defaultSettings: Settings = {
   marginSize: 'small',
   fontSize: '18',
   fontWeight: 400,
+  letterSpacing: '0',
+  lineHeight: 1.5,
 }
 
 const settingsState = atom<Settings>({

@@ -170,3 +170,33 @@ export function MarginIncrease() {
     </svg>
   )
 }
+
+export function GenericIncrease({ className }: IconProps) {
+  return (
+    <svg
+      width="27"
+      height="27"
+      viewBox="0 0 27 27"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <path d="M15.5769 2.07692C15.5769 0.928125 14.6488 0 13.5 0C12.3512 0 11.4231 0.928125 11.4231 2.07692V11.4231H2.07692C0.928125 11.4231 0 12.3512 0 13.5C0 14.6488 0.928125 15.5769 2.07692 15.5769H11.4231V24.9231C11.4231 26.0719 12.3512 27 13.5 27C14.6488 27 15.5769 26.0719 15.5769 24.9231V15.5769H24.9231C26.0719 15.5769 27 14.6488 27 13.5C27 12.3512 26.0719 11.4231 24.9231 11.4231H15.5769V2.07692Z" />
+    </svg>
+  )
+}
+
+export function GenericDecrease({ className }: IconProps) {
+  return (
+    <svg
+      width="30"
+      height="5"
+      viewBox="0 0 30 5"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <path d="M30 2.30769C30 3.58413 28.9687 4.61538 27.6923 4.61538H2.30769C1.03125 4.61538 0 3.58413 0 2.30769C0 1.03125 1.03125 0 2.30769 0H27.6923C28.9687 0 30 1.03125 30 2.30769Z" />
+    </svg>
+  )
+}
