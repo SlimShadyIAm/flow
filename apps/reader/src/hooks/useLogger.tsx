@@ -1,3 +1,4 @@
+import html2canvas from 'html2canvas'
 import { ReactNode, createContext, useContext, useMemo, useState } from 'react'
 
 interface Log {
@@ -7,6 +8,7 @@ interface Log {
   participantId?: number
   oldValue?: string
   newValue?: string
+  screenshot?: string
 }
 
 interface UserLog {
@@ -88,23 +90,42 @@ const LoggerProvider = ({ children }: Props) => {
     document.body.appendChild(link)
     link.click()
   }
+  const captureScreenshot = () => {
+    const targetElement = document.getElementById('root') // Replace 'capture' with the id of the element you want to capture
+    if (!targetElement) {
+      return 'Error occcured trying to grab screenshot'
+    }
+
+    const value = html2canvas(targetElement)
+      .then((canvas) => {
+        return canvas.toDataURL()
+      })
+      .catch((err) => {
+        console.error(err)
+        return 'Error occcured trying to grab screenshot'
+      })
+
+    return value;
+  }
 
   const loggerContextValue: LoggerContextProps = useMemo(
     () => ({
       logs,
-      addUserLog: (log: UserLog) => {
+      addUserLog: async (log: UserLog) => {
         addLog({
           ...log,
           agent: 'USER',
           timestamp: new Date(),
+          screenshot: await captureScreenshot(),
         })
       },
       convertToCSV,
-      addSystemLog: (log: SystemLog) => {
+      addSystemLog: async (log: SystemLog) => {
         addLog({
           ...log,
           agent: 'SYSTEM',
           timestamp: new Date(),
+          screenshot: await captureScreenshot(),
         })
       },
     }),

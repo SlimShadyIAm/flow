@@ -12,7 +12,7 @@ export default function Document() {
         <PWA />
         <PreventFlash />
       </Head>
-      <body>
+      <body id="root">
         <GoogleTagManagerNoScript />
         <Main />
         <NextScript />
