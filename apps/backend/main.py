@@ -1,5 +1,4 @@
 from fastapi import FastAPI, HTTPException
-from fastapi.encoders import jsonable_encoder
 from database import close_database, initialize_database, insert_event_data
 from models import EventData, Events, EventResponse
 from screenshot import capture_screenshot
@@ -30,7 +29,7 @@ async def take_screenshot(event_data: EventData):
             time=event_data.timestamp,
             agent=event_data.agent,
             event=event_data.event,
-            participant_id=str(event_data.participantId),
+            participant_id=event_data.participantId,
             old_value="" if event_data.oldValue is None else str(event_data.oldValue),
             new_value="" if event_data.newValue is None else str(event_data.newValue),
             screenshot_file=screenshot_filename  # Make sure this field is included
