@@ -138,7 +138,6 @@ const SettingsFieldNumber = ({
       event: 'SET_TYPOGRAPHY_' + property.toUpperCase(),
       oldValue: value.toString(),
       newValue: newValue.toString(),
-      participantId: 1,
     })
   }
 
@@ -234,7 +233,6 @@ const SettingsFieldSelection = ({
       event: 'SET_TYPOGRAPHY_' + property.toUpperCase(),
       oldValue: value,
       newValue: newValue,
-      participantId: 1,
     })
   }
 
@@ -334,7 +332,6 @@ const ThemeButtons = () => {
       event: 'SET_THEME',
       oldValue: scheme,
       newValue: newValue,
-      participantId: 1,
     })
   }
 

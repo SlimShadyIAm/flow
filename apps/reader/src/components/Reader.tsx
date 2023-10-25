@@ -29,7 +29,6 @@ import { updateCustomStyle } from '../styles'
 import { LeftArrow, RightArrow } from './Icons'
 import { DropZone, SplitView } from './base'
 import * as pages from './pages'
-import { useDialog } from './Dialog'
 
 function handleKeyDown(tab?: BookTab) {
   return (e: KeyboardEvent) => {
@@ -89,11 +88,11 @@ export function ReaderGridView() {
   const { groups } = useReaderSnapshot()
   const { addUserLog } = useLogger()
   useEventListener('keydown', handleKeyDown(reader.focusedBookTab))
+  const { participantId, setParticipantId } = useLogger()
 
   const handleNextPage = () => {
     addUserLog({
       event: 'NEXT_PAGE',
-      participantId: 1,
     })
     reader.focusedBookTab?.next()
   }
@@ -101,9 +100,32 @@ export function ReaderGridView() {
   const handlePreviousPage = () => {
     addUserLog({
       event: 'PREVIOUS_PAGE',
-      participantId: 1,
     })
     reader.focusedBookTab?.prev()
+  }
+
+  const [idValue, setIdValue] = useState<number>()
+
+  if (participantId === -1) {
+    return (
+      <div className="flex h-screen w-screen flex-col items-center justify-center">
+        <div className="flex flex-row gap-2">
+          <input
+            className="p-4"
+            type="number"
+            onChange={(e) => setIdValue(Number(e.target.value))}
+            value={idValue}
+            placeholder="Enter Participant ID"
+          />
+          <button
+            className="ml-4 bg-blue-900 p-4"
+            onClick={() => setParticipantId(parseInt(idValue as any))}
+          >
+            Set ID
+          </button>
+        </div>
+      </div>
+    )
   }
 
   if (!groups.length) return null
