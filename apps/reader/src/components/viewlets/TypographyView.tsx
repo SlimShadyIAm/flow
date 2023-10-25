@@ -49,7 +49,7 @@ export const TypographyView = () => {
         name={t_typography('font_weight')}
         iconDown={<FontWeightDecrease className={iconColors} />}
         iconUp={<FontWeightIncrease className={iconColors} />}
-        options={[400, 600, 700]}
+        options={[100, 400, 800]}
         onChange={(v) => {
           setTypography('fontWeight', v || undefined)
         }}

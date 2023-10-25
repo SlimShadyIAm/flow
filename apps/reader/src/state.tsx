@@ -52,7 +52,7 @@ interface ThemeConfiguration {
 
 export const defaultSettings: Settings = {
   spread: RenditionSpread.None,
-  fontFamily: 'Garamond',
+  fontFamily: 'Noto Serif',
   marginSize: 'small',
   fontSize: '18',
   fontWeight: 400,

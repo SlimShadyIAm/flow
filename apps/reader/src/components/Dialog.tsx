@@ -161,7 +161,7 @@ const PresentationChanges = ({ changes }: PresentationChangesProps) => {
   const presentationStyleBefore = {
     fontSize: settings.fontSize,
     fontWeight: settings.fontWeight,
-    fontFamily: 'Garamond',
+    fontFamily: 'Noto Serif',
     paddingLeft: settings.marginSize === 'small' ? smallMargin : largeMargin,
     paddingRight: settings.marginSize === 'small' ? smallMargin : largeMargin,
   }

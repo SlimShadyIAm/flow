@@ -43,7 +43,9 @@ export function updateCustomStyle(
   if (!contents || !settings) return
 
   const { zoom, ...other } = settings
-  let css = `a, article, cite, div, li, p, pre, span, table, body {
+  let css = `
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:wght@100;400;800&display=swap');
+  a, article, cite, div, li, p, pre, span, table, body {
     ${mapToCss(other)}
   }`
 
@@ -52,7 +54,8 @@ export function updateCustomStyle(
     const scale = (p: keyof CSSStyleDeclaration) => ({
       [p]: `${parseInt(body.style[p] as string) / zoom}px`,
     })
-    css += `body {
+    css += `
+      body {
       ${mapToCss({
         transformOrigin: 'top left',
         transform: `scale(${zoom})`,
