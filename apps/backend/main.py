@@ -3,9 +3,15 @@ from fastapi.encoders import jsonable_encoder
 from database import close_database, initialize_database, insert_event_data
 from models import EventData, Events, EventResponse
 from screenshot import capture_screenshot
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # You can specify origins here or restrict to specific domains
+    allow_methods=["*"],  # You can specify specific HTTP methods here, e.g., ["GET", "POST"]
+    allow_headers=["*"],  # You can specify specific headers here, e.g., ["Content-Type", "Authorization"]
+)
 
 @app.post("/capture-screenshot/", response_model=EventResponse)
 async def take_screenshot(event_data: EventData):
@@ -21,12 +27,12 @@ async def take_screenshot(event_data: EventData):
 
         return EventResponse(
             id=event.id,  # Replace with the actual ID
-            time=event_data.Time,
-            agent=event_data.Agent,
-            event=event_data.Event,
-            participant_id=str(event_data.Participant_ID),
-            old_value="" if event_data.Old_Value is None else str(event_data.Old_Value),
-            new_value="" if event_data.New_Value is None else str(event_data.New_Value),
+            time=event_data.timestamp,
+            agent=event_data.agent,
+            event=event_data.event,
+            participant_id=str(event_data.participantId),
+            old_value="" if event_data.oldValue is None else str(event_data.oldValue),
+            new_value="" if event_data.newValue is None else str(event_data.newValue),
             screenshot_file=screenshot_filename  # Make sure this field is included
         )
     except Exception as e:

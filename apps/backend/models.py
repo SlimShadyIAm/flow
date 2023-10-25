@@ -1,13 +1,14 @@
+from typing import Optional
 from pydantic import BaseModel
 
 class EventData(BaseModel):
-    Time: str
-    Agent: str
-    Event: str
-    Participant_ID: int
-    Old_Value: int | str = None
-    New_Value: int | str = None
-    Screenshot_file: str = None
+    timestamp: str
+    agent: str
+    event: str
+    participantId: int
+    oldValue: Optional[int|str] = None
+    newValue: Optional[int|str ]= None
+    Screenshot_file: Optional[str] = None
 
 class EventResponse(BaseModel):
     id: int

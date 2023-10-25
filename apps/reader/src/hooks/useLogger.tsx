@@ -1,4 +1,7 @@
+import axios from 'axios'
 import { ReactNode, createContext, useContext, useMemo, useState } from 'react'
+
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_LOG_API_URL
 
 interface Log {
   timestamp: Date
@@ -52,8 +55,14 @@ export const useLogger = () => {
 const LoggerProvider = ({ children }: Props) => {
   const [logs, setLogs] = useState<Log[]>([])
 
-  const addLog = (log: Log) => {
-    setLogs((prevLogs) => [...prevLogs, log])
+  const addLog = async (log: Log) => {
+    try {
+          await axios.post('/capture-screenshot/', log)
+
+    } catch (error) {
+      console.log(error)
+    }
+
   }
 
   const convertToCSV = () => {

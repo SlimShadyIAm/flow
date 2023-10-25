@@ -12,12 +12,12 @@ def initialize_database():
 # Insert event data into the database
 def insert_event_data(event_data: EventData):
     return Events.create(
-        time=event_data.Time,
-        agent=event_data.Agent,
-        event=event_data.Event,
-        participant_id=event_data.Participant_ID,
-        old_value=event_data.Old_Value,
-        new_value=event_data.New_Value,
+        time=event_data.timestamp,
+        agent=event_data.agent,
+        event=event_data.event,
+        participant_id=event_data.participantId,
+        old_value=event_data.oldValue,
+        new_value=event_data.newValue,
         screenshot_file=event_data.Screenshot_file
     )
 
