@@ -7,6 +7,7 @@ import { RiHome6Line, RiSettings5Line } from 'react-icons/ri'
 import {
   Env,
   useAction,
+  useColorScheme,
   useMobile,
   useSetAction,
   useTranslation,
@@ -18,6 +19,7 @@ import {
 } from '../hooks/useColors'
 import { useLogger } from '../hooks/useLogger'
 import { reader, useReaderSnapshot } from '../models'
+import { useResetTypography } from '../state'
 import { activeClass } from '../styles'
 
 import { useSplitViewItem } from './base'
@@ -55,6 +57,7 @@ export default function TitleBar() {
   const bookAuthor = r.focusedBookTab?.book.metadata.creator
   const textColors = useTextColors()
   const bgColors = useBgColors()
+  const { convertToCSV } = useLogger()
 
   const bgBorder = useColorSchemeColors({
     sepia: 'border-b-black',
@@ -62,17 +65,30 @@ export default function TitleBar() {
     light: 'border-b-black',
   })
 
+  const hiddenTextColors = useColorSchemeColors({
+    sepia: 'text-background-sepia hover:text-text-sepia',
+    dark: 'text-background-dark hover:text-text-dark',
+    light: 'text-background-light hover:text-text-light',
+  })
+
   if (!readMode) return null
   return (
     <div
       className={clsx(
-        'border-b-[1px] p-3 text-center',
+        'flex w-full items-center justify-between border-b-[1px] p-3 text-center',
         bgBorder,
         bgColors,
-        textColors,
       )}
     >
-      {bookTitle} - {bookAuthor}
+      <p className={clsx('flex-grow text-center', textColors)}>
+        {bookTitle} - {bookAuthor}
+      </p>
+      <button
+        className={clsx('shrink-0', hiddenTextColors)}
+        onClick={convertToCSV}
+      >
+        Export CSV
+      </button>
     </div>
   )
 }
@@ -194,27 +210,39 @@ const SideBar: React.FC = () => {
   const [action] = useAction()
   const mobile = useMobile()
   const bgColors = useBgColors()
+  const t = useTranslation('settings')
+  const resetTypography = useResetTypography()
+  const { setScheme } = useColorScheme()
 
   const { size } = useSplitViewItem(SideBar, {
     preferredSize: 420,
     minSize: 420,
     visible: !!action,
   })
-  const { convertToCSV } = useLogger()
 
   return (
     <>
       <div
         className={clsx(
-          'SideBar face flex flex-col transition',
+          'SideBar face flex flex-col justify-between p-6 pb-6 transition',
           !action && '!hidden',
           mobile ? 'absolute inset-y-0 right-0 z-10' : '',
           bgColors,
         )}
         style={{ width: mobile ? '75%' : size }}
       >
-        <button onClick={convertToCSV}>Download csv</button>
         <TypographyView />
+        <div>
+          <button
+            className="rounded-lg border-4 border-red-400 py-2 px-4 text-xl text-red-400 hover:bg-red-400/20"
+            onClick={() => {
+              resetTypography()
+              setScheme('light')
+            }}
+          >
+            {t('cache.clear')}
+          </button>
+        </div>
       </div>
     </>
   )

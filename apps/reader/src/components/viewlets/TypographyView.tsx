@@ -3,8 +3,12 @@ import { ReactNode, useCallback, useEffect, useState } from 'react'
 
 import { ColorScheme, useColorScheme, useTranslation } from '@flow/reader/hooks'
 import { useLogger } from '@flow/reader/hooks/useLogger'
-import { reader, useReaderSnapshot } from '@flow/reader/models'
-import { defaultSettings, TypographyConfiguration } from '@flow/reader/state'
+import { useReaderSnapshot } from '@flow/reader/models'
+import {
+  defaultSettings,
+  TypographyConfiguration,
+  useSetTypography,
+} from '@flow/reader/state'
 
 import {
   useHighlightTextColors,
@@ -26,27 +30,10 @@ import {
 export const TypographyView = () => {
   const t_typography = useTranslation('typography')
   const iconColors = useIconColors()
-
-  const setTypography = useCallback(
-    <K extends keyof TypographyConfiguration>(
-      k: K,
-      v: TypographyConfiguration[K],
-    ) => {
-      reader.focusedBookTab?.updateBook({
-        configuration: {
-          ...reader.focusedBookTab.book.configuration,
-          typography: {
-            ...reader.focusedBookTab.book.configuration?.typography,
-            [k]: v,
-          },
-        },
-      })
-    },
-    [],
-  )
+  const setTypography = useSetTypography()
 
   return (
-    <div className="flex flex-col gap-8 p-4">
+    <div className="flex flex-col gap-8">
       <SettingsFieldNumber
         property="fontSize"
         name={t_typography('font_size')}
@@ -160,6 +147,7 @@ const SettingsFieldNumber = ({
     if (!maxDisabled && nextValue) {
       handleLog(nextValue)
       setValue(nextValue)
+      onChange(nextValue)
     }
   }
 
@@ -168,12 +156,17 @@ const SettingsFieldNumber = ({
     if (!minDisabled && prevValue !== undefined) {
       handleLog(prevValue)
       setValue(prevValue)
+      onChange(prevValue)
     }
   }
 
   useEffect(() => {
-    onChange(value)
-  }, [value])
+    if (!focusedBookTab?.book.configuration?.typography || !focusedBookTab?.book.configuration?.typography[property]) return
+    if (focusedBookTab?.book.configuration?.typography[property] !== value) {
+      setValue(parseInt(focusedBookTab?.book.configuration?.typography[property] as string))
+    }
+  }, [value, property, focusedBookTab?.book.configuration?.typography])
+
 
   return (
     <div className="flex">
@@ -244,6 +237,13 @@ const SettingsFieldSelection = ({
       participantId: 1,
     })
   }
+
+  useEffect(() => {
+    if (!focusedBookTab?.book.configuration?.typography || !focusedBookTab?.book.configuration?.typography[property]) return
+    if (focusedBookTab?.book.configuration?.typography[property] !== value) {
+      setValue(focusedBookTab?.book.configuration?.typography[property] as string)
+    }
+  }, [value, property, focusedBookTab?.book.configuration?.typography])
 
   return (
     <div className="flex">
@@ -337,6 +337,12 @@ const ThemeButtons = () => {
       participantId: 1,
     })
   }
+
+  useEffect(() => {
+    if (scheme !== 'light' && scheme !== 'sepia' && scheme !== 'dark') {
+      setScheme('light')
+    }
+    }, [scheme, setScheme])
 
   return (
     <>
