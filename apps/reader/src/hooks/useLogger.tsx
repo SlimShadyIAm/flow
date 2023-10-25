@@ -1,4 +1,7 @@
-import { ReactNode, createContext, useContext, useMemo, useState } from 'react'
+import axios from 'axios'
+import { ReactNode, createContext, useContext, useMemo } from 'react'
+
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_LOG_API_URL
 
 interface Log {
   timestamp: Date
@@ -24,17 +27,13 @@ interface SystemLog {
 }
 
 type LoggerContextProps = {
-  logs: Log[]
   addUserLog: (log: UserLog) => void
   addSystemLog: (log: SystemLog) => void
-  convertToCSV: () => void
 }
 
 const initialContext: LoggerContextProps = {
-  logs: [],
   addUserLog: () => {},
   addSystemLog: () => {},
-  convertToCSV: () => {},
 }
 
 export const LoggerContext = createContext(initialContext)
@@ -50,48 +49,16 @@ export const useLogger = () => {
 }
 
 const LoggerProvider = ({ children }: Props) => {
-  const [logs, setLogs] = useState<Log[]>([])
-
-  const addLog = (log: Log) => {
-    setLogs((prevLogs) => [...prevLogs, log])
-  }
-
-  const convertToCSV = () => {
-    const header = [
-      'Time',
-      'Agent',
-      'Event',
-      'Participant ID',
-      'Old Value',
-      'New Value',
-    ]
-    const rows = logs.map((log) => [
-      log.timestamp,
-      log.agent,
-      log.event,
-      log.participantId,
-      log.oldValue,
-      log.newValue,
-    ])
-
-    const csvContent =
-      'data:text/csv;charset=utf-8,' +
-      header.join(',') +
-      '\n' +
-      rows.map((row) => row.join(',')).join('\n')
-
-    // Create a download link for the CSV file
-    const encodedUri = encodeURI(csvContent)
-    const link = document.createElement('a')
-    link.setAttribute('href', encodedUri)
-    link.setAttribute('download', 'click_logs.csv')
-    document.body.appendChild(link)
-    link.click()
+  const addLog = async (log: Log) => {
+    try {
+      await axios.post('/capture-screenshot/', log)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const loggerContextValue: LoggerContextProps = useMemo(
     () => ({
-      logs,
       addUserLog: (log: UserLog) => {
         addLog({
           ...log,
@@ -99,7 +66,6 @@ const LoggerProvider = ({ children }: Props) => {
           timestamp: new Date(),
         })
       },
-      convertToCSV,
       addSystemLog: (log: SystemLog) => {
         addLog({
           ...log,
@@ -108,7 +74,7 @@ const LoggerProvider = ({ children }: Props) => {
         })
       },
     }),
-    [logs, addLog, convertToCSV],
+    [addLog],
   )
 
   return (
