@@ -17,7 +17,6 @@ import {
   useBgColors,
   useTextColors,
 } from '../hooks/useColors'
-import { useLogger } from '../hooks/useLogger'
 import { reader, useReaderSnapshot } from '../models'
 import { useResetTypography } from '../state'
 import { activeClass } from '../styles'
@@ -57,18 +56,11 @@ export default function TitleBar() {
   const bookAuthor = r.focusedBookTab?.book.metadata.creator
   const textColors = useTextColors()
   const bgColors = useBgColors()
-  const { convertToCSV } = useLogger()
 
   const bgBorder = useColorSchemeColors({
     sepia: 'border-b-black',
     dark: 'border-b-slate-200',
     light: 'border-b-black',
-  })
-
-  const hiddenTextColors = useColorSchemeColors({
-    sepia: 'text-background-sepia hover:text-text-sepia',
-    dark: 'text-background-dark hover:text-text-dark',
-    light: 'text-background-light hover:text-text-light',
   })
 
   if (!readMode) return null
@@ -83,12 +75,6 @@ export default function TitleBar() {
       <p className={clsx('flex-grow text-center', textColors)}>
         {bookTitle} - {bookAuthor}
       </p>
-      <button
-        className={clsx('shrink-0', hiddenTextColors)}
-        onClick={convertToCSV}
-      >
-        Export CSV
-      </button>
     </div>
   )
 }
