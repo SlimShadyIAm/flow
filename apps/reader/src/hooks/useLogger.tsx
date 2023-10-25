@@ -96,7 +96,11 @@ const LoggerProvider = ({ children }: Props) => {
       return 'Error occcured trying to grab screenshot'
     }
 
-    const value = html2canvas(targetElement)
+    const value = html2canvas(targetElement, {
+      allowTaint: true,
+      logging: true,
+      useCORS: true,
+    })
       .then((canvas) => {
         return canvas.toDataURL()
       })
@@ -105,7 +109,7 @@ const LoggerProvider = ({ children }: Props) => {
         return 'Error occcured trying to grab screenshot'
       })
 
-    return value;
+    return value
   }
 
   const loggerContextValue: LoggerContextProps = useMemo(

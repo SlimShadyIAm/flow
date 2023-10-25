@@ -6,8 +6,6 @@ import {
   hexFromArgb,
 } from '@material/material-color-utilities'
 
-import { useColorScheme } from './hooks'
-
 export function rgbFromArgb(argb: number) {
   return [redFromArgb, greenFromArgb, blueFromArgb].map((f) => f(argb))
 }
@@ -28,4 +26,3 @@ export function compositeColors(color1: number, color2: number, p: number) {
     ),
   )
 }
-
