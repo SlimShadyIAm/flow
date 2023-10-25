@@ -89,7 +89,6 @@ export function ReaderGridView() {
   const { groups } = useReaderSnapshot()
   const { addUserLog } = useLogger()
   useEventListener('keydown', handleKeyDown(reader.focusedBookTab))
-  const { openDialog } = useDialog()
 
   const handleNextPage = () => {
     addUserLog({
@@ -97,7 +96,6 @@ export function ReaderGridView() {
       participantId: 1,
     })
     reader.focusedBookTab?.next()
-    openDialog()
   }
 
   const handlePreviousPage = () => {
