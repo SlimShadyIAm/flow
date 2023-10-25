@@ -54,7 +54,7 @@ export default {
   'settings.synchronization.authorize': 'Authorize',
   'settings.synchronization.unauthorize': 'Unauthorize',
   'settings.cache': 'Cache',
-  'settings.cache.clear': 'Clear',
+  'settings.cache.clear': 'Reset settings',
 
   'menu.copy': 'Copy',
   'menu.search_in_book': 'Search in book',

@@ -1,7 +1,10 @@
 import { IS_SERVER } from '@literal-ui/hooks'
+import { useCallback } from 'react'
 import { atom, AtomEffect, useRecoilState } from 'recoil'
 
 import { RenditionSpread } from '@flow/epubjs/types/rendition'
+
+import { reader } from './models'
 
 function localStorageEffect<T>(key: string, defaultValue: T): AtomEffect<T> {
   return ({ setSelf, onSet }) => {
@@ -49,12 +52,48 @@ interface ThemeConfiguration {
 
 export const defaultSettings: Settings = {
   spread: RenditionSpread.None,
-  fontFamily: 'Garamond',
+  fontFamily: 'Noto Serif',
   marginSize: 'small',
   fontSize: '18',
   fontWeight: 400,
   letterSpacing: '0',
   lineHeight: 1.5,
+}
+
+export const useSetTypography = () => {
+  const setTypography = useCallback(
+    <K extends keyof TypographyConfiguration>(
+      k: K,
+      v: TypographyConfiguration[K],
+    ) => {
+      reader.focusedBookTab?.updateBook({
+        configuration: {
+          ...reader.focusedBookTab.book.configuration,
+          typography: {
+            ...reader.focusedBookTab.book.configuration?.typography,
+            [k]: v,
+          },
+        },
+      })
+    },
+    [],
+  )
+  return setTypography
+}
+
+export const useResetTypography = () => {
+  const resetTypography = useCallback(() => {
+    reader.focusedBookTab?.updateBook({
+      configuration: {
+        ...reader.focusedBookTab.book.configuration,
+        typography: {
+          ...defaultSettings,
+        },
+      },
+    })
+  }, [])
+
+  return resetTypography
 }
 
 const settingsState = atom<Settings>({
