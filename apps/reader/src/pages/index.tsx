@@ -18,6 +18,7 @@ import { ReaderGridView, Button, TextField, DropZone } from '../components'
 import { BookRecord, CoverRecord, db } from '../db'
 import { addFile, fetchBook, handleFiles } from '../file'
 import {
+  useColorScheme,
   useDisablePinchZooming,
   useLibrary,
   useMobile,
@@ -26,6 +27,7 @@ import {
   useTranslation,
 } from '../hooks'
 import { reader, useReaderSnapshot } from '../models'
+import { useResetTypography } from '../state'
 import { lock } from '../styles'
 import { dbx, pack, uploadData } from '../sync'
 import { copy } from '../utils'
@@ -39,8 +41,15 @@ export default function Index() {
   const router = useRouter()
   const src = new URL(window.location.href).searchParams.get(SOURCE)
   const [loading, setLoading] = useState(!!src)
+  const resetTypography = useResetTypography()
+  const { setScheme } = useColorScheme()
 
   useDisablePinchZooming()
+
+  useEffect(() => {
+    resetTypography()
+    setScheme('dark')
+  }, [resetTypography, setScheme])
 
   useEffect(() => {
     let src = router.query[SOURCE]
