@@ -99,7 +99,7 @@ export const useResetTypography = () => {
 const settingsState = atom<Settings>({
   key: 'settings',
   default: defaultSettings,
-  effects: [localStorageEffect('settings', defaultSettings)],
+  // effects: [localStorageEffect('settings', defaultSettings)],
 })
 
 export function useSettings() {

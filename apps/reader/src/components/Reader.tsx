@@ -110,19 +110,18 @@ export function ReaderGridView() {
     return (
       <div className="flex h-screen w-screen flex-col items-center justify-center">
         <div className="flex flex-row gap-2">
-          <input
-            className="p-4"
-            type="number"
-            onChange={(e) => setIdValue(Number(e.target.value))}
-            value={idValue}
-            placeholder="Enter Participant ID"
-          />
-          <button
-            className="ml-4 bg-blue-900 p-4"
-            onClick={() => setParticipantId(parseInt(idValue as any))}
-          >
-            Set ID
-          </button>
+          <form onSubmit={() => setParticipantId(parseInt(idValue as any))}>
+            <input
+              className="p-4"
+              type="number"
+              onChange={(e) => setIdValue(Number(e.target.value))}
+              value={idValue}
+              placeholder="Enter Participant ID"
+            />
+            <button type="submit" className="ml-4 bg-blue-900 p-4">
+              Set ID
+            </button>
+          </form>
         </div>
       </div>
     )
@@ -156,6 +155,23 @@ function ReaderGroup({ index }: ReaderGroupProps) {
     dark: 'bg-background-dark',
     light: 'bg-background-light',
   })
+
+  const { focusedBookTab } = useReaderSnapshot()
+  useEffect(() => {
+    // if we're in a book, prevent reloading the page
+    const unloadCallback = (event: any) => {
+      event.preventDefault()
+      event.returnValue = ''
+      return ''
+    }
+    if (!focusedBookTab?.isBook) {
+      window.removeEventListener('beforeunload', unloadCallback)
+    } else {
+      window.addEventListener('beforeunload', unloadCallback)
+    }
+
+    return () => window.removeEventListener('beforeunload', unloadCallback)
+  }, [focusedBookTab?.isBook])
 
   return (
     <div
