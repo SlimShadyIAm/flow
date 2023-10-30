@@ -9,9 +9,10 @@ export const activeClass = 'bg-primary70'
 export const defaultStyle = {
   html: {
     padding: '0 !important',
+    'background-color': 'transparent !important',
   },
   body: {
-    background: 'transparent',
+    background: 'transparent !important',
   },
   'a:any-link': {
     color: '#3b82f6 !important',
