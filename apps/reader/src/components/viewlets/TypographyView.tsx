@@ -1,5 +1,12 @@
 import clsx from 'clsx'
 import { ReactNode, useCallback, useEffect, useState } from 'react'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select'
 
 import { ColorScheme, useColorScheme, useTranslation } from '@flow/reader/hooks'
 import { useLogger } from '@flow/reader/hooks/useLogger'
@@ -11,6 +18,7 @@ import {
 } from '@flow/reader/state'
 
 import {
+  useFontSelectedColors,
   useHighlightTextColors,
   useIconColors,
   useSettingsButtonColors,
@@ -26,6 +34,7 @@ import {
   MarginDecrease,
   MarginIncrease,
 } from '../Icons'
+import { cn } from '../lib/utils'
 
 export const TypographyView = () => {
   const t_typography = useTranslation('typography')
@@ -34,6 +43,7 @@ export const TypographyView = () => {
 
   return (
     <div className="flex flex-col gap-8">
+      <FontSelection />
       <SettingsFieldNumber
         property="fontSize"
         name={t_typography('font_size')}
@@ -125,7 +135,7 @@ const SettingsFieldNumber = ({
   const [value, setValue] = useState<number>(
     parseInt(
       (focusedBookTab?.book.configuration?.typography ?? defaultSettings)[
-      property
+        property
       ] as string,
     ),
   )
@@ -160,12 +170,19 @@ const SettingsFieldNumber = ({
   }
 
   useEffect(() => {
-    if (!focusedBookTab?.book.configuration?.typography || !focusedBookTab?.book.configuration?.typography[property]) return
+    if (
+      !focusedBookTab?.book.configuration?.typography ||
+      !focusedBookTab?.book.configuration?.typography[property]
+    )
+      return
     if (focusedBookTab?.book.configuration?.typography[property] !== value) {
-      setValue(parseInt(focusedBookTab?.book.configuration?.typography[property] as string))
+      setValue(
+        parseInt(
+          focusedBookTab?.book.configuration?.typography[property] as string,
+        ),
+      )
     }
   }, [value, property, focusedBookTab?.book.configuration?.typography])
-
 
   return (
     <div className="flex">
@@ -224,7 +241,7 @@ const SettingsFieldSelection = ({
   const { addUserLog } = useLogger()
   const [value, setValue] = useState<string>(
     (focusedBookTab?.book.configuration?.typography ?? defaultSettings)[
-    property
+      property
     ] as string,
   )
 
@@ -237,9 +254,15 @@ const SettingsFieldSelection = ({
   }
 
   useEffect(() => {
-    if (!focusedBookTab?.book.configuration?.typography || !focusedBookTab?.book.configuration?.typography[property]) return
+    if (
+      !focusedBookTab?.book.configuration?.typography ||
+      !focusedBookTab?.book.configuration?.typography[property]
+    )
+      return
     if (focusedBookTab?.book.configuration?.typography[property] !== value) {
-      setValue(focusedBookTab?.book.configuration?.typography[property] as string)
+      setValue(
+        focusedBookTab?.book.configuration?.typography[property] as string,
+      )
     }
   }, [value, property, focusedBookTab?.book.configuration?.typography])
 
@@ -308,8 +331,8 @@ const SettingsButtonToggle = ({
     <button
       className={clsx(
         'ring-border-' +
-        scheme +
-        ' flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
+          scheme +
+          ' flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
         // !disabled && 'hover:bg-border-dark/20',
         // selected && 'bg-border-dark/30',
         selected && scheme === 'dark' && 'bg-border-dark/30',
@@ -339,7 +362,7 @@ const ThemeButtons = () => {
     if (scheme !== 'light' && scheme !== 'sepia' && scheme !== 'dark') {
       setScheme('light')
     }
-    }, [scheme, setScheme])
+  }, [scheme, setScheme])
 
   return (
     <>
@@ -353,12 +376,12 @@ const ThemeButtons = () => {
             key={value}
             className={clsx(
               'ring-border-' +
-              value +
-              ' bg-background-' +
-              value +
-              ' text-text-' +
-              value +
-              ' h-[56px] w-[56px] rounded-sm text-[28px] ring-4',
+                value +
+                ' bg-background-' +
+                value +
+                ' text-text-' +
+                value +
+                ' h-[56px] w-[56px] rounded-sm text-[28px] ring-4',
               scheme === value && 'bg-border-' + value + '/30',
             )}
             onClick={() => {
@@ -371,5 +394,53 @@ const ThemeButtons = () => {
         ))}
       </div>
     </>
+  )
+}
+
+const FontSelection = () => {
+  const settingsButtonColors = useSettingsButtonColors()
+
+  return (
+    <div className="flex flex-row">
+      <div className="flex-[0.40]">
+        {/* // TODO: fix capitalization */}
+        <SettingsFieldInfo name="Font" value={''} />
+      </div>
+      <div className="flex flex-[0.60] flex-row justify-end gap-8">
+        <Select value="Georgia">
+          <SelectTrigger
+            className={cn(
+              'text-border-dark h-12 w-full rounded-lg border-4 text-lg font-medium',
+              settingsButtonColors,
+            )}
+          >
+            <SelectValue placeholder="Font Family" />
+          </SelectTrigger>
+          <SelectContent className="border-0 bg-black">
+            <FontSelectionOption value="Georgia" />
+            <FontSelectionOption value="Times New Roman" />
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
+  )
+}
+
+interface FontSelectionOptionProps {
+  value: string
+}
+
+const FontSelectionOption = ({ value }: FontSelectionOptionProps) => {
+  const selectedFontColors = useFontSelectedColors()
+  return (
+    <SelectItem
+      className={cn(
+        'focus:rounded-md focus:bg-red-900 focus:ring-4',
+        selectedFontColors,
+      )}
+      value={value}
+    >
+      {value}
+    </SelectItem>
   )
 }

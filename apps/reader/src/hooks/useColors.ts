@@ -85,3 +85,10 @@ export const useHighlightTextMuted = () => {
   })
 }
 
+export const useFontSelectedColors = () => {
+  return useColorSchemeColors({
+    sepia: 'focus:ring-border-sepia focus:bg-border-sepia/20 focus:hover:bg-border-sepia/20',
+    dark: 'focus:ring-border-dark focus:bg-border-dark/20 focus:hover:bg-border-dark/20',
+    light: 'focus:ring-border-light focus:bg-border-light/20 focus:hover:bg-border-light/20',
+  })
+}
