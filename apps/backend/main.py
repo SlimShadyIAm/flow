@@ -3,6 +3,7 @@ from database import close_database, initialize_database, insert_event_data
 from models import EventData, Events, EventResponse
 from screenshot import capture_screenshot
 from fastapi.middleware.cors import CORSMiddleware
+import pyautogui
 
 app = FastAPI()
 app.add_middleware(
@@ -42,6 +43,12 @@ async def take_screenshot(event_data: EventData):
 async def get_all_events():
     events = Events.select()
     return events
+
+@app.get("/start-calibration/")
+def start_calibration():
+    pyautogui.hotkey('ctrl', 'alt', 'f10')
+    return "Calibration started"
+    # Press keys CTRL+ALT+F10 to start calibration
 
 @app.on_event("startup")
 async def startup_event():
