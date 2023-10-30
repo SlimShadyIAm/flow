@@ -26,6 +26,7 @@ import {
   useRemoteFiles,
   useTranslation,
 } from '../hooks'
+import { useLogger } from '../hooks/useLogger'
 import { reader, useReaderSnapshot } from '../models'
 import { useResetTypography } from '../state'
 import { lock } from '../styles'
@@ -386,11 +387,19 @@ const Book: React.FC<BookProps> = ({
 
   const cover = covers?.find((c) => c.id === book.id)?.cover
   const remoteFile = remoteFiles.data?.find((f) => f.name === book.name)
+  const {addUserLog} = useLogger()
 
   const Icon = selected ? MdCheckBox : MdCheckBoxOutlineBlank
 
   return (
-    <div className="relative flex flex-col px-2">
+    <div className="relative flex flex-col px-2" onClick={
+      () => {
+          addUserLog({
+            event: "SELECT_BOOK",
+            newValue: book.name,
+          })
+      }
+    }>
       <div
         role="button"
         className="border-inverse-on-surface relative border"
