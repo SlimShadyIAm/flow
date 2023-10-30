@@ -411,26 +411,36 @@ const ThemeButtons = () => {
 }
 
 interface FontSelectionProps {
-  setFontMenuOpen: (value: boolean) => void
+  setOverlayOpen: (value: boolean) => void
 }
 
-const FontSelection = ({ setFontMenuOpen }: FontSelectionProps) => {
+const FontSelection = ({ setOverlayOpen: setOverlayOpen }: FontSelectionProps) => {
   const settingsButtonColors = useSettingsButtonColors()
   const highlightColors = useHighlightTextColors()
   const bgColors = useBgColors()
 
   const { focusedBookTab } = useReaderSnapshot()
   const setTypography = useSetTypography()
+  const { addUserLog } = useLogger()
   const [value, setValue] = useState<string>(
     (focusedBookTab?.book.configuration?.typography?.fontFamily ??
       defaultSettings.fontFamily) as string,
   )
 
+  const handleLog = (newValue: string) => {
+    addUserLog({
+      event: 'SET_TYPOGRAPHY_FONTFAMILY',
+      oldValue: value,
+      newValue: newValue,
+    })
+  }
+
   const onChange = (value: string) => {
     setTypography('fontFamily', value)
     setValue(value)
-    console.log(value)
+    handleLog(value)
   }
+
 
   return (
     <div className="flex flex-row">
@@ -441,7 +451,7 @@ const FontSelection = ({ setFontMenuOpen }: FontSelectionProps) => {
         <Select
           value={value}
           onValueChange={(e) => onChange(e)}
-          onOpenChange={setFontMenuOpen}
+          onOpenChange={setOverlayOpen}
         >
           <SelectTrigger
             style={{ fontFamily: value }}

@@ -28,7 +28,6 @@ import { updateCustomStyle } from '../styles'
 
 import { LeftArrow, RightArrow } from './Icons'
 import { DropZone, SplitView } from './base'
-import * as pages from './pages'
 
 function handleKeyDown(tab?: BookTab) {
   return (e: KeyboardEvent) => {
@@ -105,12 +104,21 @@ export function ReaderGridView() {
   }
 
   const [idValue, setIdValue] = useState<number>()
+  const { addSystemLog } = useLogger()
+
+  const handleSetID = (idValue: any) => {
+    setParticipantId(parseInt(idValue))
+    addSystemLog({
+      event: 'BEGIN_EXPERIMENT',
+      newValue: idValue,
+    })
+  }
 
   if (participantId === -1) {
     return (
       <div className="flex h-screen w-screen flex-col items-center justify-center">
         <div className="flex flex-row gap-2">
-          <form onSubmit={() => setParticipantId(parseInt(idValue as any))}>
+          <form onSubmit={() => handleSetID(idValue)}>
             <input
               className="p-4"
               type="number"

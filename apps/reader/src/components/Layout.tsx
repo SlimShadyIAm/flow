@@ -17,12 +17,12 @@ import {
   useBgColors,
   useTextColors,
 } from '../hooks/useColors'
+import { useLogger } from '../hooks/useLogger'
 import { reader, useReaderSnapshot } from '../models'
-import { useResetTypography } from '../state'
+import { defaultSettings, useResetTypography } from '../state'
 import { activeClass } from '../styles'
 
 import { useSplitViewItem } from './base'
-import { Settings } from './pages'
 import { TypographyView } from './viewlets/TypographyView'
 
 export const Layout: React.FC = ({ children }) => {
@@ -121,13 +121,6 @@ function PageActionBar({ env }: EnvActionBarProps) {
         Icon: RiHome6Line,
         env: Env.Mobile,
       },
-      {
-        name: 'settings',
-        title: 'settings',
-        Icon: RiSettings5Line,
-        Component: Settings,
-        env: Env.Desktop | Env.Mobile,
-      },
     ],
     [],
   )
@@ -198,7 +191,7 @@ const SideBar: React.FC = () => {
   const bgColors = useBgColors()
   const t = useTranslation('settings')
   const resetTypography = useResetTypography()
-  const { setScheme } = useColorScheme()
+  const { setScheme, scheme } = useColorScheme()
 
   const { size } = useSplitViewItem(SideBar, {
     preferredSize: 420,
@@ -206,11 +199,23 @@ const SideBar: React.FC = () => {
     visible: !!action,
   })
 
+  const { addUserLog } = useLogger()
+  const handleLog = () => {
+    addUserLog({
+      event: 'RESET_SETTINGS',
+      oldValue: JSON.stringify({
+        ...reader.focusedBookTab?.book.configuration?.typography,
+        scheme
+      }),
+      newValue: JSON.stringify({...defaultSettings, scheme}),
+    })
+  }
+
   return (
     <>
       <div
         className={clsx(
-          'relative SideBar face flex flex-col justify-between p-6 pb-6 transition',
+          'SideBar face relative flex flex-col justify-between p-6 pb-6 transition',
           !action && '!hidden',
           mobile ? 'absolute inset-y-0 right-0 z-10' : '',
           bgColors,
@@ -222,6 +227,7 @@ const SideBar: React.FC = () => {
           <button
             className="rounded-lg border-4 border-red-400 py-2 px-4 text-xl text-red-400 hover:bg-red-400/20"
             onClick={() => {
+              handleLog()
               resetTypography()
               setScheme('dark')
             }}
