@@ -215,14 +215,7 @@ function ReaderGroup({ index }: ReaderGroupProps) {
               const tabIdx = Number(indexes[1])
               const tab = reader.removeTab(tabIdx, groupIdx)
               if (tab) tabs.push(tab)
-            } else {
-              const id = text
-              const tabParam =
-                Object.values(pages).find((p) => p.displayName === id) ??
-                (await db?.books.get(id))
-              if (tabParam) tabs.push(tabParam)
-            }
-          }
+            }          }
 
           if (tabs.length) {
             switch (position) {
