@@ -79,7 +79,7 @@ gaze_stuff = [
     ('left_pupil_diameter',  1),
     ('right_pupil_diameter',  1)
 ]
-    
+
 
 def unpack_gaze_data(gaze_data):
     x = []
@@ -124,6 +124,9 @@ def gaze_data_callback(gaze_data):
 
     system_time_stamp
     '''
+
+    gaze_data['custom_timestamp'] = time.time()
+
     gaze_datas.add(json.dumps(gaze_data))
     # for k in sorted(gaze_data.keys()):
     #     print(' ' + k + ': ' +  str(gaze_data[k]))
@@ -134,10 +137,10 @@ def gaze_data_callback(gaze_data):
         global N
         global halted
 
-        sts = gaze_data['system_time_stamp'] / 1000000.
+        sts = gaze_data['custom_timestamp'] / 1000000.
 
         outlet.push_sample(unpack_gaze_data(gaze_data), sts)
-        
+
         if sts > last_report + 5:
             sys.stdout.write("%14.3f: %10d packets\r" % (sts, N))
             last_report = sts
@@ -219,10 +222,9 @@ except KeyboardInterrupt:
     with open(filename, "w") as f:
         gaze_datas = list(gaze_datas)
         gaze_datas = [json.loads(data) for data in gaze_datas]
-        gaze_datas.sort(key=lambda data: data['system_time_stamp'])
+        gaze_datas.sort(key=lambda data: data['custom_timestamp'])
         f.write(simplejson.dumps(gaze_datas, ignore_nan=True))
     print("Done.")
 
 print("terminating tracking now")
 end_gaze_tracking()
-
