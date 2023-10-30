@@ -4,7 +4,7 @@ import { ReactNode, createContext, useContext, useMemo, useState } from 'react'
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_LOG_API_URL
 
 interface Log {
-  timestamp: Date
+  timestamp: number,
   event: string
   agent: 'SYSTEM' | 'USER'
   participantId?: number
@@ -71,7 +71,7 @@ const LoggerProvider = ({ children }: Props) => {
         addLog({
           ...log,
           agent: 'USER',
-          timestamp: new Date(),
+          timestamp: Math.round(Date.now() / 1000), 
           participantId,
         })
       },
@@ -79,7 +79,7 @@ const LoggerProvider = ({ children }: Props) => {
         addLog({
           ...log,
           agent: 'SYSTEM',
-          timestamp: new Date(),
+          timestamp: Math.round(Date.now() / 1000), 
           participantId,
         })
       },
