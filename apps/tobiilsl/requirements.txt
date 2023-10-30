@@ -1,0 +1,4 @@
+numpy==1.24.3
+pylsl==1.16.1
+simplejson==3.19.1
+tobii-research==1.11.0
