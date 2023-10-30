@@ -42,7 +42,7 @@ export const TypographyView = () => {
   const iconColors = useIconColors()
   const setTypography = useSetTypography()
   const [fontMenuOpen, setFontMenuOpen] = useState(false)
-  const {scheme} = useColorScheme()
+  const { scheme } = useColorScheme()
 
   return (
     <div className="flex flex-col gap-8">
@@ -55,7 +55,9 @@ export const TypographyView = () => {
         )}
         hidden={!fontMenuOpen}
       />
+      {/* 
       <FontSelection setFontMenuOpen={setFontMenuOpen} />
+      */}
       <SettingsFieldNumber
         property="fontSize"
         name={t_typography('font_size')}
@@ -446,12 +448,12 @@ const FontSelection = ({ setFontMenuOpen }: FontSelectionProps) => {
             className={cn(
               'z-50 h-12 w-full rounded-lg border-4 text-lg font-medium',
               settingsButtonColors,
-              highlightColors
+              highlightColors,
             )}
           >
             <SelectValue placeholder="Font Family" />
           </SelectTrigger>
-          <SelectContent className={cn("border-0 rounded-xl", bgColors)}>
+          <SelectContent className={cn('rounded-xl border-0', bgColors)}>
             <FontSelectionOption value="Noto Serif" />
             <FontSelectionOption value="Times New Roman" />
           </SelectContent>
