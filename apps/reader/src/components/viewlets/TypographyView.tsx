@@ -18,6 +18,7 @@ import {
 } from '@flow/reader/state'
 
 import {
+  useBgColors,
   useFontSelectedColors,
   useHighlightTextColors,
   useIconColors,
@@ -40,10 +41,21 @@ export const TypographyView = () => {
   const t_typography = useTranslation('typography')
   const iconColors = useIconColors()
   const setTypography = useSetTypography()
+  const [fontMenuOpen, setFontMenuOpen] = useState(false)
+  const {scheme} = useColorScheme()
 
   return (
     <div className="flex flex-col gap-8">
-      <FontSelection />
+      <div
+        className={clsx(
+          'absolute h-full w-full transition-colors',
+          fontMenuOpen && scheme === 'dark' && 'bg-black/50',
+          fontMenuOpen && scheme !== 'dark' && 'bg-black/40',
+          !fontMenuOpen && 'bg-black/0',
+        )}
+        hidden={!fontMenuOpen}
+      />
+      <FontSelection setFontMenuOpen={setFontMenuOpen} />
       <SettingsFieldNumber
         property="fontSize"
         name={t_typography('font_size')}
@@ -269,7 +281,6 @@ const SettingsFieldSelection = ({
   return (
     <div className="flex">
       <div className="flex-[0.40]">
-        {/* // TODO: fix capitalization */}
         <SettingsFieldInfo name={name} value={value} />
       </div>
       <div className="flex flex-[0.60] flex-row justify-end gap-8">
@@ -397,27 +408,51 @@ const ThemeButtons = () => {
   )
 }
 
-const FontSelection = () => {
+interface FontSelectionProps {
+  setFontMenuOpen: (value: boolean) => void
+}
+
+const FontSelection = ({ setFontMenuOpen }: FontSelectionProps) => {
   const settingsButtonColors = useSettingsButtonColors()
+  const highlightColors = useHighlightTextColors()
+  const bgColors = useBgColors()
+
+  const { focusedBookTab } = useReaderSnapshot()
+  const setTypography = useSetTypography()
+  const [value, setValue] = useState<string>(
+    (focusedBookTab?.book.configuration?.typography?.fontFamily ??
+      defaultSettings.fontFamily) as string,
+  )
+
+  const onChange = (value: string) => {
+    setTypography('fontFamily', value)
+    setValue(value)
+    console.log(value)
+  }
 
   return (
     <div className="flex flex-row">
       <div className="flex-[0.40]">
-        {/* // TODO: fix capitalization */}
         <SettingsFieldInfo name="Font" value={''} />
       </div>
       <div className="flex flex-[0.60] flex-row justify-end gap-8">
-        <Select value="Georgia">
+        <Select
+          value={value}
+          onValueChange={(e) => onChange(e)}
+          onOpenChange={setFontMenuOpen}
+        >
           <SelectTrigger
+            style={{ fontFamily: value }}
             className={cn(
-              'text-border-dark h-12 w-full rounded-lg border-4 text-lg font-medium',
+              'z-50 h-12 w-full rounded-lg border-4 text-lg font-medium',
               settingsButtonColors,
+              highlightColors
             )}
           >
             <SelectValue placeholder="Font Family" />
           </SelectTrigger>
-          <SelectContent className="border-0 bg-black">
-            <FontSelectionOption value="Georgia" />
+          <SelectContent className={cn("border-0 rounded-xl", bgColors)}>
+            <FontSelectionOption value="Noto Serif" />
             <FontSelectionOption value="Times New Roman" />
           </SelectContent>
         </Select>
@@ -432,12 +467,14 @@ interface FontSelectionOptionProps {
 
 const FontSelectionOption = ({ value }: FontSelectionOptionProps) => {
   const selectedFontColors = useFontSelectedColors()
+
   return (
     <SelectItem
       className={cn(
-        'focus:rounded-md focus:bg-red-900 focus:ring-4',
+        'text-lg focus:rounded-md focus:bg-red-900 focus:font-medium focus:ring-4 ',
         selectedFontColors,
       )}
+      style={{ fontFamily: value }}
       value={value}
     >
       {value}

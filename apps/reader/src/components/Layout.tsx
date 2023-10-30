@@ -210,7 +210,7 @@ const SideBar: React.FC = () => {
     <>
       <div
         className={clsx(
-          'SideBar face flex flex-col justify-between p-6 pb-6 transition',
+          'relative SideBar face flex flex-col justify-between p-6 pb-6 transition',
           !action && '!hidden',
           mobile ? 'absolute inset-y-0 right-0 z-10' : '',
           bgColors,

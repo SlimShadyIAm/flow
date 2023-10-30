@@ -11,6 +11,12 @@ export default function Document() {
         <link rel="icon" href="/icons/192.png"></link>
         <PWA />
         <PreventFlash />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@100;300;400;800&display=swap"
+          rel="stylesheet"
+        />
       </Head>
       <body>
         <GoogleTagManagerNoScript />
