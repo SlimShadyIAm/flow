@@ -4,6 +4,7 @@ from models import EventData, Events, EventResponse
 from screenshot import capture_screenshot
 from fastapi.middleware.cors import CORSMiddleware
 import pyautogui
+import subprocess
 
 app = FastAPI()
 app.add_middleware(
@@ -46,9 +47,15 @@ async def get_all_events():
 
 @app.get("/start-calibration/")
 def start_calibration():
+    # Press keys CTRL+ALT+F10 to start calibration
     pyautogui.hotkey('ctrl', 'alt', 'f10')
     return "Calibration started"
-    # Press keys CTRL+ALT+F10 to start calibration
+
+@app.get("/start-eyetracking/")
+def start_eyetracking():
+    subprocess.Popen(["python", "../tobiilsl/tobiilsl.py"])
+    return "Eyetracking started"
+
 
 @app.on_event("startup")
 async def startup_event():
