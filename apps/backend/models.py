@@ -2,7 +2,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 class EventData(BaseModel):
-    timestamp: str
+    timestamp: int
     agent: str
     event: str
     participantId: int
@@ -12,7 +12,7 @@ class EventData(BaseModel):
 
 class EventResponse(BaseModel):
     id: int
-    time: str
+    timestamp: int
     agent: str
     event: str
     participant_id: int
@@ -26,7 +26,7 @@ db = SqliteDatabase('events.db')
 
 class Events(Model):
     id = AutoField()
-    time = CharField()
+    time = IntegerField()
     agent = CharField()
     event = CharField()
     participant_id = IntegerField()

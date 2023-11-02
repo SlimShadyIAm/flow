@@ -6,6 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import pyautogui
 import subprocess
 
+PROCESS = None
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -26,9 +28,16 @@ async def take_screenshot(event_data: EventData):
         # Call the insert_event_data function
         event = insert_event_data(event_data)
 
+        if (event_data.event == "BEGIN_EXPERIMENT"):
+            start_eyetracking()
+
+            import time
+            time.sleep(5)
+            stop_eyetacking()
+
         return EventResponse(
             id=event.id,  # Replace with the actual ID
-            time=event_data.timestamp,
+            timestamp=event_data.timestamp,
             agent=event_data.agent,
             event=event_data.event,
             participant_id=event_data.participantId,
@@ -39,23 +48,33 @@ async def take_screenshot(event_data: EventData):
     except Exception as e:
         raise HTTPException(status_code=400, detail="Validation failed: " + str(e))
 
-
 @app.get("/events/", response_model=list[EventResponse])
 async def get_all_events():
     events = Events.select()
     return events
 
-@app.get("/start-calibration/")
 def start_calibration():
     # Press keys CTRL+ALT+F10 to start calibration
-    pyautogui.hotkey('ctrl', 'alt', 'f10')
+    pyautogui.hotkey('ctrlleft', 'shiftleft', 'f10')
     return "Calibration started"
 
 @app.get("/start-eyetracking/")
 def start_eyetracking():
-    subprocess.Popen(["python", "../tobiilsl/tobiilsl.py"])
+    global PROCESS
+
+    PROCESS = subprocess.Popen(["python", "./tobiilsl/tobiilsl.py"])
     return "Eyetracking started"
 
+def stop_eyetacking():
+    print("stopping eyetracking")
+    
+    global PROCESS
+    if PROCESS:
+        import signal
+        import os
+        # os.kill(PROCESS.pid, signal.CTRL_C_EVENT)
+        PROCESS.terminate()
+        PROCESS = None
 
 @app.on_event("startup")
 async def startup_event():
