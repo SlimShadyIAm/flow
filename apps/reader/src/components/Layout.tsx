@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { X } from 'lucide-react'
 import { ComponentProps, useEffect, useState } from 'react'
 import { useMemo } from 'react'
 import { IconType } from 'react-icons'
@@ -63,6 +64,12 @@ export default function TitleBar() {
     light: 'border-b-black',
   })
 
+  const handleClose = (e: any) => {
+    e.stopPropagation()
+    reader.removeTab(parseInt(r.focusedTab?.id || '1'))
+    // TODO: log that the book was closed
+  }
+
   if (!readMode) return null
   return (
     <div
@@ -75,6 +82,12 @@ export default function TitleBar() {
       <p className={clsx('flex-grow text-center', textColors)}>
         {bookTitle} - {bookAuthor}
       </p>
+      <button
+        className="h-8 w-8 text-black hover:text-white"
+        onClick={handleClose}
+      >
+        <X />
+      </button>
     </div>
   )
 }
@@ -205,9 +218,9 @@ const SideBar: React.FC = () => {
       event: 'RESET_SETTINGS',
       oldValue: JSON.stringify({
         ...reader.focusedBookTab?.book.configuration?.typography,
-        scheme
+        scheme,
       }),
-      newValue: JSON.stringify({...defaultSettings, scheme}),
+      newValue: JSON.stringify({ ...defaultSettings, scheme }),
     })
   }
 
