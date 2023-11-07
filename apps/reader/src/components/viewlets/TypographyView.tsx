@@ -56,7 +56,7 @@ export const TypographyView = () => {
         hidden={!fontMenuOpen}
       />
       {/* 
-      <FontSelection setFontMenuOpen={setFontMenuOpen} />
+      <FontSelection setOverlayOpen={setFontMenuOpen} />
       */}
       <SettingsFieldNumber
         property="fontSize"
@@ -73,7 +73,7 @@ export const TypographyView = () => {
         name={t_typography('font_weight')}
         iconDown={<FontWeightDecrease className={iconColors} />}
         iconUp={<FontWeightIncrease className={iconColors} />}
-        options={[100, 400, 800]}
+        options={[100, 400, 700]}
         onChange={(v) => {
           setTypography('fontWeight', v || undefined)
         }}

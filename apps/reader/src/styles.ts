@@ -45,7 +45,7 @@ export function updateCustomStyle(
 
   const { zoom, ...other } = settings
   let css = `
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:wght@100;400;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:wght@100;400;700&display=swap');
   a, article, cite, div, li, p, pre, span, table, body {
     ${mapToCss(other)}
   }`
