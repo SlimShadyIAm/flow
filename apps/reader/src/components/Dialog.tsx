@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import React, { createContext, useContext, useEffect, useState } from 'react'
+import { useTranslation } from '../hooks'
 
 import {
   useBgColors,
@@ -9,8 +10,12 @@ import {
   useSettingsButtonDisabledColors,
   useHighlightTextMuted,
 } from '../hooks/useColors'
-import { useReaderSnapshot } from '../models'
-import { defaultSettings, TypographyConfiguration } from '../state'
+import { reader, useReaderSnapshot } from '../models'
+import {
+  defaultSettings,
+  TypographyConfiguration,
+  useSetTypography,
+} from '../state'
 
 interface DialogContextType {
   isOpen: boolean
@@ -52,6 +57,9 @@ const Dialog: React.FC = () => {
   const { isOpen, closeDialog } = useDialog()
   const bgColors = useBgColors()
   const highlightTextColors = useHighlightTextColors()
+  const t = useTranslation()
+  const setTypography = useSetTypography()
+  const { focusedBookTab } = useReaderSnapshot()
 
   useEffect(() => {
     const rootElement = document.getElementById('root')
@@ -75,7 +83,7 @@ const Dialog: React.FC = () => {
     {
       property: 'fontWeight',
       change: 'increase',
-      offset: 200,
+      offset: 300,
     },
     {
       property: 'marginSize',
@@ -83,6 +91,32 @@ const Dialog: React.FC = () => {
       offset: 0,
     },
   ]
+
+  const handleAdjustments = (adjustments: TextAdjustment[]) => {
+    for (const adjustment of adjustments) {
+      const offset =
+        adjustment.change === 'increase'
+          ? adjustment.offset
+          : -1 * adjustment.offset
+      if (adjustment.property === 'marginSize') {
+        setTypography(
+          adjustment.property,
+          adjustment.change === 'increase' ? 'large' : 'small',
+        )
+      } else if (adjustment.property === 'fontWeight') {
+        setTypography(
+          adjustment.property,
+          (focusedBookTab?.book.configuration?.typography[adjustment.property] as number) +
+          offset,
+        )
+      } else {
+        setTypography(
+          adjustment.property,
+          parseInt(focusedBookTab?.book.configuration?.typography[adjustment.property]) + offset + 'px',
+        )
+      }
+    }
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -134,12 +168,25 @@ const Dialog: React.FC = () => {
           will improve the reading experience.
         </p>
         <PresentationChanges changes={adjustments} />
-        <button
-          className="rounded-lg bg-blue-500 px-4 py-2 text-white"
-          onClick={closeDialog}
-        >
-          Close
-        </button>
+        <div className="flex justify-between">
+          <button
+            className="rounded-lg border-4 border-red-400 py-1 px-4 text-xl text-red-400 hover:bg-red-400/20"
+            onClick={() => {
+              closeDialog()
+            }}
+          >
+            {t('action.dismiss')}
+          </button>
+          <button
+            className="rounded-lg border-4 border-green-500 py-1 px-4 text-xl text-green-500 hover:bg-green-500/20"
+            onClick={() => {
+              handleAdjustments(adjustments)
+              closeDialog()
+            }}
+          >
+            {t('action.accept')}
+          </button>
+        </div>
       </div>
     </div>
   )

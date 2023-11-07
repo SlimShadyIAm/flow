@@ -68,6 +68,8 @@ export default {
   'action.expand_all': 'Expand All',
   'action.collapse_all': 'Collapse All',
   'action.close': 'Close',
+  'action.dismiss': 'Dismiss',
+  'action.accept': 'Accept',
   'action.clear': 'Clear',
   'action.step_down': 'Step Down',
   'action.step_up': 'Step Up',
