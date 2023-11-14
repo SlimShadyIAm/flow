@@ -38,12 +38,13 @@ export function useSync(tab: BookTab) {
     [id, mutate],
   )
 
-  useEffect(() => {
-    sync({
-      cfi: location?.start.cfi,
-      percentage: book.percentage,
-    })
-  }, [sync, book.percentage, location?.start.cfi])
+  // UNCOMMENT if you want to store book progress in browser cache
+  // useEffect(() => {
+  //   sync({
+  //     cfi: location?.start.cfi,
+  //     percentage: book.percentage,
+  //   })
+  // }, [sync, book.percentage, location?.start.cfi])
 
   useEffect(() => {
     sync({

@@ -306,7 +306,10 @@ export class BookTab extends BaseTab {
     )
     console.log(this.rendition)
     this.rendition.display(
-      this.location?.start.cfi ?? this.book.cfi ?? undefined,
+
+      // REPLACE THIS LINE if you want to store book progress in browser cache
+      // this.location?.start.cfi ?? this.book.cfi ?? undefined,
+      this.location?.start.cfi ?? undefined,
     )
     this.rendition.themes.default(defaultStyle)
     this.rendition.hooks.render.register((view: any) => {
