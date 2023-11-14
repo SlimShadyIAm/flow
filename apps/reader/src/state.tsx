@@ -75,7 +75,6 @@ export const useResetTypography = () => {
       configuration: {
         ...reader.focusedBookTab.book.configuration,
         typography: {
-          ...defaultSettings,
           ...selectedTreatment?.options,
         },
       },

@@ -23,7 +23,7 @@ import { usePageTurnColors } from '../hooks/useColors'
 import { Treatment, useLogger } from '../hooks/useLogger'
 import { BookTab, reader, useReaderSnapshot } from '../models'
 import { isTouchScreen } from '../platform'
-import { defaultSettings, useSetTypography } from '../state'
+import { defaultSettings, useResetTypography, useSetTypography } from '../state'
 import { updateCustomStyle } from '../styles'
 
 import { LeftArrow, RightArrow } from './Icons'
@@ -87,12 +87,7 @@ export function ReaderGridView() {
   const { groups } = useReaderSnapshot()
   const { addUserLog } = useLogger()
   useEventListener('keydown', handleKeyDown(reader.focusedBookTab))
-  const {
-    participantId,
-    setParticipantId,
-    selectedTreatment,
-    setSelectedTreatment,
-  } = useLogger()
+  const { participantId, setParticipantId, setSelectedTreatment } = useLogger()
 
   const handleNextPage = () => {
     addUserLog({
@@ -109,42 +104,30 @@ export function ReaderGridView() {
   }
 
   const [idValue, setIdValue] = useState<number>()
+  const [treatmentValue, setTreatmentValue] = useState<Treatment | null>(null)
   const { addSystemLog } = useLogger()
 
   const handleSetID = (idValue: any) => {
     setParticipantId(parseInt(idValue))
-    const {
-      fontSize: FONT_SIZE,
-      fontWeight: FONT_WEIGHT,
-      marginSize: MARGIN_SIZE,
-      colorScheme: COLOR_SCHEME,
-    } = selectedTreatment!.options
-    setTypography('fontSize', FONT_SIZE)
-    setTypography('fontWeight', FONT_WEIGHT)
-    setTypography('marginSize', MARGIN_SIZE)
-    setScheme(COLOR_SCHEME)
-    console.log('here')
+    setSelectedTreatment(treatmentValue!)
     addSystemLog({
       event: 'BEGIN_EXPERIMENT',
       newValue: idValue,
     })
-    addUserLog({
+    addSystemLog({
       event: 'SELECT_TREATMENT',
-      newValue: selectedTreatment!.name,
+      newValue: treatmentValue!.name,
     })
   }
   const treatments: Treatment[] = treatmentsJson as unknown as Treatment[]
-  const setTypography = useSetTypography()
-  const { setScheme } = useColorScheme()
-
   const handleSelectTreatment = (treatment: Treatment) => {
-    setSelectedTreatment(treatment)
+    setTreatmentValue(treatment)
   }
 
   if (participantId === -1) {
     return (
       <div className="flex h-screen w-screen flex-col items-center justify-center gap-4">
-        {(!selectedTreatment || !idValue) && (
+        {(!treatmentValue || !idValue) && (
           <div className="mb-4 rounded-md bg-yellow-600 px-4 py-2">
             Please set a participant ID and select a treatment
           </div>
@@ -161,7 +144,7 @@ export function ReaderGridView() {
             <button
               type="submit"
               className="ml-4 bg-blue-900 p-4 transition-colors disabled:bg-gray-600"
-              disabled={!selectedTreatment || !idValue}
+              disabled={!treatmentValue || !idValue}
             >
               Set ID
             </button>
@@ -174,7 +157,7 @@ export function ReaderGridView() {
               key={treatment.name}
               className={clsx(
                 'flex items-center rounded-md py-2 px-4 leading-none transition-colors',
-                selectedTreatment?.name === treatment.name
+                treatmentValue?.name === treatment.name
                   ? 'border-4 border-blue-600 bg-blue-900'
                   : 'bg-blue-500',
               )}
@@ -210,6 +193,15 @@ function ReaderGroup({ index }: ReaderGroupProps) {
   const handleMouseDown = useCallback(() => {
     reader.selectGroup(index)
   }, [index])
+
+  const resetTypography = useResetTypography()
+  const { selectedTreatment } = useLogger()
+
+  useEffect(() => {
+    if (!selectedTreatment) return
+    if (!reader.focusedBookTab) return
+    resetTypography()
+  }, [resetTypography, selectedTreatment])
 
   const bgClasses = useColorSchemeColors({
     sepia: 'bg-background-sepia',

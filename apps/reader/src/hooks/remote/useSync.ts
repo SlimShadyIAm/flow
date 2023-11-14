@@ -53,9 +53,9 @@ export function useSync(tab: BookTab) {
   }, [book.definitions, sync])
 
 
-  useEffect(() => {
-    sync({
-      configuration: book.configuration,
-    })
-  }, [book.configuration, sync])
+  // useEffect(() => {
+  //   sync({
+  //     configuration: book.configuration,
+  //   })
+  // }, [book.configuration, sync])
 }

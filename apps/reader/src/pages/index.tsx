@@ -43,12 +43,13 @@ export default function Index() {
   const src = new URL(window.location.href).searchParams.get(SOURCE)
   const [loading, setLoading] = useState(!!src)
   const resetTypography = useResetTypography()
+  const {selectedTreatment} = useLogger()
 
   useDisablePinchZooming()
 
   useEffect(() => {
     resetTypography()
-  }, [resetTypography])
+  }, [resetTypography, selectedTreatment])
 
   useEffect(() => {
     let src = router.query[SOURCE]
