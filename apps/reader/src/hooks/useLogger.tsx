@@ -1,10 +1,14 @@
 import axios from 'axios'
 import { ReactNode, createContext, useContext, useMemo, useState } from 'react'
 
+import { MarginSize } from '../state'
+
+import { ColorScheme } from './theme'
+
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_LOG_API_URL
 
 interface Log {
-  timestamp: number,
+  timestamp: number
   event: string
   agent: 'SYSTEM' | 'USER'
   participantId?: number
@@ -24,15 +28,29 @@ interface SystemLog {
   newValue?: string
 }
 
+export interface Treatment {
+  name: string
+  options: {
+    fontSize: string
+    fontWeight: number
+    marginSize: MarginSize
+    colorScheme: ColorScheme
+  }
+}
+
 type LoggerContextProps = {
   participantId: number
   setParticipantId: (id: number) => void
+  selectedTreatment: Treatment | null
+  setSelectedTreatment: (treatment: Treatment) => void
   addUserLog: (log: UserLog) => void
   addSystemLog: (log: SystemLog) => void
 }
 
 const initialContext: LoggerContextProps = {
   participantId: 0,
+  selectedTreatment: null,
+  setSelectedTreatment: () => {},
   setParticipantId: () => {},
   addUserLog: () => {},
   addSystemLog: () => {},
@@ -52,6 +70,9 @@ export const useLogger = () => {
 
 const LoggerProvider = ({ children }: Props) => {
   const [participantId, setParticipantId] = useState<number>(-1)
+  const [selectedTreatment, setSelectedTreatment] = useState<Treatment | null>(
+    null,
+  )
 
   const addLog = async (log: Log) => {
     try {
@@ -71,7 +92,7 @@ const LoggerProvider = ({ children }: Props) => {
         addLog({
           ...log,
           agent: 'USER',
-          timestamp: Math.round(Date.now() / 1000), 
+          timestamp: Math.round(Date.now() / 1000),
           participantId,
         })
       },
@@ -79,12 +100,16 @@ const LoggerProvider = ({ children }: Props) => {
         addLog({
           ...log,
           agent: 'SYSTEM',
-          timestamp: Math.round(Date.now() / 1000), 
+          timestamp: Math.round(Date.now() / 1000),
           participantId,
         })
       },
+      selectedTreatment,
+      setSelectedTreatment: (treatment: Treatment) => {
+        setSelectedTreatment(treatment)
+      },
     }),
-    [addLog, participantId],
+    [addLog, participantId, selectedTreatment],
   )
 
   return (

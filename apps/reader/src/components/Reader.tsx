@@ -7,7 +7,7 @@ import { useSnapshot } from 'valtio'
 
 import { RenditionSpread } from '@flow/epubjs/types/rendition'
 
-import { db } from '../db'
+import treatmentsJson from '../../treatments.json'
 import { handleFiles } from '../file'
 import {
   useBackground,
@@ -20,10 +20,10 @@ import {
 import { useColorSchemeColors } from '../hooks/useColors'
 import { useIconColors } from '../hooks/useColors'
 import { usePageTurnColors } from '../hooks/useColors'
-import { useLogger } from '../hooks/useLogger'
+import { Treatment, useLogger } from '../hooks/useLogger'
 import { BookTab, reader, useReaderSnapshot } from '../models'
 import { isTouchScreen } from '../platform'
-import { defaultSettings } from '../state'
+import { defaultSettings, useSetTypography } from '../state'
 import { updateCustomStyle } from '../styles'
 
 import { LeftArrow, RightArrow } from './Icons'
@@ -87,7 +87,12 @@ export function ReaderGridView() {
   const { groups } = useReaderSnapshot()
   const { addUserLog } = useLogger()
   useEventListener('keydown', handleKeyDown(reader.focusedBookTab))
-  const { participantId, setParticipantId } = useLogger()
+  const {
+    participantId,
+    setParticipantId,
+    selectedTreatment,
+    setSelectedTreatment,
+  } = useLogger()
 
   const handleNextPage = () => {
     addUserLog({
@@ -108,15 +113,42 @@ export function ReaderGridView() {
 
   const handleSetID = (idValue: any) => {
     setParticipantId(parseInt(idValue))
+    const {
+      fontSize: FONT_SIZE,
+      fontWeight: FONT_WEIGHT,
+      marginSize: MARGIN_SIZE,
+      colorScheme: COLOR_SCHEME,
+    } = selectedTreatment!.options
+    setTypography('fontSize', FONT_SIZE)
+    setTypography('fontWeight', FONT_WEIGHT)
+    setTypography('marginSize', MARGIN_SIZE)
+    setScheme(COLOR_SCHEME)
+    console.log('here')
     addSystemLog({
       event: 'BEGIN_EXPERIMENT',
       newValue: idValue,
     })
+    addUserLog({
+      event: 'SELECT_TREATMENT',
+      newValue: selectedTreatment!.name,
+    })
+  }
+  const treatments: Treatment[] = treatmentsJson as unknown as Treatment[]
+  const setTypography = useSetTypography()
+  const { setScheme } = useColorScheme()
+
+  const handleSelectTreatment = (treatment: Treatment) => {
+    setSelectedTreatment(treatment)
   }
 
   if (participantId === -1) {
     return (
-      <div className="flex h-screen w-screen flex-col items-center justify-center">
+      <div className="flex h-screen w-screen flex-col items-center justify-center gap-4">
+        {(!selectedTreatment || !idValue) && (
+          <div className="mb-4 rounded-md bg-yellow-600 px-4 py-2">
+            Please set a participant ID and select a treatment
+          </div>
+        )}
         <div className="flex flex-row gap-2">
           <form onSubmit={() => handleSetID(idValue)}>
             <input
@@ -126,10 +158,31 @@ export function ReaderGridView() {
               value={idValue}
               placeholder="Enter Participant ID"
             />
-            <button type="submit" className="ml-4 bg-blue-900 p-4">
+            <button
+              type="submit"
+              className="ml-4 bg-blue-900 p-4 transition-colors disabled:bg-gray-600"
+              disabled={!selectedTreatment || !idValue}
+            >
               Set ID
             </button>
           </form>
+        </div>
+        <div className="flex flex-wrap justify-center gap-4">
+          {treatments.map((treatment) => (
+            <div
+              role="button"
+              key={treatment.name}
+              className={clsx(
+                'flex items-center rounded-md py-2 px-4 leading-none transition-colors',
+                selectedTreatment?.name === treatment.name
+                  ? 'border-4 border-blue-600 bg-blue-900'
+                  : 'bg-blue-500',
+              )}
+              onClick={() => handleSelectTreatment(treatment)}
+            >
+              {treatment.name}
+            </div>
+          ))}
         </div>
       </div>
     )
@@ -215,7 +268,8 @@ function ReaderGroup({ index }: ReaderGroupProps) {
               const tabIdx = Number(indexes[1])
               const tab = reader.removeTab(tabIdx, groupIdx)
               if (tab) tabs.push(tab)
-            }          }
+            }
+          }
 
           if (tabs.length) {
             switch (position) {

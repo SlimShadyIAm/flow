@@ -1,29 +1,11 @@
-import { IS_SERVER } from '@literal-ui/hooks'
 import { useCallback } from 'react'
-import { atom, AtomEffect, useRecoilState } from 'recoil'
+import { atom, useRecoilState } from 'recoil'
 
 import { RenditionSpread } from '@flow/epubjs/types/rendition'
 
+import { useLogger } from './hooks/useLogger'
 import { reader } from './models'
-
-function localStorageEffect<T>(key: string, defaultValue: T): AtomEffect<T> {
-  return ({ setSelf, onSet }) => {
-    if (IS_SERVER) return
-
-    const savedValue = localStorage.getItem(key)
-    if (savedValue === null) {
-      localStorage.setItem(key, JSON.stringify(defaultValue))
-    } else {
-      setSelf(JSON.parse(savedValue))
-    }
-
-    onSet((newValue, _, isReset) => {
-      isReset
-        ? localStorage.removeItem(key)
-        : localStorage.setItem(key, JSON.stringify(newValue))
-    })
-  }
-}
+import { useColorScheme } from './hooks'
 
 export const navbarState = atom<boolean>({
   key: 'navbar',
@@ -34,6 +16,8 @@ export interface Settings extends TypographyConfiguration {
   theme?: ThemeConfiguration
 }
 
+export type MarginSize = 'small' | 'large'
+
 export interface TypographyConfiguration {
   fontSize?: string // string because it needs the 'px' at the end
   fontWeight?: number
@@ -41,7 +25,7 @@ export interface TypographyConfiguration {
   lineHeight?: number
   spread?: RenditionSpread
   zoom?: number
-  marginSize?: 'small' | 'large'
+  marginSize?: MarginSize
   letterSpacing?: string // string because it needs the 'px' at the end
 }
 
@@ -82,16 +66,22 @@ export const useSetTypography = () => {
 }
 
 export const useResetTypography = () => {
+  const { selectedTreatment } = useLogger()
+  const { setScheme } = useColorScheme()
+
   const resetTypography = useCallback(() => {
+    console.log('selectedTreatment', selectedTreatment)
     reader.focusedBookTab?.updateBook({
       configuration: {
         ...reader.focusedBookTab.book.configuration,
         typography: {
           ...defaultSettings,
+          ...selectedTreatment?.options,
         },
       },
     })
-  }, [])
+    setScheme(selectedTreatment?.options.colorScheme || 'dark')
+  }, [selectedTreatment, setScheme])
 
   return resetTypography
 }

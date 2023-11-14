@@ -1,0 +1,65 @@
+[
+  {
+    "name": "Treatment 1",
+    "options": {
+      "fontSize": 18,
+      "fontWeight": 700,
+      "marginSize": "small",
+      "colorScheme": "dark"
+    }
+  },
+  {
+    "name": "Treatment 2",
+    "options": {
+      "fontSize": "24",
+      "fontWeight": 700,
+      "marginSize": "large",
+      "colorScheme": "light"
+    }
+  },
+  {
+    "name": "Treatment 3",
+    "options": {
+      "fontSize": 18,
+      "fontWeight": 700,
+      "marginSize": "small",
+      "colorScheme": "dark"
+    }
+  },
+  {
+    "name": "Treatment 4",
+    "options": {
+      "fontSize": 18,
+      "fontWeight": 700,
+      "marginSize": "small",
+      "colorScheme": "dark"
+    }
+  },
+  {
+    "name": "Treatment 5",
+    "options": {
+      "fontSize": 18,
+      "fontWeight": 700,
+      "marginSize": "small",
+      "colorScheme": "dark"
+    }
+  },
+  {
+    "name": "Treatment 6",
+    "options": {
+      "fontSize": 18,
+      "fontWeight": 700,
+      "marginSize": "small",
+      "colorScheme": "dark"
+    }
+  },
+  {
+    "name": "Treatment 7",
+    "options": {
+      "fontSize": 18,
+      "fontWeight": 700,
+      "marginSize": "small",
+      "colorScheme": "dark"
+    }
+  }
+]

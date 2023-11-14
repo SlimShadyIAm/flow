@@ -242,7 +242,6 @@ const SideBar: React.FC = () => {
             onClick={() => {
               handleLog()
               resetTypography()
-              setScheme('dark')
             }}
           >
             {t('cache.clear')}
