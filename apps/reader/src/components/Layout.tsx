@@ -17,6 +17,7 @@ import {
   useColorSchemeColors,
   useBgColors,
   useTextColors,
+  useHighlightTextColors,
 } from '../hooks/useColors'
 import { useLogger } from '../hooks/useLogger'
 import { reader, useReaderSnapshot } from '../models'
@@ -56,8 +57,9 @@ export default function TitleBar() {
   const bookTitle = r.focusedBookTab?.book.metadata.title
   const bookAuthor = r.focusedBookTab?.book.metadata.creator
   const textColors = useTextColors()
+  const highlightTextColors = useHighlightTextColors()
   const bgColors = useBgColors()
-  const {addSystemLog}= useLogger()
+  const { addSystemLog } = useLogger()
 
   const bgBorder = useColorSchemeColors({
     sepia: 'border-b-black',
@@ -70,7 +72,7 @@ export default function TitleBar() {
     reader.removeTab(parseInt(r.focusedTab?.id || '1'))
     addSystemLog({
       event: 'CLOSE_BOOK',
-      newValue: `${bookTitle} - ${bookAuthor}`
+      newValue: `${bookTitle} - ${bookAuthor}`,
     })
   }
 
@@ -87,7 +89,7 @@ export default function TitleBar() {
         {bookTitle} - {bookAuthor}
       </p>
       <button
-        className="h-8 w-8 text-black hover:text-white"
+        className={clsx('h-8 w-8 hover:bg-gray-500/20 flex items-center justify-center transition-colors rounded-lg', highlightTextColors)}
         onClick={handleClose}
       >
         <X />
