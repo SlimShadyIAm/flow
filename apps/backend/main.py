@@ -28,11 +28,13 @@ async def take_screenshot(event_data: EventData):
         # Call the insert_event_data function
         event = insert_event_data(event_data)
 
-        if (event_data.event == "BEGIN_EXPERIMENT"):
+        if (event_data.event == "OPEN_BOOK"):
             start_eyetracking()
 
             import time
             time.sleep(5)
+
+        elif (event_data.event == "CLOSE_BOOK"):
             stop_eyetacking()
 
         return EventResponse(
