@@ -105,26 +105,27 @@ export function ReaderGridView() {
 
   const [idValue, setIdValue] = useState<number>()
   const [treatmentValue, setTreatmentValue] = useState<Treatment | null>(null)
-  const { addSystemLog } = useLogger()
+  const { addSystemLog, experimentStarted, setExperimentStarted } = useLogger()
 
   const handleSetID = (idValue: any) => {
     setParticipantId(parseInt(idValue))
     setSelectedTreatment(treatmentValue!)
-    addSystemLog({
-      event: 'BEGIN_EXPERIMENT',
-      newValue: idValue,
-    })
-    addSystemLog({
-      event: 'SELECT_TREATMENT',
-      newValue: treatmentValue!.name,
-    })
+    setExperimentStarted(true)
   }
   const treatments: Treatment[] = treatmentsJson as unknown as Treatment[]
   const handleSelectTreatment = (treatment: Treatment) => {
     setTreatmentValue(treatment)
   }
 
-  if (participantId === -1) {
+  useEffect(() => {
+    if (!experimentStarted) return
+    addSystemLog({
+      event: 'SELECT_TREATMENT',
+      newValue: treatmentValue!.name,
+    })
+  }, [experimentStarted, treatmentValue, addSystemLog])
+
+  if (!experimentStarted) {
     return (
       <div className="flex h-screen w-screen flex-col items-center justify-center gap-4">
         {(!treatmentValue || !idValue) && (

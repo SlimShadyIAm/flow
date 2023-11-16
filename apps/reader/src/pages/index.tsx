@@ -394,8 +394,8 @@ const Book: React.FC<BookProps> = ({
     <div className="relative flex flex-col px-2" onClick={
       () => {
           addUserLog({
-            event: "SELECT_BOOK",
-            newValue: book.name,
+            event: "OPEN_BOOK",
+            newValue: `${book.metadata.title} - ${book.metadata.creator}`,
           })
       }
     }>

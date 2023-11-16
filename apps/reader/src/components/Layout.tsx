@@ -57,6 +57,7 @@ export default function TitleBar() {
   const bookAuthor = r.focusedBookTab?.book.metadata.creator
   const textColors = useTextColors()
   const bgColors = useBgColors()
+  const {addSystemLog}= useLogger()
 
   const bgBorder = useColorSchemeColors({
     sepia: 'border-b-black',
@@ -67,7 +68,10 @@ export default function TitleBar() {
   const handleClose = (e: any) => {
     e.stopPropagation()
     reader.removeTab(parseInt(r.focusedTab?.id || '1'))
-    // TODO: log that the book was closed
+    addSystemLog({
+      event: 'CLOSE_BOOK',
+      newValue: `${bookTitle} - ${bookAuthor}`
+    })
   }
 
   if (!readMode) return null

@@ -41,6 +41,8 @@ export interface Treatment {
 type LoggerContextProps = {
   participantId: number
   setParticipantId: (id: number) => void
+  experimentStarted: boolean
+  setExperimentStarted: (started: boolean) => void
   selectedTreatment: Treatment | null
   setSelectedTreatment: (treatment: Treatment) => void
   addUserLog: (log: UserLog) => void
@@ -50,6 +52,8 @@ type LoggerContextProps = {
 const initialContext: LoggerContextProps = {
   participantId: 0,
   selectedTreatment: null,
+  experimentStarted: false,
+  setExperimentStarted: () => {},
   setSelectedTreatment: () => {},
   setParticipantId: () => {},
   addUserLog: () => {},
@@ -70,6 +74,7 @@ export const useLogger = () => {
 
 const LoggerProvider = ({ children }: Props) => {
   const [participantId, setParticipantId] = useState<number>(-1)
+  const [experimentStarted, setExperimentStarted] = useState<boolean>(false)
   const [selectedTreatment, setSelectedTreatment] = useState<Treatment | null>(
     null,
   )
@@ -87,6 +92,10 @@ const LoggerProvider = ({ children }: Props) => {
       participantId,
       setParticipantId: (id: number) => {
         setParticipantId(id)
+      },
+      experimentStarted,
+      setExperimentStarted: (started: boolean) => {
+        setExperimentStarted(started)
       },
       addUserLog: (log: UserLog) => {
         addLog({
