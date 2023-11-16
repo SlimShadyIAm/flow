@@ -118,7 +118,7 @@ const LoggerProvider = ({ children }: Props) => {
         setSelectedTreatment(treatment)
       },
     }),
-    [addLog, participantId, selectedTreatment],
+    [addLog, participantId, selectedTreatment, experimentStarted],
   )
 
   return (

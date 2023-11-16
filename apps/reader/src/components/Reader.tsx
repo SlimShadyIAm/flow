@@ -87,7 +87,7 @@ export function ReaderGridView() {
   const { groups } = useReaderSnapshot()
   const { addUserLog } = useLogger()
   useEventListener('keydown', handleKeyDown(reader.focusedBookTab))
-  const { participantId, setParticipantId, setSelectedTreatment } = useLogger()
+  const { setParticipantId, setSelectedTreatment } = useLogger()
 
   const handleNextPage = () => {
     addUserLog({
@@ -118,7 +118,7 @@ export function ReaderGridView() {
   }
 
   useEffect(() => {
-    if (!experimentStarted) return
+    if (!experimentStarted || !treatmentValue) return
     addSystemLog({
       event: 'SELECT_TREATMENT',
       newValue: treatmentValue!.name,

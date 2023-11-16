@@ -43,7 +43,7 @@ export default function Index() {
   const src = new URL(window.location.href).searchParams.get(SOURCE)
   const [loading, setLoading] = useState(!!src)
   const resetTypography = useResetTypography()
-  const {selectedTreatment} = useLogger()
+  const { selectedTreatment } = useLogger()
 
   useDisablePinchZooming()
 
@@ -386,19 +386,12 @@ const Book: React.FC<BookProps> = ({
 
   const cover = covers?.find((c) => c.id === book.id)?.cover
   const remoteFile = remoteFiles.data?.find((f) => f.name === book.name)
-  const {addUserLog} = useLogger()
+  const { addUserLog } = useLogger()
 
   const Icon = selected ? MdCheckBox : MdCheckBoxOutlineBlank
 
   return (
-    <div className="relative flex flex-col px-2" onClick={
-      () => {
-          addUserLog({
-            event: "OPEN_BOOK",
-            newValue: `${book.metadata.title} - ${book.metadata.creator}`,
-          })
-      }
-    }>
+    <div className="relative flex flex-col px-2">
       <div
         role="button"
         className="border-inverse-on-surface relative border"

@@ -1,9 +1,9 @@
 import clsx from 'clsx'
-import { X } from 'lucide-react'
+import { PlayIcon, X } from 'lucide-react'
 import { ComponentProps, useEffect, useState } from 'react'
 import { useMemo } from 'react'
 import { IconType } from 'react-icons'
-import { RiHome6Line, RiSettings5Line } from 'react-icons/ri'
+import { RiHome6Line } from 'react-icons/ri'
 
 import {
   Env,
@@ -18,6 +18,7 @@ import {
   useBgColors,
   useTextColors,
   useHighlightTextColors,
+  useSettingsButtonColors,
 } from '../hooks/useColors'
 import { useLogger } from '../hooks/useLogger'
 import { reader, useReaderSnapshot } from '../models'
@@ -33,12 +34,39 @@ export const Layout: React.FC = ({ children }) => {
   const mobile = useMobile()
   const r = useReaderSnapshot()
   const readMode = r.focusedTab?.isBook
+  const bgColors = useBgColors()
+  const buttonColors = useSettingsButtonColors()
+  const { addUserLog } = useLogger()
+
+  const [experimentStarted, setExperimentStarted] = useState(false)
+
+  const startExperiment = () => {
+    setExperimentStarted(true)
+
+    addUserLog({
+      event: 'OPEN_BOOK',
+      newValue: `${r.focusedBookTab?.book.metadata.title} - ${r.focusedBookTab?.book.metadata.creator}`,
+    })
+  }
 
   useEffect(() => {
     if (mobile === undefined) return
     setAction(mobile ? undefined : 'toc')
     setReady(true)
   }, [mobile, setAction])
+
+  if (!experimentStarted && readMode) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <button
+          className={clsx('rounded-md p-2 ring-4', bgColors, buttonColors)}
+          onClick={startExperiment}
+        >
+          <PlayIcon size={48} />
+        </button>
+      </div>
+    )
+  }
 
   return (
     <div className="flex h-full flex-col transition-colors">
@@ -89,7 +117,10 @@ export default function TitleBar() {
         {bookTitle} - {bookAuthor}
       </p>
       <button
-        className={clsx('h-8 w-8 hover:bg-gray-500/20 flex items-center justify-center transition-colors rounded-lg', highlightTextColors)}
+        className={clsx(
+          'flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-gray-500/20',
+          highlightTextColors,
+        )}
         onClick={handleClose}
       >
         <X />
