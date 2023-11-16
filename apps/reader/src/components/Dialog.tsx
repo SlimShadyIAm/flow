@@ -106,13 +106,14 @@ const Dialog: React.FC = () => {
       } else if (adjustment.property === 'fontWeight') {
         setTypography(
           adjustment.property,
-          (focusedBookTab?.book.configuration?.typography[adjustment.property] as number) +
+          ((focusedBookTab?.book.configuration?.typography?.[adjustment.property] || 0) as number) +
           offset,
         )
       } else {
         setTypography(
           adjustment.property,
-          parseInt(focusedBookTab?.book.configuration?.typography[adjustment.property]) + offset + 'px',
+          ((focusedBookTab?.book.configuration?.typography?.[adjustment.property] || 0) as number) + offset +
+             + 'px',
         )
       }
     }
