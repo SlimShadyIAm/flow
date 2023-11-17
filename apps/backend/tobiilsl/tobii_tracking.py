@@ -5,73 +5,101 @@
 license_file = "license_file"
 
 
+import datetime
+import os
+import time
+import simplejson
 import tobii_research as tr
 import json
 
-setup: bool = False
+class Tobii:
+    setup: bool = False
+    tracker: tr.EyeTracker
+    participantId: int
+
+    def __init__(self, participantId):
+        self.participantId = participantId
+        # Find Eye Tracker and Apply License (edit to suit actual tracker serial no)
+        trackers = tr.find_all_eyetrackers()
+        if len(trackers) == 0:
+            print("No Eye Trackers found!?")
+            exit(1)
+
+        # Pick first tracker
+        self.tracker = trackers[0]
+        print("Found Tobii Tracker at '%s'" % (self.tracker.address))
+
+        # Apply license
+        if license_file != "":
+            import os
+
+            with open(os.path.join("tobiilsl", "license_file"), "rb") as f:
+                license = f.read()
+
+                res = self.tracker.apply_licenses(license)
+                # Returns: Tuple of FailedLicense objects for licenses that failed.
+                # Empty tuple if all licenses were successfully applied.
+
+                if len(res) == 0:
+                    print("Successfully applied license from single key")
+                    self.setup = True
+                else:
+                    print(
+                        "Failed to apply license from single key. Validation result: %s."
+                        % (res[0].validation_result)
+                    )
+                    exit
+        else:
+            print("No license file found")
 
 
-def setup_eye_tracker() -> tr.EyeTracker:
-    # Find Eye Tracker and Apply License (edit to suit actual tracker serial no)
-    trackers = tr.find_all_eyetrackers()
-    if len(trackers) == 0:
-        print("No Eye Trackers found!?")
-        exit(1)
+    def start_tracking(self):
+        if (not self.setup):
+            print("Eye tracker not setup")
+            exit(1)
+        print("Tracking eye stuff")
 
-    # Pick first tracker
-    tracker = trackers[0]
-    print("Found Tobii Tracker at '%s'" % (tracker.address))
+        self.tracker.subscribe_to(
+            tr.EYETRACKER_GAZE_DATA, self.gaze_data_callback, as_dictionary=True
+        )
+        return True
 
-    # Apply license
-    if license_file != "":
-        import os
+    def stop_tracking(self):
+        if (not self.setup):
+            print("Eye tracker not setup")
+            exit(1)
 
-        with open(os.path.join("tobiilsl", "license_file"), "rb") as f:
-            license = f.read()
+        self.tracker.unsubscribe_from(tr.EYETRACKER_GAZE_DATA, 
+                                      self.gaze_data_callback)
+        print("Not Tracking eye stuff")
+        # generate filename based on date and time
+        date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        filename = os.path.join("eye_tracker_data", f"[{self.participantId}]-{date}.json")
+        print(f"Outputting to file {filename}...")
+        # create data directory if it doesn't exist
+        if not os.path.exists("eye_tracker_data"):
+            os.makedirs("eye_tracker_data")
+        
+        data_to_write = {
+            "participantId": self.participantId,
+            "data": self.gaze_datas
+        }
+        
+        with open(filename, "w") as f:
+            f.write(simplejson.dumps(data_to_write, ignore_nan=True))
 
-            res = tracker.apply_licenses(license)
-            # Returns: Tuple of FailedLicense objects for licenses that failed.
-            # Empty tuple if all licenses were successfully applied.
-
-            if len(res) == 0:
-                print("Successfully applied license from single key")
-                setup = True
-                return tracker
-            else:
-                print(
-                    "Failed to apply license from single key. Validation result: %s."
-                    % (res[0].validation_result)
-                )
-                exit
-    else:
-        print("No license file found")
-
-
-def start_tracking(tracker: tr.EyeTracker):
-    if (not setup):
-        print("Eye tracker not setup")
-        exit(1)
-
-    tracker.subscribe_to(
-        tr.EYETRACKER_GAZE_DATA, gaze_data_callback, as_dictionary=True
-    )
-    return True
-
-def stop_tracking(tracker: tr.EyeTracker):
-    if (not setup):
-        print("Eye tracker not setup")
-        exit(1)
-
-    tracker.unsubscribe_from(tr.EYETRACKER_GAZE_DATA, gaze_data_callback)
-    
-    return True
+        return True
 
 
-gaze_datas = []
+    gaze_datas = []
 
-def gaze_data_callback(gaze_data):
-    gaze_datas.append(json.dumps(gaze_data))
+    def gaze_data_callback(self, gaze_data):
+        self.gaze_datas.append(gaze_data)
 
 
 if __name__ == "__main__":
-    setup_eye_tracker()
+    tobii = Tobii(123)
+    tobii.start_tracking()
+    time.sleep(1)
+    tobii.stop_tracking()
+
