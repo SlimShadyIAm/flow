@@ -5,6 +5,7 @@ from screenshot import capture_screenshot
 from fastapi.middleware.cors import CORSMiddleware
 import pyautogui
 import subprocess
+import tobiilsl.tobii_tracking as tobii
 
 PROCESS = None
 
@@ -60,25 +61,19 @@ def start_calibration():
 
 @app.get("/start-eyetracking/")
 def start_eyetracking():
-    global PROCESS
-
-    PROCESS = subprocess.Popen(["python", "./tobiilsl/tobiilsl.py"])
+    tobii.start_tracking()
     return "Eyetracking started"
 
+@app.get("/stop-eyetracking/")
 def stop_eyetacking():
-    print("stopping eyetracking")
-    
-    global PROCESS
-    if PROCESS:
-        import signal
-        import os
-        # os.kill(PROCESS.pid, signal.CTRL_C_EVENT)
-        PROCESS.terminate()
-        PROCESS = None
+    tobii.stop_tracking()
+    return "Eyetracking stopped"
+
 
 @app.on_event("startup")
 async def startup_event():
     initialize_database()
+    tobii.setup_eye_tracker()
 
 @app.on_event("shutdown")
 async def shutdown_event():
