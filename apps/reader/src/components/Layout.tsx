@@ -26,6 +26,7 @@ import { defaultSettings, useResetTypography } from '../state'
 import { activeClass } from '../styles'
 
 import { useSplitViewItem } from './base'
+import { useConfirmationDialog } from './ConfirmationDialog'
 import { TypographyView } from './viewlets/TypographyView'
 
 export const Layout: React.FC = ({ children }) => {
@@ -88,6 +89,7 @@ export default function TitleBar() {
   const highlightTextColors = useHighlightTextColors()
   const bgColors = useBgColors()
   const { addSystemLog } = useLogger()
+  const { openDialog } = useConfirmationDialog()
 
   const bgBorder = useColorSchemeColors({
     sepia: 'border-b-black',
@@ -97,11 +99,12 @@ export default function TitleBar() {
 
   const handleClose = (e: any) => {
     e.stopPropagation()
-    reader.removeTab(parseInt(r.focusedTab?.id || '1'))
-    addSystemLog({
-      event: 'CLOSE_BOOK',
-      newValue: `${bookTitle} - ${bookAuthor}`,
-    })
+    openDialog()
+    // reader.removeTab(parseInt(r.focusedTab?.id || '1'))
+    // addSystemLog({
+    //   event: 'CLOSE_BOOK',
+    //   newValue: `${bookTitle} - ${bookAuthor}`,
+    // })
   }
 
   if (!readMode) return null

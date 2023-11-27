@@ -73,6 +73,8 @@ export default {
   'action.clear': 'Clear',
   'action.step_down': 'Step Down',
   'action.step_up': 'Step Up',
+  'action.cancel': 'Cancel',
+  'action.end': 'End experiment',
 
   untitled: 'Untitled',
 } as const

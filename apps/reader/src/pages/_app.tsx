@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 import { RecoilRoot } from 'recoil'
 
 import { Layout, Theme } from '../components'
+import ConfirmationDialog, { ConfirmationDialogProvider } from '../components/ConfirmationDialog'
 import { DialogProvider } from '../components/Dialog'
 import Dialog from '../components/Dialog'
 import LoggerProvider from '../hooks/useLogger'
@@ -20,16 +21,18 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     <LiteralProvider>
       <RecoilRoot>
         <Theme />
-        <DialogProvider>
-          <LoggerProvider>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-            <Dialog />
-          </LoggerProvider>
-        </DialogProvider>
+        <LoggerProvider>
+          <DialogProvider>
+            <ConfirmationDialogProvider>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+              <Dialog />
+              <ConfirmationDialog />
+            </ConfirmationDialogProvider>
+          </DialogProvider>
+        </LoggerProvider>
       </RecoilRoot>
     </LiteralProvider>
   )
 }
-
