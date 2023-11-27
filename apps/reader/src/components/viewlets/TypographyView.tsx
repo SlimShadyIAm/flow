@@ -316,7 +316,7 @@ const SettingsButton = ({ icon, onClick, disabled }: SettingsButtonProps) => {
   return (
     <button
       className={clsx(
-        'flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
+        'flex h-[64px] w-[64px] items-center justify-center rounded-md border-4 transition-colors',
         !disabled && settingsButtonColors,
         disabled && settingsButtonDisabledColors,
       )}
@@ -343,9 +343,9 @@ const SettingsButtonToggle = ({
   return (
     <button
       className={clsx(
-        'ring-border-' +
+        'border-border-' +
           scheme +
-          ' flex h-[56px] w-[56px] items-center justify-center rounded-sm ring-4 transition-colors',
+          ' flex h-[64px] w-[64px] items-center justify-center rounded-md border-4 transition-colors',
         // !disabled && 'hover:bg-border-dark/20',
         // selected && 'bg-border-dark/30',
         selected && scheme === 'dark' && 'bg-border-dark/30',
@@ -388,13 +388,13 @@ const ThemeButtons = () => {
           <button
             key={value}
             className={clsx(
-              'ring-border-' +
+              'border-border-' +
                 value +
                 ' bg-background-' +
                 value +
                 ' text-text-' +
                 value +
-                ' h-[56px] w-[56px] rounded-sm text-[28px] ring-4',
+                ' h-[64px] w-[64px] rounded-md text-[28px] border-4',
               scheme === value && 'bg-border-' + value + '/30',
             )}
             onClick={() => {

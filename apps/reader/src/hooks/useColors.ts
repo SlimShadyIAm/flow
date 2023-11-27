@@ -55,17 +55,17 @@ export const usePageTurnColors = () => {
 
 export const useSettingsButtonColors = () => {
   return useColorSchemeColors({
-    sepia: 'ring-border-sepia hover:bg-border-sepia/20',
-    dark: 'ring-border-dark hover:bg-border-dark/20',
-    light: 'ring-border-light hover:bg-border-light/20',
+    sepia: 'border-border-sepia hover:bg-border-sepia/20',
+    dark: 'border-border-dark hover:bg-border-dark/20',
+    light: 'border-border-light hover:bg-border-light/20',
   })
 }
 
 export const useSettingsButtonDisabledColors = () => {
   return useColorSchemeColors({
-    sepia: 'ring-border-sepia/30 hover:bg-transparent',
-    dark: 'ring-border-dark/30 hover:bg-transparent',
-    light: 'ring-border-light/30 hover:bg-transparent',
+    sepia: 'border-border-sepia/30 hover:bg-transparent',
+    dark: 'border-border-dark/30 hover:bg-transparent',
+    light: 'border-border-light/30 hover:bg-transparent',
   })
 }
 

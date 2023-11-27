@@ -67,7 +67,7 @@ export const Layout: React.FC = ({ children }) => {
     return (
       <div className="flex h-full items-center justify-center">
         <button
-          className={clsx('rounded-md p-2 ring-4', bgColors, buttonColors)}
+          className={clsx('rounded-md p-2 border-4', bgColors, buttonColors)}
           onClick={startExperiment}
         >
           <PlayIcon size={48} />
