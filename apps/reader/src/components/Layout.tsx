@@ -88,7 +88,6 @@ export default function TitleBar() {
   const textColors = useTextColors()
   const highlightTextColors = useHighlightTextColors()
   const bgColors = useBgColors()
-  const { addSystemLog } = useLogger()
   const { openDialog } = useConfirmationDialog()
 
   const bgBorder = useColorSchemeColors({
@@ -100,11 +99,6 @@ export default function TitleBar() {
   const handleClose = (e: any) => {
     e.stopPropagation()
     openDialog()
-    // reader.removeTab(parseInt(r.focusedTab?.id || '1'))
-    // addSystemLog({
-    //   event: 'CLOSE_BOOK',
-    //   newValue: `${bookTitle} - ${bookAuthor}`,
-    // })
   }
 
   if (!readMode) return null

@@ -10,7 +10,8 @@ import {
   useSettingsButtonDisabledColors,
   useHighlightTextMuted,
 } from '../hooks/useColors'
-import { reader } from '../models'
+import { useLogger } from '../hooks/useLogger'
+import { reader, useReaderSnapshot } from '../models'
 
 interface ConfirmationDialogContextType {
   isOpen: boolean
@@ -59,6 +60,10 @@ const ConfirmationDialog: React.FC = () => {
   const { isOpen, closeDialog } = useConfirmationDialog()
   const bgColors = useBgColors()
   const t = useTranslation()
+  const { addUserLog } = useLogger()
+  const r = useReaderSnapshot()
+  const bookTitle = r.focusedBookTab?.book.metadata.title
+  const bookAuthor = r.focusedBookTab?.book.metadata.creator
 
   useEffect(() => {
     const rootElement = document.getElementById('root')
@@ -74,8 +79,12 @@ const ConfirmationDialog: React.FC = () => {
   }
 
   const closeDialogAndEnd = () => {
-    reader.removeGroup(0)
+    reader.removeTab(parseInt(reader.focusedBookTab?.id || '0'))
     closeDialog()
+    addUserLog({
+      event: 'CLOSE_BOOK',
+      newValue: `${bookTitle} - ${bookAuthor}`,
+    })
   }
 
   return (
