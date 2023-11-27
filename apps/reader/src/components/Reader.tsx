@@ -25,6 +25,7 @@ import { BookTab, reader, useReaderSnapshot } from '../models'
 import { isTouchScreen } from '../platform'
 import {
   defaultSettings,
+  useResetTypography,
   useResetTypographyBeforeBook,
 } from '../state'
 import { updateCustomStyle } from '../styles'
@@ -109,15 +110,18 @@ export function ReaderGridView() {
   const [idValue, setIdValue] = useState<number>()
   const [treatmentValue, setTreatmentValue] = useState<Treatment | null>(null)
   const { addSystemLog, experimentStarted, setExperimentStarted } = useLogger()
+  const resetTypography = useResetTypography()
 
   const handleSetID = (idValue: any) => {
     setParticipantId(parseInt(idValue))
-    setSelectedTreatment(treatmentValue!)
     setExperimentStarted(true)
+    resetTypography()
   }
+
   const treatments: Treatment[] = treatmentsJson as unknown as Treatment[]
   const handleSelectTreatment = (treatment: Treatment) => {
     setTreatmentValue(treatment)
+    setSelectedTreatment(treatment)
   }
 
   useEffect(() => {

@@ -88,6 +88,7 @@ export const useResetTypography = () => {
       ...defaultSettings,
       ...selectedTreatment?.options,
     }))
+    console.log("?")
     setScheme(selectedTreatment?.options.colorScheme || 'dark')
   }, [selectedTreatment, setScheme, setSettings])
 
