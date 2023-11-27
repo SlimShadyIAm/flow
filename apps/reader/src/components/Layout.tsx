@@ -51,6 +51,13 @@ export const Layout: React.FC = ({ children }) => {
   }
 
   useEffect(() => {
+    // make it so that before the next book we show the Play button again
+    if (!readMode && experimentStarted) {
+      setExperimentStarted(false)
+    }
+  }, [readMode, experimentStarted])
+
+  useEffect(() => {
     if (mobile === undefined) return
     setAction(mobile ? undefined : 'toc')
     setReady(true)
