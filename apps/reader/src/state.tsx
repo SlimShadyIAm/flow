@@ -45,6 +45,7 @@ export const defaultSettings: Settings = {
 }
 
 export const useSetTypography = () => {
+  const [, setSettings] = useSettings()
   const setTypography = useCallback(
     <K extends keyof TypographyConfiguration>(
       k: K,
@@ -59,8 +60,12 @@ export const useSetTypography = () => {
           },
         },
       })
+      setSettings((prev) => ({
+        ...prev,
+        [k]: v,
+      }))
     },
-    [],
+    [setSettings],
   )
   return setTypography
 }
@@ -68,9 +73,9 @@ export const useSetTypography = () => {
 export const useResetTypography = () => {
   const { selectedTreatment } = useLogger()
   const { setScheme } = useColorScheme()
+  const [, setSettings] = useSettings()
 
   const resetTypography = useCallback(() => {
-    console.log('selectedTreatment', selectedTreatment)
     reader.focusedBookTab?.updateBook({
       configuration: {
         ...reader.focusedBookTab.book.configuration,
@@ -79,12 +84,32 @@ export const useResetTypography = () => {
         },
       },
     })
+    setSettings(() => ({
+      ...defaultSettings,
+      ...selectedTreatment?.options,
+    }))
     setScheme(selectedTreatment?.options.colorScheme || 'dark')
-  }, [selectedTreatment, setScheme])
+  }, [selectedTreatment, setScheme, setSettings])
 
   return resetTypography
 }
 
+export const useResetTypographyBeforeBook = () => {
+  const [settings] = useSettings()
+
+  const resetTypography = useCallback(() => {
+    reader.focusedBookTab?.updateBook({
+      configuration: {
+        ...reader.focusedBookTab.book.configuration,
+        typography: {
+          ...settings
+        },
+      },
+    })
+  }, [settings])
+
+  return resetTypography
+}
 const settingsState = atom<Settings>({
   key: 'settings',
   default: defaultSettings,

@@ -18,7 +18,6 @@ import { ReaderGridView, Button, TextField, DropZone } from '../components'
 import { BookRecord, CoverRecord, db } from '../db'
 import { addFile, fetchBook, handleFiles } from '../file'
 import {
-  useColorScheme,
   useDisablePinchZooming,
   useLibrary,
   useMobile,

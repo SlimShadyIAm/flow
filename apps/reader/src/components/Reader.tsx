@@ -23,7 +23,10 @@ import { usePageTurnColors } from '../hooks/useColors'
 import { Treatment, useLogger } from '../hooks/useLogger'
 import { BookTab, reader, useReaderSnapshot } from '../models'
 import { isTouchScreen } from '../platform'
-import { defaultSettings, useResetTypography, useSetTypography } from '../state'
+import {
+  defaultSettings,
+  useResetTypographyBeforeBook,
+} from '../state'
 import { updateCustomStyle } from '../styles'
 
 import { LeftArrow, RightArrow } from './Icons'
@@ -195,7 +198,7 @@ function ReaderGroup({ index }: ReaderGroupProps) {
     reader.selectGroup(index)
   }, [index])
 
-  const resetTypography = useResetTypography()
+  const resetTypography = useResetTypographyBeforeBook()
   const { selectedTreatment } = useLogger()
 
   useEffect(() => {
