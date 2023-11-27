@@ -16,6 +16,7 @@ class Tobii:
     setup: bool = False
     tracker: tr.EyeTracker
     participantId: int
+    start_time: datetime
 
     def __init__(self, participantId):
         self.participantId = participantId
@@ -59,6 +60,8 @@ class Tobii:
             exit(1)
         print("Tracking eye stuff")
 
+        self.start_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
+
         self.tracker.subscribe_to(
             tr.EYETRACKER_GAZE_DATA, self.gaze_data_callback, as_dictionary=True
         )
@@ -82,6 +85,7 @@ class Tobii:
         
         data_to_write = {
             "participantId": self.participantId,
+            "start_time": self.start_time,
             "data": self.gaze_datas
         }
         

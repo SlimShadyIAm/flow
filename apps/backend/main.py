@@ -19,10 +19,11 @@ class API:
         self.router.add_api_route('/capture-screenshot/', self.take_screenshot, methods=['POST'], response_model=EventResponse)
         self.router.add_event_handler("startup", self.startup_event)
         self.router.add_event_handler("shutdown", self.shutdown_event)
-        self.router.add_api_route('/events/', self.get_all_events, methods=['GET'], response_model=List[EventResponse])
+        self.router.add_api_route('/events/', self.get_all_events, methods=['GET'])
 
     async def take_screenshot(self, event_data: EventData):
         try:
+            print(event_data)
             # You can access the event data from the request's JSON body
             screenshot_filename = capture_screenshot()
 
