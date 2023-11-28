@@ -53,7 +53,7 @@ class Tobii:
         else:
             print("No license file found")
 
-
+    # TODO: add the start_time as a parameter
     def start_tracking(self):
         if (not self.setup):
             print("Eye tracker not setup")
@@ -76,8 +76,7 @@ class Tobii:
                                       self.gaze_data_callback)
         print("Not Tracking eye stuff")
         # generate filename based on date and time
-        date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        filename = os.path.join("eye_tracker_data", f"[{self.participantId}]-{date}.json")
+        filename = os.path.join("eye_tracker_data", f"[{self.participantId}]-{self.start_time}.json")
         print(f"Outputting to file {filename}...")
         # create data directory if it doesn't exist
         if not os.path.exists("eye_tracker_data"):
