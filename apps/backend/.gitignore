@@ -163,3 +163,4 @@ cython_debug/
 screenshots/*
 eye_tracker_data/*
 events.db
+venv-anal/
