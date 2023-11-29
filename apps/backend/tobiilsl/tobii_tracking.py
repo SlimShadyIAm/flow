@@ -5,7 +5,7 @@
 license_file = "license_file"
 
 
-import datetime
+from datetime import datetime
 import os
 import time
 import simplejson
@@ -61,7 +61,7 @@ class Tobii:
             exit(1)
         print("Tracking eye stuff")
 
-        self.start_time = start_time
+        self.start_time = datetime.fromtimestamp(start_time)
         self.tracker.subscribe_to(
             tr.EYETRACKER_GAZE_DATA, self.gaze_data_callback, as_dictionary=True
         )
@@ -71,12 +71,14 @@ class Tobii:
         if not self.setup:
             print("Eye tracker not setup")
             exit(1)
-        self.end_time = end_time
+        self.end_time = datetime.fromtimestamp(end_time)
         self.tracker.unsubscribe_from(tr.EYETRACKER_GAZE_DATA, self.gaze_data_callback)
         print("Not Tracking eye stuff")
-        
+
+        # generate filename based on date and time
+        date = self.start_time.strftime("%Y-%m-%d_%H-%M-%S")
         filename = os.path.join(
-            "eye_tracker_data", f"[{self.participantId}]-{self.start_time}.json"
+            "eye_tracker_data", f"[{self.participantId}]-{date}.json"
         )
         print(f"Outputting to file {filename}...")
         # create data directory if it doesn't exist
@@ -85,8 +87,8 @@ class Tobii:
 
         data_to_write = {
             "participantId": self.participantId,
-            "start_time": self.start_time,
-            "end_time": self.end_time,
+            "start_time": self.start_time.strftime("%Y-%m-%d_%H-%M-%S"),
+            "end_time": self.end_time.strftime("%Y-%m-%d_%H-%M-%S"),
             "data": self.gaze_datas,
         }
 
