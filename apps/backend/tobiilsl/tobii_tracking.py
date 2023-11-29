@@ -74,10 +74,9 @@ class Tobii:
         self.end_time = end_time
         self.tracker.unsubscribe_from(tr.EYETRACKER_GAZE_DATA, self.gaze_data_callback)
         print("Not Tracking eye stuff")
-        # generate filename based on date and time
-        date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        
         filename = os.path.join(
-            "eye_tracker_data", f"[{self.participantId}]-{date}.json"
+            "eye_tracker_data", f"[{self.participantId}]-{self.start_time}.json"
         )
         print(f"Outputting to file {filename}...")
         # create data directory if it doesn't exist
