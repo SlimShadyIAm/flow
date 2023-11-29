@@ -68,6 +68,12 @@ class API:
 
     async def startup_event(self):
         initialize_database()
+        
+        import os
+        if not os.path.exists("eye_tracker_data"):
+            os.makedirs("eye_tracker_data")
+        if not os.path.exists("screenshots"):
+            os.makedirs("screenshots")
 
     async def shutdown_event(self):
         close_database()
