@@ -245,7 +245,8 @@ const SideBar: React.FC = () => {
   const bgColors = useBgColors()
   const t = useTranslation('settings')
   const resetTypography = useResetTypography()
-  const { setScheme, scheme } = useColorScheme()
+  const { scheme } = useColorScheme()
+  const buttonColors = useSettingsButtonColors()
 
   const { size } = useSplitViewItem(SideBar, {
     preferredSize: 420,
@@ -279,7 +280,7 @@ const SideBar: React.FC = () => {
         <TypographyView />
         <div>
           <button
-            className="rounded-lg border-4 border-red-400 py-2 px-4 text-xl text-red-400 hover:bg-red-400/20"
+            className={clsx("rounded-lg border-4 py-2 px-4 text-xl hover:bg-slate-400/20", buttonColors)}
             onClick={() => {
               handleLog()
               resetTypography()
