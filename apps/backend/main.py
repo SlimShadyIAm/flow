@@ -1,3 +1,4 @@
+import time
 from typing import List
 from fastapi import APIRouter, FastAPI, HTTPException
 from database import close_database, initialize_database, insert_event_data
@@ -30,6 +31,7 @@ class API:
         try:
             print(event_data)
             # You can access the event data from the request's JSON body
+            time.sleep(0.5)
             screenshot_filename = capture_screenshot()
 
             # Add the screenshot filename to the event data
