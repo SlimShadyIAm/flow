@@ -7,6 +7,8 @@ from PIL import Image
 
 X_PIXELS = 2560
 Y_PIXELS = 1440
+TIMESTAMP_IDENT = 'system_time_stamp'
+OFFSET = 10_000_000
 
 def extract_gaze_data_between_timestamps(gaze_data, start_time, end_time):
   # gaze data is the entire json file
@@ -27,13 +29,13 @@ def extract_gaze_data_between_timestamps(gaze_data, start_time, end_time):
   T_offset_end = T_end - T_G_start
   T_offset_end = T_offset_end * 1_000_000
 
-  T_D_start = gaze_data['data'][0]['system_time_stamp']
+  T_D_start = gaze_data['data'][0][TIMESTAMP_IDENT]
 
-  lower_bound = T_D_start + T_offset_start
-  upper_bound = T_D_start + T_offset_end
+  lower_bound = T_D_start + T_offset_start + OFFSET
+  upper_bound = T_D_start + T_offset_end + OFFSET
 
   # get all data between lower and upper bound
-  gaze_data_between_timestamps = [packet for packet in gaze_data['data'] if packet['system_time_stamp'] >= lower_bound and packet['system_time_stamp'] <= upper_bound]
+  gaze_data_between_timestamps = [packet for packet in gaze_data['data'] if packet[TIMESTAMP_IDENT] >= lower_bound and packet[TIMESTAMP_IDENT] <= upper_bound]
 
   return gaze_data_between_timestamps
 
@@ -43,18 +45,25 @@ def plot_gaze_data_on_screenshot(gaze_data, screenshot_path):
   ax.set_xlim(0, X_PIXELS)
   ax.set_ylim(Y_PIXELS, 0)
   img = plt.imread(screenshot_path)
+  # normalize timestamps
+  timestamps = []
+  x = []
+  y = []
 
   # for each packet, plot the gaze point
   for packet in gaze_data:
     if packet['right_gaze_point_validity'] == 0:
       continue
-    x = packet['right_gaze_point_on_display_area'][0] * X_PIXELS
-    y = packet['right_gaze_point_on_display_area'][1] * Y_PIXELS
+    x.append(packet['right_gaze_point_on_display_area'][0] * X_PIXELS)
+    y.append(packet['right_gaze_point_on_display_area'][1] * Y_PIXELS)
+    timestamps.append(packet[TIMESTAMP_IDENT])
 
-    ax.plot(x, y, 'ro', markersize=1)
-    # we want to plot the gaze points as circles.
-    # TODO: the points should have colors based on the time they were recorded
 
+  # use normalized timestamps as color
+  timestamps_normalized = [(t - min(timestamps)) / (max(timestamps) - min(timestamps)) for t in timestamps]
+  p = ax.scatter(x, y, c=timestamps_normalized, s=1, cmap='viridis')
+
+  fig.colorbar(p, ax=ax)
   ax.imshow(img, extent=[0, X_PIXELS, Y_PIXELS, 0])
 
 
@@ -67,3 +76,18 @@ def show_participant_screenshots(participant_events):
     image_path = event.screenshot_file
     print_record(event)
     display(Image.open(image_path))
+
+def extract_x_y_timestamps_from_gaze_data(gaze_data):
+  x = []
+  y = []
+  timestamps = []
+
+  for packet in gaze_data:
+    if packet['right_gaze_point_validity'] == 0:
+      continue
+    x.append(packet['right_gaze_point_on_display_area'][0] * X_PIXELS)
+    y.append(packet['right_gaze_point_on_display_area'][1] * Y_PIXELS)
+    timestamps.append(packet[TIMESTAMP_IDENT])
+
+  # timestamps_normalized = [(t - min(timestamps)) / (max(timestamps) - min(timestamps)) for t in timestamps]
+  return x, y, timestamps
