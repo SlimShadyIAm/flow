@@ -30,6 +30,13 @@ class API:
     async def take_screenshot(self, event_data: EventData):
         try:
             print(event_data)
+            if event_data.event == "SELECT_TREATMENT":
+                self.tobii = tobii.Tobii(event_data.participantId)
+            elif event_data.event == "OPEN_BOOK":
+                self.tobii.start_tracking(event_data.timestamp)
+            elif event_data.event == "CLOSE_BOOK":
+                self.tobii.stop_tracking(event_data.timestamp)
+            
             # You can access the event data from the request's JSON body
             time.sleep(0.5)
             screenshot_filename = capture_screenshot()
@@ -40,12 +47,6 @@ class API:
             # Call the insert_event_data function
             event = insert_event_data(event_data)
 
-            if event_data.event == "SELECT_TREATMENT":
-                self.tobii = tobii.Tobii(event_data.participantId)
-            elif event_data.event == "OPEN_BOOK":
-                self.tobii.start_tracking(event_data.timestamp)
-            elif event_data.event == "CLOSE_BOOK":
-                self.tobii.stop_tracking(event_data.timestamp)
 
             return EventResponse(
                 id=event.id,  # Replace with the actual ID

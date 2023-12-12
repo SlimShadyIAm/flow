@@ -60,7 +60,9 @@ class Tobii:
             print("Eye tracker not setup")
             exit(1)
         print("Tracking eye stuff")
-
+        self.system_start_time_mono_1 = time.monotonic_ns()
+        self.system_start_time_epoch = time.time()
+        self.system_start_time_mono_2 = time.monotonic_ns()
         self.start_time = datetime.fromtimestamp(start_time)
         self.tracker.subscribe_to(
             tr.EYETRACKER_GAZE_DATA, self.gaze_data_callback, as_dictionary=True
@@ -87,8 +89,11 @@ class Tobii:
 
         data_to_write = {
             "participantId": self.participantId,
-            "start_time": self.start_time.strftime("%Y-%m-%d_%H-%M-%S"),
-            "end_time": self.end_time.strftime("%Y-%m-%d_%H-%M-%S"),
+            "start_time": self.start_time.timestamp,
+            "end_time": self.end_time.timestamp,
+            "system_start_time_mono": (self.system_start_time_mono_1 + self.system_start_time_mono_2) / 2,
+            "system_start_time_mono_delta": (self.system_start_time_mono_2 - self.system_start_time_mono_1),
+            "system_start_time_epoch": self.system_start_time_epoch,
             "data": self.gaze_datas,
         }
 
