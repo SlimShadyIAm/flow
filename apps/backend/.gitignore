@@ -164,3 +164,4 @@ screenshots/*
 eye_tracker_data/*
 events.db
 venv-anal/
+.venv-anal/
