@@ -101,7 +101,7 @@ const LoggerProvider = ({ children }: Props) => {
         addLog({
           ...log,
           agent: 'USER',
-          timestamp: Math.round(Date.now() / 1000),
+          timestamp: Date.now(),
           participantId,
         })
       },
@@ -109,7 +109,7 @@ const LoggerProvider = ({ children }: Props) => {
         addLog({
           ...log,
           agent: 'SYSTEM',
-          timestamp: Math.round(Date.now() / 1000),
+          timestamp: Date.now(),
           participantId,
         })
       },
