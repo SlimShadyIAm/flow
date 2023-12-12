@@ -1,0 +1,92 @@
+{
+    "7": {
+        "split": 1,
+        "group": 3,
+        "age": 17,
+        "dominant_eye": "Right"
+    },
+    "8": {
+        "split": 1,
+        "group": 4,
+        "age": 62,
+        "dominant_eye": "Right"
+    },
+    "9": {
+        "split": 2,
+        "group": 1,
+        "age": 58,
+        "dominant_eye": "Left"
+    },
+    "10": {
+        "split": 2,
+        "group": 2,
+        "age": 18,
+        "dominant_eye": "Right"
+    },
+    "12": {
+        "split": 2,
+        "group": 4,
+        "age": 62,
+        "dominant_eye": "Right"
+    },
+    "13": {
+        "split": 2,
+        "group": 5,
+        "age": 73,
+        "dominant_eye": "Right"
+    },
+    "16" : {
+        "split": 2,
+        "group": 2,
+        "age": 64,
+        "dominant_eye": "Right"
+    },
+    "17": {
+        "split": 2,
+        "group": 3,
+        "age": 65,
+        "dominant_eye": "Right"
+    },
+    "18": {
+        "split": 2,
+        "group": 4,
+        "age": 25,
+        "dominant_eye": "Left"
+    },
+    "19": {
+        "split": 2,
+        "group": 5,
+        "age": 60,
+        "dominant_eye": "Right"
+    },
+    "21": {
+        "split": 2,
+        "group": 3,
+        "age": 59,
+        "dominant_eye": "Left"
+    },
+    "97": {
+        "split": 2,
+        "group": 4,
+        "age": 25,
+        "dominant_eye": "Right"
+    },
+    "98": {
+        "split": 2,
+        "group": 1,
+        "age": 24,
+        "dominant_eye": "Right"
+    },
+    "99": {
+        "split": 1,
+        "group": 1,
+        "age": 25,
+        "dominant_eye": "Right"
+    },
+    "999": {
+        "split": null,
+        "group": null,
+        "age": 0,
+        "dominant_eye": null
+    }
+}
