@@ -63,7 +63,7 @@ class Tobii:
         self.system_start_time_mono_1 = time.monotonic_ns()
         self.system_start_time_epoch = time.time()
         self.system_start_time_mono_2 = time.monotonic_ns()
-        self.start_time = datetime.fromtimestamp(start_time)
+        self.start_time = start_time
         self.tracker.subscribe_to(
             tr.EYETRACKER_GAZE_DATA, self.gaze_data_callback, as_dictionary=True
         )
@@ -73,12 +73,15 @@ class Tobii:
         if not self.setup:
             print("Eye tracker not setup")
             exit(1)
-        self.end_time = datetime.fromtimestamp(end_time)
+        self.end_time = end_time
+        self.system_end_time_mono_1 = time.monotonic_ns()
+        self.system_end_time_epoch = time.time()
+        self.system_end_time_mono_2 = time.monotonic_ns()
         self.tracker.unsubscribe_from(tr.EYETRACKER_GAZE_DATA, self.gaze_data_callback)
         print("Not Tracking eye stuff")
 
         # generate filename based on date and time
-        date = self.start_time.strftime("%Y-%m-%d_%H-%M-%S")
+        date = datetime.fromtimestamp(self.start_time/1000).strftime("%Y-%m-%d_%H-%M-%S")
         filename = os.path.join(
             "eye_tracker_data", f"[{self.participantId}]-{date}.json"
         )
@@ -89,11 +92,14 @@ class Tobii:
 
         data_to_write = {
             "participantId": self.participantId,
-            "start_time": self.start_time.timestamp,
-            "end_time": self.end_time.timestamp,
+            "start_time": self.start_time,
+            "end_time": self.end_time,
             "system_start_time_mono": (self.system_start_time_mono_1 + self.system_start_time_mono_2) / 2,
             "system_start_time_mono_delta": (self.system_start_time_mono_2 - self.system_start_time_mono_1),
             "system_start_time_epoch": self.system_start_time_epoch,
+            "system_end_time_mono": (self.system_end_time_mono_1 + self.system_end_time_mono_2) / 2,
+            "system_end_time_mono_delta": (self.system_end_time_mono_2 - self.system_end_time_mono_1),
+            "system_end_time_epoch": self.system_end_time_epoch,
             "data": self.gaze_datas,
         }
 
