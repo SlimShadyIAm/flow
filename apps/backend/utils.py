@@ -131,9 +131,14 @@ def plot_gaze_data_on_screenshot(gaze_data, screenshot_path):
     timestamps_normalized = [
         (t - min(timestamps)) / (max(timestamps) - min(timestamps)) for t in timestamps
     ]
-    
-    ax.scatter(x, y, c=timestamps_normalized, s=1, cmap="viridis")
-    ax.imshow(img, extent=[0, X_PIXELS, Y_PIXELS, 0])
+    p = ax.scatter(x, y, c=timestamps_normalized, s=1, cmap="viridis")
+
+    # use normalized timestamps as color
+    timestamps_normalized = [
+        (t - min(timestamps)) / (max(timestamps) - min(timestamps)) for t in timestamps
+    ]
+    p = ax.scatter(x, y, c=timestamps_normalized, s=1, cmap="plasma")
+
 
 def print_record(record):
     print(
