@@ -77,6 +77,37 @@ def extract_gaze_data_between_timestamps(gaze_data, start_time, end_time):
     return gaze_data_between_timestamps
 
 
+def extract_gaze_data_between_timestamps_proper(gaze_data, start_time, end_time):
+    # gaze data is the entire json file
+    # start_time and end_time are in milliseconds
+
+    T_s_0 = gaze_data["data"][0][TIMESTAMP_IDENT] # microseconds
+    system_start_time_mono = gaze_data['system_start_time_mono']  / 1_000 # convert nanoseconds to microseconds
+    delta = T_s_0 - system_start_time_mono
+    system_start_time_epoch = gaze_data['system_start_time_epoch'] * 1_000_000 # convert seconds to microseconds
+    T_E_0 = system_start_time_epoch + delta
+    print('T_s_0', T_s_0)
+    print('T_E_0', T_E_0)
+    print('system_start_time_mono', system_start_time_mono)
+    print('system_start_time_epoch', system_start_time_epoch)
+    print('delta', delta)
+
+
+    T_x = start_time * 1_000 # convert milliseconds to microseconds
+    T_y = end_time * 1_000 # convert milliseconds to microseconds
+    lower_bound = T_s_0 +  (T_x - T_E_0)
+    upper_bound = T_s_0 +  (T_y - T_E_0)
+
+    # get all data between lower and upper bound
+    gaze_data_between_timestamps = [
+        packet
+        for packet in gaze_data["data"]
+        if packet[TIMESTAMP_IDENT] >= lower_bound
+        and packet[TIMESTAMP_IDENT] <= upper_bound
+    ]
+
+    return gaze_data_between_timestamps
+
 def plot_gaze_data_on_screenshot(gaze_data, screenshot_path):
     fig, ax = plt.subplots(figsize=(X_PIXELS / 100, Y_PIXELS / 100))
     # set ax limits
@@ -100,12 +131,9 @@ def plot_gaze_data_on_screenshot(gaze_data, screenshot_path):
     timestamps_normalized = [
         (t - min(timestamps)) / (max(timestamps) - min(timestamps)) for t in timestamps
     ]
-    p = ax.scatter(x, y, c=timestamps_normalized, s=1, cmap="viridis")
-
-  # use normalized timestamps as color
-  timestamps_normalized = [(t - min(timestamps)) / (max(timestamps) - min(timestamps)) for t in timestamps]
-  p = ax.scatter(x, y, c=timestamps_normalized, s=1, cmap='plasma')
-
+    
+    ax.scatter(x, y, c=timestamps_normalized, s=1, cmap="viridis")
+    ax.imshow(img, extent=[0, X_PIXELS, Y_PIXELS, 0])
 
 def print_record(record):
     print(
