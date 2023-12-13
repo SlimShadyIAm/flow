@@ -30,6 +30,7 @@ class Tobii:
 
         # Pick first tracker
         self.tracker = trackers[0]
+        self.gaze_datas = []
         print("Found Tobii Tracker at '%s'" % (self.tracker.address))
 
         # Apply license
@@ -60,6 +61,7 @@ class Tobii:
             print("Eye tracker not setup")
             exit(1)
         print("Tracking eye stuff")
+        self.gaze_datas = []
         self.system_start_time_mono_1 = time.monotonic_ns()
         self.system_start_time_epoch = time.time()
         self.system_start_time_mono_2 = time.monotonic_ns()
