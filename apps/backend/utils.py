@@ -86,12 +86,6 @@ def extract_gaze_data_between_timestamps_proper(gaze_data, start_time, end_time)
     delta = T_s_0 - system_start_time_mono
     system_start_time_epoch = gaze_data['system_start_time_epoch'] * 1_000_000 # convert seconds to microseconds
     T_E_0 = system_start_time_epoch + delta
-    print('T_s_0', T_s_0)
-    print('T_E_0', T_E_0)
-    print('system_start_time_mono', system_start_time_mono)
-    print('system_start_time_epoch', system_start_time_epoch)
-    print('delta', delta)
-
 
     T_x = start_time * 1_000 # convert milliseconds to microseconds
     T_y = end_time * 1_000 # convert milliseconds to microseconds
@@ -108,7 +102,7 @@ def extract_gaze_data_between_timestamps_proper(gaze_data, start_time, end_time)
 
     return gaze_data_between_timestamps
 
-def plot_gaze_data_on_screenshot(gaze_data, screenshot_path):
+def plot_gaze_data_on_screenshot(gaze_data, screenshot_path, title):
     fig, ax = plt.subplots(figsize=(X_PIXELS / 100, Y_PIXELS / 100))
     # set ax limits
     ax.set_xlim(0, X_PIXELS)
@@ -132,8 +126,11 @@ def plot_gaze_data_on_screenshot(gaze_data, screenshot_path):
         (t - min(timestamps)) / (max(timestamps) - min(timestamps)) for t in timestamps
     ]
     
-    ax.scatter(x, y, c=timestamps_normalized, s=1, cmap="viridis")
+    p = ax.scatter(x, y, c=timestamps_normalized, s=1, cmap="plasma")
+    # show color bar for timestamps
+    fig.colorbar(p, ax=ax)
     ax.imshow(img, extent=[0, X_PIXELS, Y_PIXELS, 0])
+    ax.set_title(title)
 
 def print_record(record):
     print(
