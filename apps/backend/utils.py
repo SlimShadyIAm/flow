@@ -132,6 +132,13 @@ def plot_gaze_data_on_screenshot(gaze_data, screenshot_path, title):
     ax.imshow(img, extent=[0, X_PIXELS, Y_PIXELS, 0])
     ax.set_title(title)
 
+    # use normalized timestamps as color
+    timestamps_normalized = [
+        (t - min(timestamps)) / (max(timestamps) - min(timestamps)) for t in timestamps
+    ]
+    p = ax.scatter(x, y, c=timestamps_normalized, s=1, cmap="plasma")
+
+
 def print_record(record):
     print(
         record.id,
@@ -166,3 +173,32 @@ def extract_x_y_timestamps_from_gaze_data(gaze_data):
 
     # timestamps_normalized = [(t - min(timestamps)) / (max(timestamps) - min(timestamps)) for t in timestamps]
     return x, y, timestamps
+
+def merge_databases(other_database_name):
+    ### 
+    db = SqliteDatabase("events.db")
+    db.connect()
+    db.execute_sql(
+        f"""
+        ATTACH '{other_database_name}' AS db2;
+        INSERT INTO events (
+            time,
+            agent,
+            event,
+            participant_id,
+            old_value,
+            new_value,
+            screenshot_file
+        )
+        SELECT
+            time,
+            agent,
+            event,
+            participant_id,
+            old_value,
+            new_value,
+            screenshot_file
+        FROM db2.events;
+        DETACH db2;
+        """
+    )
