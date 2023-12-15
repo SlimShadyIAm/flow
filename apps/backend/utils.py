@@ -3,8 +3,10 @@ from datetime import datetime
 from matplotlib import pyplot as plt
 from IPython.display import display
 from PIL import Image
+import pandas as pd
 
 from peewee import IntegerField, Model, CharField, SqliteDatabase, AutoField
+from velocityThreshold import detect_fix_ivt
 
 db = SqliteDatabase("events.db")
 
@@ -132,11 +134,42 @@ def plot_gaze_data_on_screenshot(gaze_data, screenshot_path, title):
     ax.imshow(img, extent=[0, X_PIXELS, Y_PIXELS, 0])
     ax.set_title(title)
 
+def plot_fixations_on_screenshot(gaze_data, screenshot_path, title):
+    fig, ax = plt.subplots(figsize=(X_PIXELS / 100, Y_PIXELS / 100))
+    # set ax limits
+    ax.set_xlim(0, X_PIXELS)
+    ax.set_ylim(Y_PIXELS, 0)
+    img = plt.imread(screenshot_path)
+    # normalize timestamps
+    timestamps = []
+    x = []
+    y = []
+
+    # for each packet, plot the gaze point
+    for packet in gaze_data:
+        if packet["right_gaze_point_validity"] == 0:
+            continue
+        x.append(packet["right_gaze_point_on_display_area"][0] * X_PIXELS)
+        y.append(packet["right_gaze_point_on_display_area"][1] * Y_PIXELS)
+        timestamps.append(packet[TIMESTAMP_IDENT])
+
     # use normalized timestamps as color
     timestamps_normalized = [
         (t - min(timestamps)) / (max(timestamps) - min(timestamps)) for t in timestamps
     ]
-    p = ax.scatter(x, y, c=timestamps_normalized, s=1, cmap="plasma")
+
+    df = pd.DataFrame({"x": x, "y": y, "ts": timestamps_normalized})
+    df = df.sort_values(by="ts")
+    df = df.reset_index(drop=True)
+
+    # plot fixations
+    fixations, v, labels = detect_fix_ivt(df, sacvel=4000)
+
+    p = ax.scatter(fixations["x"], fixations["y"], c=fixations["ts"], s=20, cmap="plasma")
+    # show color bar for timestamps
+    fig.colorbar(p, ax=ax)
+    ax.imshow(img, extent=[0, X_PIXELS, Y_PIXELS, 0])
+    ax.set_title(title)
 
 
 def print_record(record):
