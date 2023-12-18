@@ -104,6 +104,29 @@ def extract_gaze_data_between_timestamps_proper(gaze_data, start_time, end_time)
 
     return gaze_data_between_timestamps
 
+def find_gaze_packet_at_timestamp(gaze_data, timestamp, properties_to_check_validity):
+    # gaze data is the entire json file
+    # timestamp is in milliseconds
+
+    T_s_0 = gaze_data["data"][0][TIMESTAMP_IDENT] # microseconds
+    system_start_time_mono = gaze_data['system_start_time_mono']  / 1_000 # convert nanoseconds to microseconds
+    delta = T_s_0 - system_start_time_mono
+    system_start_time_epoch = gaze_data['system_start_time_epoch'] * 1_000_000 # convert seconds to microseconds
+    T_E_0 = system_start_time_epoch + delta
+
+    T_x = timestamp * 1_000 # convert milliseconds to microseconds
+    lower_bound = T_s_0 +  (T_x - T_E_0)
+
+    # get all data between lower and upper bound
+    gaze_data_at_timestamp = next((
+        packet
+        for packet in gaze_data["data"]
+        if packet[TIMESTAMP_IDENT] >= lower_bound
+        and all(packet[prop] == 1 for prop in properties_to_check_validity)
+    ))
+
+    return gaze_data_at_timestamp
+
 def plot_gaze_data_on_screenshot(gaze_data, screenshot_path, title):
     fig, ax = plt.subplots(figsize=(X_PIXELS / 100, Y_PIXELS / 100))
     # set ax limits
