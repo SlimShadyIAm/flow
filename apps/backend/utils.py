@@ -83,26 +83,31 @@ def extract_gaze_data_between_timestamps_proper(gaze_data, start_time, end_time)
     # gaze data is the entire json file
     # start_time and end_time are in milliseconds
 
-    T_s_0 = gaze_data["data"][0][TIMESTAMP_IDENT] # microseconds
-    system_start_time_mono = gaze_data['system_start_time_mono']  / 1_000 # convert nanoseconds to microseconds
+    T_s_0 = gaze_data["data"][0][TIMESTAMP_IDENT]  # microseconds
+    system_start_time_mono = (
+        gaze_data["system_start_time_mono"] / 1_000
+    )  # convert nanoseconds to microseconds
     delta = T_s_0 - system_start_time_mono
-    system_start_time_epoch = gaze_data['system_start_time_epoch'] * 1_000_000 # convert seconds to microseconds
+    system_start_time_epoch = (
+        gaze_data["system_start_time_epoch"] * 1_000_000
+    )  # convert seconds to microseconds
     T_E_0 = system_start_time_epoch + delta
 
-    T_x = start_time * 1_000 # convert milliseconds to microseconds
-    T_y = end_time * 1_000 # convert milliseconds to microseconds
-    lower_bound = T_s_0 +  (T_x - T_E_0)
-    upper_bound = T_s_0 +  (T_y - T_E_0)
+    T_x = start_time * 1_000  # convert milliseconds to microseconds
+    T_y = end_time * 1_000  # convert milliseconds to microseconds
+    lower_bound = T_s_0 + (T_x - T_E_0)
+    upper_bound = T_s_0 + (T_y - T_E_0)
 
     # get all data between lower and upper bound
-    gaze_data_between_timestamps = [
+    gaze_data["data"] = [
         packet
         for packet in gaze_data["data"]
         if packet[TIMESTAMP_IDENT] >= lower_bound
         and packet[TIMESTAMP_IDENT] <= upper_bound
     ]
 
-    return gaze_data_between_timestamps
+    return gaze_data
+
 
 def plot_gaze_data_on_screenshot(gaze_data, screenshot_path, title):
     fig, ax = plt.subplots(figsize=(X_PIXELS / 100, Y_PIXELS / 100))
@@ -127,7 +132,7 @@ def plot_gaze_data_on_screenshot(gaze_data, screenshot_path, title):
     timestamps_normalized = [
         (t - min(timestamps)) / (max(timestamps) - min(timestamps)) for t in timestamps
     ]
-    
+
     p = ax.scatter(x, y, c=timestamps_normalized, s=1, cmap="plasma")
     # show color bar for timestamps
     fig.colorbar(p, ax=ax)
@@ -207,8 +212,9 @@ def extract_x_y_timestamps_from_gaze_data(gaze_data):
     # timestamps_normalized = [(t - min(timestamps)) / (max(timestamps) - min(timestamps)) for t in timestamps]
     return x, y, timestamps
 
+
 def merge_databases(other_database_name):
-    ### 
+    ###
     db = SqliteDatabase("events.db")
     db.connect()
     db.execute_sql(
