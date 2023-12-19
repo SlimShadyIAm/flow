@@ -3,115 +3,141 @@
         "split": 1,
         "group": 1,
         "age": 32,
-        "dominant_eye": "Left"
+        "dominant_eye": "Left",
+        "comprehension_score": 10
     },
     "2": {
         "split": 1,
         "group": 2,
         "age": 26,
-        "dominant_eye": "Left"
+        "dominant_eye": "Left",
+        "comprehension_score": 9
+    },
+    "4": {
+        "split": 1,
+        "group": 4,
+        "age": 21,
+        "dominant_eye": "Right",
+        "comprehension_score": 10
     },
     "5": {
         "split": 1,
         "group": 1,
         "age": 26,
-        "dominant_eye": "Right"
+        "dominant_eye": "Right",
+        "comprehension_score": 10
     },
     "6": {
         "split": 1,
         "group": 2,
         "age": 26,
-        "dominant_eye": "Right"
+        "dominant_eye": "Right",
+        "comprehension_score": 9
     },
     "7": {
         "split": 1,
         "group": 3,
         "age": 17,
-        "dominant_eye": "Right"
+        "dominant_eye": "Right",
+        "comprehension_score": 10
     },
     "8": {
         "split": 1,
         "group": 4,
         "age": 62,
-        "dominant_eye": "Right"
+        "dominant_eye": "Right",
+        "comprehension_score": 9
     },
     "9": {
         "split": 2,
         "group": 1,
         "age": 58,
-        "dominant_eye": "Left"
+        "dominant_eye": "Left",
+        "comprehension_score": 8
     },
     "10": {
         "split": 2,
         "group": 2,
         "age": 18,
-        "dominant_eye": "Right"
+        "dominant_eye": "Right",
+        "comprehension_score": 10
     },
     "11": {
         "split": 2,
         "group": 3,
         "age": 23,
-        "dominant_eye": "Left"
+        "dominant_eye": "Left",
+        "comprehension_score": 9
     },
     "12": {
         "split": 2,
         "group": 4,
         "age": 62,
-        "dominant_eye": "Right"
+        "dominant_eye": "Right",
+        "comprehension_score": 9
     },
     "13": {
         "split": 2,
         "group": 5,
         "age": 73,
-        "dominant_eye": "Right"
+        "dominant_eye": "Right",
+        "comprehension_score": 7
     },
     "14": {
         "split": 2,
         "group": 6,
         "age": 24,
-        "dominant_eye": "Right"
+        "dominant_eye": "Right",
+        "comprehension_score": 9
     },
     "15": {
         "split": 2,
         "group": 1,
         "age": 24,
-        "dominant_eye": "Right"
+        "dominant_eye": "Right",
+        "comprehension_score": 9
     },
     "16": {
         "split": 2,
         "group": 2,
         "age": 64,
-        "dominant_eye": "Right"
+        "dominant_eye": "Right",
+        "comprehension_score": 9
     },
     "17": {
         "split": 2,
         "group": 3,
         "age": 65,
-        "dominant_eye": "Right"
+        "dominant_eye": "Right",
+        "comprehension_score": 9
     },
     "18": {
         "split": 2,
         "group": 4,
         "age": 25,
-        "dominant_eye": "Left"
+        "dominant_eye": "Left",
+        "comprehension_score": 10
     },
     "19": {
         "split": 2,
         "group": 5,
         "age": 60,
-        "dominant_eye": "Right"
+        "dominant_eye": "Right",
+        "comprehension_score": 7
     },
     "20": {
         "split": 2,
         "group": 6,
         "age": 24,
-        "dominant_eye": "Left"
+        "dominant_eye": "Left",
+        "comprehension_score": 9
     },
     "21": {
         "split": 2,
         "group": 3,
         "age": 59,
-        "dominant_eye": "Left"
+        "dominant_eye": "Left",
+        "comprehension_score": 9
     },
     "97": {
         "split": 2,
