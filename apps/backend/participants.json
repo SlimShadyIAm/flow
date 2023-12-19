@@ -134,13 +134,13 @@
     "998": {
         "split": null,
         "group": null,
-        "age": 0,
+        "age": null,
         "dominant_eye": null
     },
     "999": {
         "split": null,
         "group": null,
-        "age": 0,
+        "age": null,
         "dominant_eye": null
     }
 }
