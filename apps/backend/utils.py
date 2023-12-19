@@ -82,6 +82,8 @@ def extract_gaze_data_between_timestamps(gaze_data, start_time, end_time):
 def extract_gaze_data_between_timestamps_proper(gaze_data, start_time, end_time):
     # gaze data is the entire json file
     # start_time and end_time are in milliseconds
+    # Deepy copy gaze_data
+    gaze_data = gaze_data.copy()
 
     T_s_0 = gaze_data["data"][0][TIMESTAMP_IDENT]  # microseconds
     system_start_time_mono = (
@@ -193,7 +195,9 @@ def plot_fixations_on_screenshot(gaze_data, screenshot_path, title):
     # plot fixations
     fixations, v, labels = detect_fix_ivt(df, sacvel=4000)
 
-    p = ax.scatter(fixations["x"], fixations["y"], c=fixations["ts"], s=20, cmap="plasma")
+    p = ax.scatter(
+        fixations["x"], fixations["y"], c=fixations["ts"], s=20, cmap="plasma"
+    )
     # show color bar for timestamps
     fig.colorbar(p, ax=ax)
     ax.imshow(img, extent=[0, X_PIXELS, Y_PIXELS, 0])
