@@ -180,8 +180,12 @@ def plot_fixations_on_screenshot(gaze_data, screenshot_path, title, saccadic_thr
 
     # for each packet, plot the gaze point
     for packet in gaze_data["data"]:
+        # there are certain points off the screen. ignore these.
         if packet["right_gaze_point_validity"] == 0:
             continue
+        elif packet["right_gaze_point_on_display_area"][0] > 1 or packet["right_gaze_point_on_display_area"][1] > 1:
+            continue
+
         x.append(packet["right_gaze_point_on_display_area"][0] * X_PIXELS)
         y.append(packet["right_gaze_point_on_display_area"][1] * Y_PIXELS)
         timestamps.append(packet[TIMESTAMP_IDENT])
