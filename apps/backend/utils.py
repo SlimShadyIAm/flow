@@ -182,8 +182,8 @@ def plot_fixations_on_screenshot(gaze_data, screenshot_path, title, saccadic_thr
     for packet in gaze_data["data"]:
         if packet["right_gaze_point_validity"] == 0:
             continue
-        x.append((packet["right_gaze_point_on_display_area"][0] * X_PIXELS) * DEGREES_PER_PIXEL)
-        y.append((packet["right_gaze_point_on_display_area"][1] * Y_PIXELS) * DEGREES_PER_PIXEL)
+        x.append(packet["right_gaze_point_on_display_area"][0] * X_PIXELS)
+        y.append(packet["right_gaze_point_on_display_area"][1] * Y_PIXELS)
         timestamps.append(packet[TIMESTAMP_IDENT])
 
     # use normalized timestamps as color
@@ -195,12 +195,15 @@ def plot_fixations_on_screenshot(gaze_data, screenshot_path, title, saccadic_thr
     df = df.sort_values(by="ts")
     df = df.reset_index(drop=True)
 
+    df["x"] = df["x"] * DEGREES_PER_PIXEL
+    df["y"] = df["y"] * DEGREES_PER_PIXEL
+
     # plot fixations
     fixations, v, labels = detect_fix_ivt(df, sacvel=saccadic_threshold)
     fixations["x"] = fixations["x"] / DEGREES_PER_PIXEL
     fixations["y"] = fixations["y"] / DEGREES_PER_PIXEL
 
-    saccades = find_sacc_from_fix(fixations)
+    # saccades = find_sacc_from_fix(fixations)
 
     # for index in saccades.index:
     #     saccade = saccades.loc[index]
@@ -257,15 +260,6 @@ def plot_fixations_on_screenshot(gaze_data, screenshot_path, title, saccadic_thr
         else:
             color = "purple"
 
-        # # color it based on if it's a saccade or regression
-        # if fixations["x"][a] < fixations["x"][b]:
-        #     color = "green"
-        # else:
-        #     difference = fixations["y"][a] - fixations["y"][b]
-        #     if fixations["y"][a] < fixations["y"][b]:
-        #         color = "red"
-        #     color = "blue"
-
         ax.arrow(
             point_a[0],
             point_a[1],
@@ -277,12 +271,6 @@ def plot_fixations_on_screenshot(gaze_data, screenshot_path, title, saccadic_thr
             head_width=10,
             length_includes_head=True,
         )
-        # ax.annotate(
-        #     f"{angle:.2f}",
-        #     xy=point_b,
-        #     xytext=point_a,
-        #     arrowprops=dict(arrowstyle="->", color=color, alpha=0.5, linewidth=2),
-        # )
 
     # show color bar for timestamps
     fig.colorbar(p, ax=ax)
