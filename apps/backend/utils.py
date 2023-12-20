@@ -1,14 +1,16 @@
 from datetime import datetime
+import math
 
 from matplotlib import pyplot as plt
 from IPython.display import display
 from PIL import Image
+import numpy as np
 import pandas as pd
 
 from peewee import IntegerField, Model, CharField, SqliteDatabase, AutoField
-from velocityThreshold import detect_fix_ivt
+from velocityThreshold import detect_fix_ivt, find_sacc_from_fix
 
-db = SqliteDatabase("events.db")
+db = SqliteDatabase("events-testing-after-fix.db")
 
 
 class Events(Model):
@@ -42,6 +44,7 @@ X_PIXELS = 2560
 Y_PIXELS = 1440
 TIMESTAMP_IDENT = "system_time_stamp"
 OFFSET = 10_000_000
+DEGREES_PER_PIXEL = np.rad2deg(np.arctan((0.336 / Y_PIXELS) / 0.6))
 
 
 def extract_gaze_data_between_timestamps(gaze_data, start_time, end_time):
@@ -164,7 +167,7 @@ def plot_gaze_data_on_screenshot(gaze_data, screenshot_path, title):
     ax.imshow(img, extent=[0, X_PIXELS, Y_PIXELS, 0])
     ax.set_title(title)
 
-def plot_fixations_on_screenshot(gaze_data, screenshot_path, title):
+def plot_fixations_on_screenshot(gaze_data, screenshot_path, title, saccadic_threshold):
     fig, ax = plt.subplots(figsize=(X_PIXELS / 100, Y_PIXELS / 100))
     # set ax limits
     ax.set_xlim(0, X_PIXELS)
@@ -176,11 +179,11 @@ def plot_fixations_on_screenshot(gaze_data, screenshot_path, title):
     y = []
 
     # for each packet, plot the gaze point
-    for packet in gaze_data:
+    for packet in gaze_data["data"]:
         if packet["right_gaze_point_validity"] == 0:
             continue
-        x.append(packet["right_gaze_point_on_display_area"][0] * X_PIXELS)
-        y.append(packet["right_gaze_point_on_display_area"][1] * Y_PIXELS)
+        x.append((packet["right_gaze_point_on_display_area"][0] * X_PIXELS) * DEGREES_PER_PIXEL)
+        y.append((packet["right_gaze_point_on_display_area"][1] * Y_PIXELS) * DEGREES_PER_PIXEL)
         timestamps.append(packet[TIMESTAMP_IDENT])
 
     # use normalized timestamps as color
@@ -193,11 +196,94 @@ def plot_fixations_on_screenshot(gaze_data, screenshot_path, title):
     df = df.reset_index(drop=True)
 
     # plot fixations
-    fixations, v, labels = detect_fix_ivt(df, sacvel=4000)
+    fixations, v, labels = detect_fix_ivt(df, sacvel=saccadic_threshold)
+    fixations["x"] = fixations["x"] / DEGREES_PER_PIXEL
+    fixations["y"] = fixations["y"] / DEGREES_PER_PIXEL
 
-    p = ax.scatter(
-        fixations["x"], fixations["y"], c=fixations["ts"], s=20, cmap="plasma"
-    )
+    saccades = find_sacc_from_fix(fixations)
+
+    # for index in saccades.index:
+    #     saccade = saccades.loc[index]
+    #     print(fixations)
+    #     print('---')
+    #     print(saccade)
+
+    #     point_a = (fixations["x"][saccade['i']], fixations["x"][saccade['i'] + saccade['n']])
+    #     point_b = (fixations["y"][saccade['i']], fixations["y"][saccade['i'] + saccade['n']])
+    #     # draw an arrow between the two points
+    #     ax.arrow(
+    #         point_a[0],
+    #         point_a[1],
+    #         point_b[0] - point_a[0],
+    #         point_b[1] - point_a[1],
+    #         color="red",
+    #         linewidth=1,
+    #         linestyle="-",
+    #         head_width=10,
+    #         head_length=10,
+    #     )
+
+    #     # ax.plot(
+    #     #     [point_a[0], point_b[0]],
+    #     #     [point_a[1], point_b[1]],
+    #     #     color="red",
+    #     #     linewidth=1,
+    #     #     linestyle="-",
+    #     # )
+
+    p = ax.scatter(fixations["x"], fixations["y"], c=fixations["ts"], s=40, cmap="plasma")
+
+    # take successive fixations and draw an arrow between them.
+    for a, b in zip(fixations.index[:-1], fixations.index[1:]):
+        point_a = (fixations["x"][a], fixations["y"][a])
+        point_b = (fixations["x"][b], fixations["y"][b])
+        # draw an arrow between the two points
+
+        color = "black"
+        
+        opp = point_b[1] - point_a[1]
+        adj = point_b[0] - point_a[0]
+        angle = math.degrees(math.atan2(opp, adj))
+        # make the angles between 0 and 360
+        if angle < 0:
+            angle = 360 + angle
+
+        if 0 < angle < 20 or 340 < angle < 360:
+            color = "green" # saccade
+        elif 45 < angle < 181:
+            color = "blue" # return sweep
+        elif 181 < angle < 220:
+            color = "red" # regression
+        else:
+            color = "purple"
+
+        # # color it based on if it's a saccade or regression
+        # if fixations["x"][a] < fixations["x"][b]:
+        #     color = "green"
+        # else:
+        #     difference = fixations["y"][a] - fixations["y"][b]
+        #     if fixations["y"][a] < fixations["y"][b]:
+        #         color = "red"
+        #     color = "blue"
+
+        ax.arrow(
+            point_a[0],
+            point_a[1],
+            point_b[0] - point_a[0],
+            point_b[1] - point_a[1],
+            color=color,
+            alpha=0.5,
+            width=0.1,
+            head_width=10,
+            length_includes_head=True,
+        )
+        # ax.annotate(
+        #     f"{angle:.2f}",
+        #     xy=point_b,
+        #     xytext=point_a,
+        #     arrowprops=dict(arrowstyle="->", color=color, alpha=0.5, linewidth=2),
+        # )
+
     # show color bar for timestamps
     fig.colorbar(p, ax=ax)
     ax.imshow(img, extent=[0, X_PIXELS, Y_PIXELS, 0])

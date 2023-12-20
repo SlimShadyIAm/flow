@@ -165,7 +165,7 @@ def detect_fix_idt(df, dispval = 1, minwindow = 6):
                              columns = ("ts", "len", "i", "n", "x", "y", "sx", "sy", "rho"))
     return fixations, None, None
 
-def find_sacc_from_fix(df, fixations):
+def find_sacc_from_fix(fixations):
     '''Return saccades from periods between fixations'''
     saccades = []
     
