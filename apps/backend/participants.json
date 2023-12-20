@@ -2,171 +2,215 @@
     "1": {
         "split": 1,
         "group": 1,
+        "comprehension_score": 10,
         "age": 32,
         "dominant_eye": "Left",
-        "comprehension_score": 10
+        "visual_impairment": [
+            "Nearsighted",
+            "Astigmatism"
+        ]
     },
     "2": {
         "split": 1,
         "group": 2,
+        "comprehension_score": 9,
         "age": 26,
         "dominant_eye": "Left",
-        "comprehension_score": 9
+        "visual_impairment": [
+            "Lazy left eye"
+        ]
+    },
+    "3": {
+        "split": 1,
+        "group": 3,
+        "comprehension_score": null,
+        "age": null,
+        "dominant_eye": null,
+        "visual_impairment": []
     },
     "4": {
         "split": 1,
         "group": 4,
+        "comprehension_score": 10,
         "age": 21,
         "dominant_eye": "Right",
-        "comprehension_score": 10
+        "visual_impairment": [
+            "Nearsighted"
+        ]
     },
     "5": {
         "split": 1,
         "group": 1,
+        "comprehension_score": 10,
         "age": 26,
         "dominant_eye": "Right",
-        "comprehension_score": 10
+        "visual_impairment": [
+            "Nearsighted"
+        ]
     },
     "6": {
         "split": 1,
         "group": 2,
+        "comprehension_score": 9,
         "age": 26,
         "dominant_eye": "Right",
-        "comprehension_score": 9
+        "visual_impairment": [
+            "none"
+        ]
     },
     "7": {
         "split": 1,
         "group": 3,
+        "comprehension_score": 10,
         "age": 17,
         "dominant_eye": "Right",
-        "comprehension_score": 10
+        "visual_impairment": [
+            "none"
+        ]
     },
     "8": {
         "split": 1,
         "group": 4,
+        "comprehension_score": 9,
         "age": 62,
         "dominant_eye": "Right",
-        "comprehension_score": 9
+        "visual_impairment": [
+            "Nearsighted"
+        ]
     },
     "9": {
         "split": 2,
         "group": 1,
+        "comprehension_score": 8,
         "age": 58,
         "dominant_eye": "Left",
-        "comprehension_score": 8
+        "visual_impairment": [
+            "Nearsighted",
+            "Farsighted"
+        ]
     },
     "10": {
         "split": 2,
         "group": 2,
+        "comprehension_score": 10,
         "age": 18,
         "dominant_eye": "Right",
-        "comprehension_score": 10
+        "visual_impairment": [
+            "none"
+        ]
     },
     "11": {
         "split": 2,
         "group": 3,
+        "comprehension_score": 9,
         "age": 23,
         "dominant_eye": "Left",
-        "comprehension_score": 9
+        "visual_impairment": [
+            "Farsighted",
+            "Astigmatism"
+        ]
     },
     "12": {
         "split": 2,
         "group": 4,
+        "comprehension_score": 9,
         "age": 62,
         "dominant_eye": "Right",
-        "comprehension_score": 9
+        "visual_impairment": [
+            "Nearsighted",
+            "Farsighted"
+        ]
     },
     "13": {
         "split": 2,
         "group": 5,
+        "comprehension_score": 7,
         "age": 73,
         "dominant_eye": "Right",
-        "comprehension_score": 7
+        "visual_impairment": [
+            "none"
+        ]
     },
     "14": {
         "split": 2,
         "group": 6,
+        "comprehension_score": 9,
         "age": 24,
         "dominant_eye": "Right",
-        "comprehension_score": 9
+        "visual_impairment": [
+            "Nearsighted"
+        ]
     },
     "15": {
         "split": 2,
         "group": 1,
+        "comprehension_score": 9,
         "age": 24,
-        "dominant_eye": "Right",
-        "comprehension_score": 9
+        "dominant_eye": "Left",
+        "visual_impairment": [
+            "none"
+        ]
     },
     "16": {
         "split": 2,
         "group": 2,
+        "comprehension_score": 9,
         "age": 64,
         "dominant_eye": "Right",
-        "comprehension_score": 9
+        "visual_impairment": [
+            "Farsighted"
+        ]
     },
     "17": {
         "split": 2,
         "group": 3,
+        "comprehension_score": 9,
         "age": 65,
         "dominant_eye": "Right",
-        "comprehension_score": 9
+        "visual_impairment": [
+            "Farsighted",
+            "Cross-eyed"
+        ]
     },
     "18": {
         "split": 2,
         "group": 4,
+        "comprehension_score": 10,
         "age": 25,
         "dominant_eye": "Left",
-        "comprehension_score": 10
+        "visual_impairment": [
+            "Nearsighted"
+        ]
     },
     "19": {
         "split": 2,
         "group": 5,
+        "comprehension_score": 7,
         "age": 60,
         "dominant_eye": "Right",
-        "comprehension_score": 7
+        "visual_impairment": [
+            "none"
+        ]
     },
     "20": {
         "split": 2,
         "group": 6,
+        "comprehension_score": 9,
         "age": 24,
         "dominant_eye": "Left",
-        "comprehension_score": 9
+        "visual_impairment": [
+            "Nearsighted",
+            "Wearing contact lenses"
+        ]
     },
     "21": {
         "split": 2,
         "group": 3,
+        "comprehension_score": 9,
         "age": 59,
         "dominant_eye": "Left",
-        "comprehension_score": 9
-    },
-    "97": {
-        "split": 2,
-        "group": 4,
-        "age": 25,
-        "dominant_eye": "Right"
-    },
-    "98": {
-        "split": 2,
-        "group": 1,
-        "age": 24,
-        "dominant_eye": "Right"
-    },
-    "99": {
-        "split": 1,
-        "group": 1,
-        "age": 25,
-        "dominant_eye": "Right"
-    },
-    "998": {
-        "split": null,
-        "group": null,
-        "age": null,
-        "dominant_eye": null
-    },
-    "999": {
-        "split": null,
-        "group": null,
-        "age": null,
-        "dominant_eye": null
+        "visual_impairment": [
+            "Nearsighted"
+        ]
     }
 }
