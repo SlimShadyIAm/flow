@@ -10,7 +10,7 @@ import pandas as pd
 from peewee import IntegerField, Model, CharField, SqliteDatabase, AutoField
 from velocityThreshold import detect_fix_ivt, find_sacc_from_fix
 
-db = SqliteDatabase("events-testing-after-fix.db")
+db = SqliteDatabase("events.db")
 
 
 class Events(Model):
@@ -247,7 +247,7 @@ def plot_fixations_on_screenshot(gaze_data, screenshot_path, title, saccadic_thr
         # draw an arrow between the two points
 
         color = "black"
-        
+
         opp = point_b[1] - point_a[1]
         adj = point_b[0] - point_a[0]
         angle = math.degrees(math.atan2(opp, adj))
