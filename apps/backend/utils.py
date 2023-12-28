@@ -176,7 +176,12 @@ def get_participant_dominant_eye(participant_id):
         print(f"Participant {participant_id} not found in participants.json, defaulting to right eye")
         return "right"
     
-    return participant.get("dominant_eye").lower()
+    eye = participant.get("dominant_eye")
+    if eye is None:
+        print(f"Participant {participant_id} does not have a dominant eye, defaulting to right eye")
+        return "right"
+    else:
+        return eye.lower()
 
 
 def merge_databases(other_database_name):
