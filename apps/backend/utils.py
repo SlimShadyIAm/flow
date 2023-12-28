@@ -188,14 +188,14 @@ def plot_fixations_on_screenshot(gaze_data, screenshot_path, title, saccadic_thr
 
         x.append(packet["right_gaze_point_on_display_area"][0] * X_PIXELS)
         y.append(packet["right_gaze_point_on_display_area"][1] * Y_PIXELS)
-        timestamps.append(packet[TIMESTAMP_IDENT])
+        timestamps.append(packet[TIMESTAMP_IDENT]/1_000_000)
 
     # use normalized timestamps as color
-    timestamps_normalized = [
-        (t - min(timestamps)) / (max(timestamps) - min(timestamps)) for t in timestamps
-    ]
+    # timestamps_normalized = [
+    #     (t - min(timestamps)) / (max(timestamps) - min(timestamps)) for t in timestamps
+    # ]
 
-    df = pd.DataFrame({"x": x, "y": y, "ts": timestamps_normalized})
+    df = pd.DataFrame({"x": x, "y": y, "ts": timestamps})
     df = df.sort_values(by="ts")
     df = df.reset_index(drop=True)
 
@@ -204,6 +204,7 @@ def plot_fixations_on_screenshot(gaze_data, screenshot_path, title, saccadic_thr
 
     # plot fixations
     fixations, v, labels = detect_fix_ivt(df, sacvel=saccadic_threshold)
+
     fixations["x"] = fixations["x"] / DEGREES_PER_PIXEL
     fixations["y"] = fixations["y"] / DEGREES_PER_PIXEL
 
