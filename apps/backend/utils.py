@@ -1,15 +1,11 @@
 from datetime import datetime
 import json
-import math
 
-from matplotlib import pyplot as plt
 from IPython.display import display
 from PIL import Image
 import numpy as np
-import pandas as pd
 
 from peewee import IntegerField, Model, CharField, SqliteDatabase, AutoField
-from velocityThreshold import detect_fix_ivt, find_sacc_from_fix
 
 db = SqliteDatabase("events.db")
 
