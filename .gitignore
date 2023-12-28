@@ -38,3 +38,4 @@ yarn-error.log*
 **/public/workbox-*
 **/public/sw.*
 **/public/fallback-*
+apps/backend/eye_tracker_data_fixed.zip

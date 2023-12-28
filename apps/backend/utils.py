@@ -137,151 +137,6 @@ def find_gaze_packet_at_timestamp(gaze_data, timestamp, properties_to_check_vali
 
     return gaze_data_at_timestamp
 
-def plot_gaze_data_on_screenshot(gaze_data, screenshot_path, title):
-    fig, ax = plt.subplots(figsize=(X_PIXELS / 100, Y_PIXELS / 100))
-    # set ax limits
-    ax.set_xlim(0, X_PIXELS)
-    ax.set_ylim(Y_PIXELS, 0)
-    img = plt.imread(screenshot_path)
-    # normalize timestamps
-    timestamps = []
-    x = []
-    y = []
-
-    # for each packet, plot the gaze point
-    for packet in gaze_data:
-        if packet["right_gaze_point_validity"] == 0:
-            continue
-        x.append(packet["right_gaze_point_on_display_area"][0] * X_PIXELS)
-        y.append(packet["right_gaze_point_on_display_area"][1] * Y_PIXELS)
-        timestamps.append(packet[TIMESTAMP_IDENT])
-
-    # use normalized timestamps as color
-    timestamps_normalized = [
-        (t - min(timestamps)) / (max(timestamps) - min(timestamps)) for t in timestamps
-    ]
-
-    p = ax.scatter(x, y, c=timestamps_normalized, s=1, cmap="plasma")
-    # show color bar for timestamps
-    fig.colorbar(p, ax=ax)
-    ax.imshow(img, extent=[0, X_PIXELS, Y_PIXELS, 0])
-    ax.set_title(title)
-
-def plot_fixations_on_screenshot(gaze_data, screenshot_path, title, saccadic_threshold):
-    fig, ax = plt.subplots(figsize=(X_PIXELS / 100, Y_PIXELS / 100))
-    # set ax limits
-    ax.set_xlim(0, X_PIXELS)
-    ax.set_ylim(Y_PIXELS, 0)
-    img = plt.imread(screenshot_path)
-    # normalize timestamps
-    timestamps = []
-    x = []
-    y = []
-
-    # for each packet, plot the gaze point
-    for packet in gaze_data["data"]:
-        # there are certain points off the screen. ignore these.
-        if packet["right_gaze_point_validity"] == 0:
-            continue
-        elif packet["right_gaze_point_on_display_area"][0] > 1 or packet["right_gaze_point_on_display_area"][1] > 1:
-            continue
-
-        x.append(packet["right_gaze_point_on_display_area"][0] * X_PIXELS)
-        y.append(packet["right_gaze_point_on_display_area"][1] * Y_PIXELS)
-        timestamps.append(packet[TIMESTAMP_IDENT]/1_000_000)
-
-    # use normalized timestamps as color
-    # timestamps_normalized = [
-    #     (t - min(timestamps)) / (max(timestamps) - min(timestamps)) for t in timestamps
-    # ]
-
-    df = pd.DataFrame({"x": x, "y": y, "ts": timestamps})
-    df = df.sort_values(by="ts")
-    df = df.reset_index(drop=True)
-
-    df["x"] = df["x"] * DEGREES_PER_PIXEL
-    df["y"] = df["y"] * DEGREES_PER_PIXEL
-
-    # plot fixations
-    fixations, v, labels = detect_fix_ivt(df, sacvel=saccadic_threshold)
-
-    fixations["x"] = fixations["x"] / DEGREES_PER_PIXEL
-    fixations["y"] = fixations["y"] / DEGREES_PER_PIXEL
-
-    # saccades = find_sacc_from_fix(fixations)
-
-    # for index in saccades.index:
-    #     saccade = saccades.loc[index]
-    #     print(fixations)
-    #     print('---')
-    #     print(saccade)
-
-    #     point_a = (fixations["x"][saccade['i']], fixations["x"][saccade['i'] + saccade['n']])
-    #     point_b = (fixations["y"][saccade['i']], fixations["y"][saccade['i'] + saccade['n']])
-    #     # draw an arrow between the two points
-    #     ax.arrow(
-    #         point_a[0],
-    #         point_a[1],
-    #         point_b[0] - point_a[0],
-    #         point_b[1] - point_a[1],
-    #         color="red",
-    #         linewidth=1,
-    #         linestyle="-",
-    #         head_width=10,
-    #         head_length=10,
-    #     )
-
-    #     # ax.plot(
-    #     #     [point_a[0], point_b[0]],
-    #     #     [point_a[1], point_b[1]],
-    #     #     color="red",
-    #     #     linewidth=1,
-    #     #     linestyle="-",
-    #     # )
-
-    p = ax.scatter(fixations["x"], fixations["y"], c=fixations["ts"], s=40, cmap="plasma")
-
-    # take successive fixations and draw an arrow between them.
-    for a, b in zip(fixations.index[:-1], fixations.index[1:]):
-        point_a = (fixations["x"][a], fixations["y"][a])
-        point_b = (fixations["x"][b], fixations["y"][b])
-        # draw an arrow between the two points
-
-        color = "black"
-
-        opp = point_b[1] - point_a[1]
-        adj = point_b[0] - point_a[0]
-        angle = math.degrees(math.atan2(opp, adj))
-        # make the angles between 0 and 360
-        if angle < 0:
-            angle = 360 + angle
-
-        if 0 < angle < 20 or 340 < angle < 360:
-            color = "green" # saccade
-        elif 45 < angle < 181:
-            color = "blue" # return sweep
-        elif 181 < angle < 220:
-            color = "red" # regression
-        else:
-            color = "purple"
-
-        ax.arrow(
-            point_a[0],
-            point_a[1],
-            point_b[0] - point_a[0],
-            point_b[1] - point_a[1],
-            color=color,
-            alpha=0.5,
-            width=0.1,
-            head_width=10,
-            length_includes_head=True,
-        )
-
-    # show color bar for timestamps
-    fig.colorbar(p, ax=ax)
-    ax.imshow(img, extent=[0, X_PIXELS, Y_PIXELS, 0])
-    ax.set_title(title)
-
 
 def print_record(record):
     print(
@@ -294,6 +149,17 @@ def print_record(record):
         record.new_value,
         record.screenshot_file,
     )
+
+
+def show_screenshot_for_record(_id):
+    events = Events.select().where(Events.id == _id).order_by(Events.time.asc()).limit(1)
+    if len(events) == 0:
+        print("No events found for id: ", _id)
+        return
+    event = events[0]
+    image_path = event.screenshot_file
+    print(_id)
+    display(Image.open(image_path))
 
 
 def show_participant_screenshots(participant_events):
