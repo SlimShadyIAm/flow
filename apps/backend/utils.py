@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 import math
 
 from matplotlib import pyplot as plt
@@ -169,20 +170,17 @@ def show_participant_screenshots(participant_events):
         display(Image.open(image_path))
 
 
-def extract_x_y_timestamps_from_gaze_data(gaze_data):
-    x = []
-    y = []
-    timestamps = []
-
-    for packet in gaze_data:
-        if packet["right_gaze_point_validity"] == 0:
-            continue
-        x.append(packet["right_gaze_point_on_display_area"][0] * X_PIXELS)
-        y.append(packet["right_gaze_point_on_display_area"][1] * Y_PIXELS)
-        timestamps.append(packet[TIMESTAMP_IDENT])
-
-    # timestamps_normalized = [(t - min(timestamps)) / (max(timestamps) - min(timestamps)) for t in timestamps]
-    return x, y, timestamps
+def get_participant_dominant_eye(participant_id):
+    # read participants.json
+    with open("participants.json", "r") as f:
+        participants = json.load(f)
+    
+    participant = participants.get(str(participant_id))
+    if participant is None:
+        print(f"Participant {participant_id} not found in participants.json, defaulting to right eye")
+        return "right"
+    
+    return participant.get("dominant_eye").lower()
 
 
 def merge_databases(other_database_name):
