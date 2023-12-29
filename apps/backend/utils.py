@@ -165,6 +165,20 @@ def show_participant_screenshots(participant_events):
         print_record(event)
         display(Image.open(image_path))
 
+def is_participant_data_low_resolution(participant_id):
+    # read participants.json
+    with open("participants.json", "r") as f:
+        participants = json.load(f)
+    
+    participant = participants.get(str(participant_id))
+    if participant is None:
+        return False
+    
+    low_res = participant.get("low_resolution")
+    if low_res is None:
+        return False
+    else:
+        return low_res
 
 def get_participant_dominant_eye(participant_id):
     # read participants.json
