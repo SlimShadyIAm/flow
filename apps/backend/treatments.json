@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Treatment 1,1",
+    "options": {
+      "fontSize": "14",
+      "fontWeight": 100,
+      "marginSize": "small",
+      "colorScheme": "dark"
+    }
+  },
+  {
+    "name": "Treatment 1,2",
+    "options": {
+      "fontSize": "24",
+      "fontWeight": 100,
+      "marginSize": "large",
+      "colorScheme": "light"
+    }
+  },
+  {
+    "name": "Treatment 1,3",
+    "options": {
+      "fontSize": "24",
+      "fontWeight": 700,
+      "marginSize": "small",
+      "colorScheme": "dark"
+    }
+  },
+  {
+    "name": "Treatment 1,4",
+    "options": {
+      "fontSize": "14",
+      "fontWeight": 700,
+      "marginSize": "small",
+      "colorScheme": "dark"
+    }
+  },
+  {
+    "name": "Treatment 2,1",
+    "options": {
+      "fontSize": "18",
+      "fontWeight": 400,
+      "marginSize": "small",
+      "colorScheme": "sepia"
+    }
+  },
+  {
+    "name": "Treatment 2,2",
+    "options": {
+      "fontSize": "18",
+      "fontWeight": 400,
+      "marginSize": "small",
+      "colorScheme": "light"
+    }
+  },
+  {
+    "name": "Treatment 2,3",
+    "options": {
+      "fontSize": "18",
+      "fontWeight": 400,
+      "marginSize": "small",
+      "colorScheme": "dark"
+    }
+  },
+  {
+    "name": "Treatment 2,4",
+    "options": {
+      "fontSize": "18",
+      "fontWeight": 400,
+      "marginSize": "small",
+      "colorScheme": "sepia"
+    }
+  },
+  {
+    "name": "Treatment 2,5",
+    "options": {
+      "fontSize": "18",
+      "fontWeight": 400,
+      "marginSize": "small",
+      "colorScheme": "light"
+    }
+  },
+  {
+    "name": "Treatment 2,6",
+    "options": {
+      "fontSize": "18",
+      "fontWeight": 400,
+      "marginSize": "small",
+      "colorScheme": "dark"
+    }
+  }
+]

@@ -179,6 +179,33 @@ def is_participant_data_low_resolution(participant_id):
         return False
     else:
         return low_res
+    
+def get_participant_treatment(participant_id):
+    # read participants.json
+    with open("participants.json", "r") as f:
+        participants = json.load(f)
+    
+    participant = participants.get(str(participant_id))
+    if participant is None:
+       raise Exception(f"Participant {participant_id} not found in participants.json")
+    
+    split = participant.get("split")
+    group = participant.get("group")
+    if split is None or group is None:
+        raise Exception(f"Participant {participant_id} does not have a treatment")
+    
+    return f"Treatment {split},{group}"
+
+def load_treatment_settings(treatment):
+    # read participants.json
+    with open("treatments.json", "r") as f:
+        treatments = json.load(f)
+    
+    treatment = next((t for t in treatments if treatment in t['name']), None)
+    if treatment is None:
+        raise Exception(f"Treatment {treatment} not found in treatments.json")
+    
+    return treatment
 
 def get_participant_dominant_eye(participant_id):
     # read participants.json
