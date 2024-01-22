@@ -169,8 +169,13 @@ def find_sacc_from_fix(fixations):
     '''Return saccades from periods between fixations'''
     saccades = []
     
-    pi = px = py = pts = 0
-    for i, f in fixations.iterrows():
+    # pi = px = py = pts = 
+    pi = fixations.i[0]
+    px = fixations.x[0]
+    py = fixations.y[0]
+    pts = fixations.ts[0]
+
+    for i, f in fixations[1:].iterrows():
         a = np.max((0, pi-1))
         b = f.i
         dx = f.x - px
