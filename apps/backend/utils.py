@@ -179,6 +179,13 @@ def is_participant_data_low_resolution(participant_id):
         return False
     else:
         return low_res
+
+def load_participants_metadata():
+    # read participants.json
+    with open("participants.json", "r") as f:
+        participants = json.load(f)
+
+    return participants
     
 def get_participant_treatment(participant_id):
     # read participants.json
