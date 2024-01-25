@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+import math
 
 from IPython.display import display
 from PIL import Image
@@ -230,6 +231,32 @@ def get_participant_dominant_eye(participant_id):
         return "right"
     else:
         return eye.lower()
+
+def identify_saccade_type_with_color(point_a, point_b):
+    dx = point_b[0] - point_a[0]
+    dy = point_b[1] - point_a[1]
+
+    angle_rad = np.arctan2(dy, dx)
+
+    # Convert the angle to degrees
+    angle = np.rad2deg(angle_rad)
+
+    # Adjust the angle to be in the range of 0 to 360 degrees
+    if angle < 0:
+        angle = angle + 360
+
+    angle = 360 - angle
+
+    if 0 <= angle <= 20 or 340 <= angle <= 360:
+        color = "green" # saccade
+    elif 45 <= angle <= 182:
+        color = "red" # regression
+    elif 182 < angle <= 200:
+        color = "blue" # return sweep
+    else:
+        color = "purple" # unknown movement
+    
+    return color
 
 
 def merge_databases(other_database_name):
