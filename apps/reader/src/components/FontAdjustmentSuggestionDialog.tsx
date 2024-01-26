@@ -53,7 +53,7 @@ export const useDialog = () => {
   return dialogContext
 }
 
-const Dialog: React.FC = () => {
+const FontAdjustmentSuggestionDialog: React.FC = () => {
   const { isOpen, closeDialog } = useDialog()
   const bgColors = useBgColors()
   const highlightTextColors = useHighlightTextColors()
@@ -293,4 +293,4 @@ const TextPresentationPreview = ({
   )
 }
 
-export default Dialog
+export default FontAdjustmentSuggestionDialog

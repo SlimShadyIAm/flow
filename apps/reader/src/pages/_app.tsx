@@ -8,8 +8,8 @@ import { RecoilRoot } from 'recoil'
 
 import { Layout, Theme } from '../components'
 import ConfirmationDialog, { ConfirmationDialogProvider } from '../components/ConfirmationDialog'
-import { DialogProvider } from '../components/Dialog'
-import Dialog from '../components/Dialog'
+import { DialogProvider } from '../components/FontAdjustmentSuggestionDialog'
+import FontAdjustmentSuggestionDialog from '../components/FontAdjustmentSuggestionDialog'
 import LoggerProvider from '../hooks/useLogger'
 
 export default function MyApp({ Component, pageProps }: AppProps) {
@@ -27,7 +27,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
               <Layout>
                 <Component {...pageProps} />
               </Layout>
-              <Dialog />
+              <FontAdjustmentSuggestionDialog />
               <ConfirmationDialog />
             </ConfirmationDialogProvider>
           </DialogProvider>
