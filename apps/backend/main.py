@@ -22,6 +22,7 @@ class API:
             self.take_screenshot,
             methods=["POST"],
             response_model=EventResponse,
+            description="Receive log, capture screenshot, and store in database."
         )
         self.router.add_event_handler("startup", self.startup_event)
         self.router.add_event_handler("shutdown", self.shutdown_event)
