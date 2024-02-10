@@ -8,7 +8,6 @@ class EventData(BaseModel):
     participantId: int
     oldValue: Optional[int|str] = None
     newValue: Optional[int|str ]= None
-    Screenshot_file: Optional[str] = None
 
 class EventResponse(BaseModel):
     id: int
