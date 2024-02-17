@@ -42,12 +42,15 @@ X_PIXELS = 2560
 Y_PIXELS = 1440
 TIMESTAMP_IDENT = "system_time_stamp"
 OFFSET = 10_000_000
+SCREEN_HEIGHT = 0.336  # meters
+DISTANCE_FROM_SCREEN = 0.6  # meters
 
-# 0.336 is the height of the screen in meters
+# 0.168 is half the height of the screen in meters
 # 0.6 is the distance from the screen in meters
 # we assume square pixels, and that the participant doesn't move
 # don't account for the geometric distortion on the edges
-DEGREES_PER_PIXEL = np.rad2deg(np.arctan((0.336 / Y_PIXELS) / 0.6))
+# https://osdoc.cogsci.nl/4.0/visualangle/
+DEGREES_PER_PIXEL = np.rad2deg(np.arctan2(.5 * SCREEN_HEIGHT, DISTANCE_FROM_SCREEN)) / (.5 * Y_PIXELS)
 
 
 def extract_gaze_data_between_timestamps(gaze_data, start_time, end_time):
